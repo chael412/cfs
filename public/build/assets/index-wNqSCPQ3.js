@@ -1,1 +1,0 @@
-import{G as h}from"./AuthenticatedLayout-BnqUwkGL.js";function r(t){return h({tag:"svg",attr:{viewBox:"0 0 24 24"},child:[{tag:"path",attr:{d:"M10 10h4v4h-4zm0-6h4v4h-4zm0 12h4v4h-4z"},child:[]}]})(t)}export{r as B};

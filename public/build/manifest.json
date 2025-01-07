@@ -1,0 +1,510 @@
+{
+  "_AuthenticatedLayout-CqlrEDJL.js": {
+    "file": "assets/AuthenticatedLayout-CqlrEDJL.js",
+    "name": "AuthenticatedLayout",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_GuestLayout-1XA_6sId.js": {
+    "file": "assets/GuestLayout-1XA_6sId.js",
+    "name": "GuestLayout",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_InputLabel-DMIfcTkv.js": {
+    "file": "assets/InputLabel-DMIfcTkv.js",
+    "name": "InputLabel",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_Pagination-C914-1sI.js": {
+    "file": "assets/Pagination-C914-1sI.js",
+    "name": "Pagination",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_PrimaryButton-iUcg8b6k.js": {
+    "file": "assets/PrimaryButton-iUcg8b6k.js",
+    "name": "PrimaryButton",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_TextInput-uQfnsOMo.js": {
+    "file": "assets/TextInput-uQfnsOMo.js",
+    "name": "TextInput",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_UseAppUrl-B22oZ4Sj.js": {
+    "file": "assets/UseAppUrl-B22oZ4Sj.js",
+    "name": "UseAppUrl",
+    "imports": [
+      "_AuthenticatedLayout-CqlrEDJL.js",
+      "resources/js/app.jsx"
+    ]
+  },
+  "_index-CCnOqSMN.js": {
+    "file": "assets/index-CCnOqSMN.js",
+    "name": "index",
+    "imports": [
+      "_AuthenticatedLayout-CqlrEDJL.js"
+    ]
+  },
+  "_react-select.esm-BfgR0DJM.js": {
+    "file": "assets/react-select.esm-BfgR0DJM.js",
+    "name": "react-select.esm",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_transition-BfFJ3mnc.js": {
+    "file": "assets/transition-BfFJ3mnc.js",
+    "name": "transition",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "node_modules/@fontsource/dancing-script/files/dancing-script-latin-400-normal.woff": {
+    "file": "assets/dancing-script-latin-400-normal-CBaqTbSQ.woff",
+    "src": "node_modules/@fontsource/dancing-script/files/dancing-script-latin-400-normal.woff"
+  },
+  "node_modules/@fontsource/dancing-script/files/dancing-script-latin-400-normal.woff2": {
+    "file": "assets/dancing-script-latin-400-normal-BGOkwg1k.woff2",
+    "src": "node_modules/@fontsource/dancing-script/files/dancing-script-latin-400-normal.woff2"
+  },
+  "node_modules/@fontsource/dancing-script/files/dancing-script-latin-ext-400-normal.woff": {
+    "file": "assets/dancing-script-latin-ext-400-normal-C3ZxgGIm.woff",
+    "src": "node_modules/@fontsource/dancing-script/files/dancing-script-latin-ext-400-normal.woff"
+  },
+  "node_modules/@fontsource/dancing-script/files/dancing-script-latin-ext-400-normal.woff2": {
+    "file": "assets/dancing-script-latin-ext-400-normal-CBcYVTwL.woff2",
+    "src": "node_modules/@fontsource/dancing-script/files/dancing-script-latin-ext-400-normal.woff2"
+  },
+  "node_modules/@fontsource/dancing-script/files/dancing-script-vietnamese-400-normal.woff": {
+    "file": "assets/dancing-script-vietnamese-400-normal-CdHIbuER.woff",
+    "src": "node_modules/@fontsource/dancing-script/files/dancing-script-vietnamese-400-normal.woff"
+  },
+  "node_modules/@fontsource/dancing-script/files/dancing-script-vietnamese-400-normal.woff2": {
+    "file": "assets/dancing-script-vietnamese-400-normal-CVC4eMIM.woff2",
+    "src": "node_modules/@fontsource/dancing-script/files/dancing-script-vietnamese-400-normal.woff2"
+  },
+  "node_modules/@fontsource/great-vibes/files/great-vibes-cyrillic-400-normal.woff": {
+    "file": "assets/great-vibes-cyrillic-400-normal-DtFXCWjq.woff",
+    "src": "node_modules/@fontsource/great-vibes/files/great-vibes-cyrillic-400-normal.woff"
+  },
+  "node_modules/@fontsource/great-vibes/files/great-vibes-cyrillic-400-normal.woff2": {
+    "file": "assets/great-vibes-cyrillic-400-normal-C-wcqNJs.woff2",
+    "src": "node_modules/@fontsource/great-vibes/files/great-vibes-cyrillic-400-normal.woff2"
+  },
+  "node_modules/@fontsource/great-vibes/files/great-vibes-cyrillic-ext-400-normal.woff": {
+    "file": "assets/great-vibes-cyrillic-ext-400-normal-CzcHves0.woff",
+    "src": "node_modules/@fontsource/great-vibes/files/great-vibes-cyrillic-ext-400-normal.woff"
+  },
+  "node_modules/@fontsource/great-vibes/files/great-vibes-cyrillic-ext-400-normal.woff2": {
+    "file": "assets/great-vibes-cyrillic-ext-400-normal-CKQhgFwn.woff2",
+    "src": "node_modules/@fontsource/great-vibes/files/great-vibes-cyrillic-ext-400-normal.woff2"
+  },
+  "node_modules/@fontsource/great-vibes/files/great-vibes-greek-ext-400-normal.woff": {
+    "file": "assets/great-vibes-greek-ext-400-normal-I8uMZwKr.woff",
+    "src": "node_modules/@fontsource/great-vibes/files/great-vibes-greek-ext-400-normal.woff"
+  },
+  "node_modules/@fontsource/great-vibes/files/great-vibes-greek-ext-400-normal.woff2": {
+    "file": "assets/great-vibes-greek-ext-400-normal-Caxd-0sC.woff2",
+    "src": "node_modules/@fontsource/great-vibes/files/great-vibes-greek-ext-400-normal.woff2"
+  },
+  "node_modules/@fontsource/great-vibes/files/great-vibes-latin-400-normal.woff": {
+    "file": "assets/great-vibes-latin-400-normal-CLO24iQJ.woff",
+    "src": "node_modules/@fontsource/great-vibes/files/great-vibes-latin-400-normal.woff"
+  },
+  "node_modules/@fontsource/great-vibes/files/great-vibes-latin-400-normal.woff2": {
+    "file": "assets/great-vibes-latin-400-normal-CBcwG6wP.woff2",
+    "src": "node_modules/@fontsource/great-vibes/files/great-vibes-latin-400-normal.woff2"
+  },
+  "node_modules/@fontsource/great-vibes/files/great-vibes-latin-ext-400-normal.woff": {
+    "file": "assets/great-vibes-latin-ext-400-normal-DCXVjJx8.woff",
+    "src": "node_modules/@fontsource/great-vibes/files/great-vibes-latin-ext-400-normal.woff"
+  },
+  "node_modules/@fontsource/great-vibes/files/great-vibes-latin-ext-400-normal.woff2": {
+    "file": "assets/great-vibes-latin-ext-400-normal-DOkzbsi7.woff2",
+    "src": "node_modules/@fontsource/great-vibes/files/great-vibes-latin-ext-400-normal.woff2"
+  },
+  "node_modules/@fontsource/great-vibes/files/great-vibes-vietnamese-400-normal.woff": {
+    "file": "assets/great-vibes-vietnamese-400-normal-Cxbm9Uac.woff",
+    "src": "node_modules/@fontsource/great-vibes/files/great-vibes-vietnamese-400-normal.woff"
+  },
+  "node_modules/@fontsource/great-vibes/files/great-vibes-vietnamese-400-normal.woff2": {
+    "file": "assets/great-vibes-vietnamese-400-normal-a2O3jU53.woff2",
+    "src": "node_modules/@fontsource/great-vibes/files/great-vibes-vietnamese-400-normal.woff2"
+  },
+  "resources/js/Pages/Auth/ConfirmPassword.jsx": {
+    "file": "assets/ConfirmPassword-B1iKwgET.js",
+    "name": "ConfirmPassword",
+    "src": "resources/js/Pages/Auth/ConfirmPassword.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_TextInput-uQfnsOMo.js",
+      "_InputLabel-DMIfcTkv.js",
+      "_PrimaryButton-iUcg8b6k.js",
+      "_GuestLayout-1XA_6sId.js"
+    ]
+  },
+  "resources/js/Pages/Auth/ForgotPassword.jsx": {
+    "file": "assets/ForgotPassword-DW9xBhaW.js",
+    "name": "ForgotPassword",
+    "src": "resources/js/Pages/Auth/ForgotPassword.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_TextInput-uQfnsOMo.js",
+      "_PrimaryButton-iUcg8b6k.js",
+      "_GuestLayout-1XA_6sId.js"
+    ]
+  },
+  "resources/js/Pages/Auth/Login.jsx": {
+    "file": "assets/Login-CiqTf5Y4.js",
+    "name": "Login",
+    "src": "resources/js/Pages/Auth/Login.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_TextInput-uQfnsOMo.js",
+      "_InputLabel-DMIfcTkv.js",
+      "_PrimaryButton-iUcg8b6k.js",
+      "_GuestLayout-1XA_6sId.js"
+    ],
+    "css": [
+      "assets/Login-CZhCAgzS.css"
+    ],
+    "assets": [
+      "assets/great-vibes-cyrillic-ext-400-normal-CKQhgFwn.woff2",
+      "assets/great-vibes-cyrillic-ext-400-normal-CzcHves0.woff",
+      "assets/great-vibes-cyrillic-400-normal-C-wcqNJs.woff2",
+      "assets/great-vibes-cyrillic-400-normal-DtFXCWjq.woff",
+      "assets/great-vibes-greek-ext-400-normal-Caxd-0sC.woff2",
+      "assets/great-vibes-greek-ext-400-normal-I8uMZwKr.woff",
+      "assets/great-vibes-vietnamese-400-normal-a2O3jU53.woff2",
+      "assets/great-vibes-vietnamese-400-normal-Cxbm9Uac.woff",
+      "assets/great-vibes-latin-ext-400-normal-DOkzbsi7.woff2",
+      "assets/great-vibes-latin-ext-400-normal-DCXVjJx8.woff",
+      "assets/great-vibes-latin-400-normal-CBcwG6wP.woff2",
+      "assets/great-vibes-latin-400-normal-CLO24iQJ.woff",
+      "assets/dancing-script-vietnamese-400-normal-CVC4eMIM.woff2",
+      "assets/dancing-script-vietnamese-400-normal-CdHIbuER.woff",
+      "assets/dancing-script-latin-ext-400-normal-CBcYVTwL.woff2",
+      "assets/dancing-script-latin-ext-400-normal-C3ZxgGIm.woff",
+      "assets/dancing-script-latin-400-normal-BGOkwg1k.woff2",
+      "assets/dancing-script-latin-400-normal-CBaqTbSQ.woff"
+    ]
+  },
+  "resources/js/Pages/Auth/Register.jsx": {
+    "file": "assets/Register-BPz0MfSM.js",
+    "name": "Register",
+    "src": "resources/js/Pages/Auth/Register.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_TextInput-uQfnsOMo.js",
+      "_InputLabel-DMIfcTkv.js",
+      "_PrimaryButton-iUcg8b6k.js",
+      "_GuestLayout-1XA_6sId.js"
+    ]
+  },
+  "resources/js/Pages/Auth/ResetPassword.jsx": {
+    "file": "assets/ResetPassword-D-lT6vHu.js",
+    "name": "ResetPassword",
+    "src": "resources/js/Pages/Auth/ResetPassword.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_TextInput-uQfnsOMo.js",
+      "_InputLabel-DMIfcTkv.js",
+      "_PrimaryButton-iUcg8b6k.js",
+      "_GuestLayout-1XA_6sId.js"
+    ]
+  },
+  "resources/js/Pages/Auth/VerifyEmail.jsx": {
+    "file": "assets/VerifyEmail-CSLsEjEL.js",
+    "name": "VerifyEmail",
+    "src": "resources/js/Pages/Auth/VerifyEmail.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_PrimaryButton-iUcg8b6k.js",
+      "_GuestLayout-1XA_6sId.js"
+    ]
+  },
+  "resources/js/Pages/Collector/Create copy.jsx": {
+    "file": "assets/Create copy-2M5CukUf.js",
+    "name": "Create copy",
+    "src": "resources/js/Pages/Collector/Create copy.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AuthenticatedLayout-CqlrEDJL.js",
+      "_react-select.esm-BfgR0DJM.js"
+    ]
+  },
+  "resources/js/Pages/Collector/Create.jsx": {
+    "file": "assets/Create-CKzjKlae.js",
+    "name": "Create",
+    "src": "resources/js/Pages/Collector/Create.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AuthenticatedLayout-CqlrEDJL.js",
+      "_react-select.esm-BfgR0DJM.js"
+    ]
+  },
+  "resources/js/Pages/Collector/Edit.jsx": {
+    "file": "assets/Edit-esOCzy-c.js",
+    "name": "Edit",
+    "src": "resources/js/Pages/Collector/Edit.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AuthenticatedLayout-CqlrEDJL.js",
+      "_react-select.esm-BfgR0DJM.js"
+    ]
+  },
+  "resources/js/Pages/Collector/Index copy 2.jsx": {
+    "file": "assets/Index copy 2-CaWRWesy.js",
+    "name": "Index copy 2",
+    "src": "resources/js/Pages/Collector/Index copy 2.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AuthenticatedLayout-CqlrEDJL.js",
+      "_index-CCnOqSMN.js",
+      "_Pagination-C914-1sI.js"
+    ]
+  },
+  "resources/js/Pages/Collector/Index copy.jsx": {
+    "file": "assets/Index copy-CiGs5p4w.js",
+    "name": "Index copy",
+    "src": "resources/js/Pages/Collector/Index copy.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AuthenticatedLayout-CqlrEDJL.js",
+      "_index-CCnOqSMN.js"
+    ]
+  },
+  "resources/js/Pages/Collector/Index.jsx": {
+    "file": "assets/Index-D0-2Oen3.js",
+    "name": "Index",
+    "src": "resources/js/Pages/Collector/Index.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_UseAppUrl-B22oZ4Sj.js",
+      "_AuthenticatedLayout-CqlrEDJL.js",
+      "_Pagination-C914-1sI.js"
+    ]
+  },
+  "resources/js/Pages/Collector/Show.jsx": {
+    "file": "assets/Show-4IUAPQj6.js",
+    "name": "Show",
+    "src": "resources/js/Pages/Collector/Show.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AuthenticatedLayout-CqlrEDJL.js"
+    ]
+  },
+  "resources/js/Pages/Customer/Create copy.jsx": {
+    "file": "assets/Create copy-D8_Gz8XX.js",
+    "name": "Create copy",
+    "src": "resources/js/Pages/Customer/Create copy.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AuthenticatedLayout-CqlrEDJL.js",
+      "_react-select.esm-BfgR0DJM.js"
+    ]
+  },
+  "resources/js/Pages/Customer/Create.jsx": {
+    "file": "assets/Create-D4wsjlnm.js",
+    "name": "Create",
+    "src": "resources/js/Pages/Customer/Create.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AuthenticatedLayout-CqlrEDJL.js",
+      "_react-select.esm-BfgR0DJM.js"
+    ]
+  },
+  "resources/js/Pages/Customer/Edit.jsx": {
+    "file": "assets/Edit-CHH5AAlZ.js",
+    "name": "Edit",
+    "src": "resources/js/Pages/Customer/Edit.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AuthenticatedLayout-CqlrEDJL.js",
+      "_react-select.esm-BfgR0DJM.js"
+    ]
+  },
+  "resources/js/Pages/Customer/Index copy 2.jsx": {
+    "file": "assets/Index copy 2-CgA7M11P.js",
+    "name": "Index copy 2",
+    "src": "resources/js/Pages/Customer/Index copy 2.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AuthenticatedLayout-CqlrEDJL.js",
+      "_index-CCnOqSMN.js",
+      "_Pagination-C914-1sI.js"
+    ]
+  },
+  "resources/js/Pages/Customer/Index copy.jsx": {
+    "file": "assets/Index copy-ejlRV9kQ.js",
+    "name": "Index copy",
+    "src": "resources/js/Pages/Customer/Index copy.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AuthenticatedLayout-CqlrEDJL.js",
+      "_index-CCnOqSMN.js"
+    ]
+  },
+  "resources/js/Pages/Customer/Index.jsx": {
+    "file": "assets/Index-9nUXQAJG.js",
+    "name": "Index",
+    "src": "resources/js/Pages/Customer/Index.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_UseAppUrl-B22oZ4Sj.js",
+      "_AuthenticatedLayout-CqlrEDJL.js",
+      "_Pagination-C914-1sI.js"
+    ]
+  },
+  "resources/js/Pages/Customer/Show.jsx": {
+    "file": "assets/Show-HRsorFQE.js",
+    "name": "Show",
+    "src": "resources/js/Pages/Customer/Show.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AuthenticatedLayout-CqlrEDJL.js"
+    ]
+  },
+  "resources/js/Pages/Dashboard.jsx": {
+    "file": "assets/Dashboard-B8AaJC35.js",
+    "name": "Dashboard",
+    "src": "resources/js/Pages/Dashboard.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AuthenticatedLayout-CqlrEDJL.js"
+    ]
+  },
+  "resources/js/Pages/Profile/Edit.jsx": {
+    "file": "assets/Edit-DlEj1eiJ.js",
+    "name": "Edit",
+    "src": "resources/js/Pages/Profile/Edit.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AuthenticatedLayout-CqlrEDJL.js",
+      "resources/js/Pages/Profile/Partials/DeleteUserForm.jsx",
+      "resources/js/Pages/Profile/Partials/UpdatePasswordForm.jsx",
+      "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.jsx",
+      "_TextInput-uQfnsOMo.js",
+      "_InputLabel-DMIfcTkv.js",
+      "_transition-BfFJ3mnc.js",
+      "_PrimaryButton-iUcg8b6k.js"
+    ]
+  },
+  "resources/js/Pages/Profile/Partials/DeleteUserForm.jsx": {
+    "file": "assets/DeleteUserForm-CIcoP1mt.js",
+    "name": "DeleteUserForm",
+    "src": "resources/js/Pages/Profile/Partials/DeleteUserForm.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_TextInput-uQfnsOMo.js",
+      "_InputLabel-DMIfcTkv.js",
+      "_transition-BfFJ3mnc.js"
+    ]
+  },
+  "resources/js/Pages/Profile/Partials/UpdatePasswordForm.jsx": {
+    "file": "assets/UpdatePasswordForm-VH9MipRC.js",
+    "name": "UpdatePasswordForm",
+    "src": "resources/js/Pages/Profile/Partials/UpdatePasswordForm.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_TextInput-uQfnsOMo.js",
+      "_InputLabel-DMIfcTkv.js",
+      "_PrimaryButton-iUcg8b6k.js",
+      "_transition-BfFJ3mnc.js"
+    ]
+  },
+  "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.jsx": {
+    "file": "assets/UpdateProfileInformationForm-CszyKJJv.js",
+    "name": "UpdateProfileInformationForm",
+    "src": "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_TextInput-uQfnsOMo.js",
+      "_InputLabel-DMIfcTkv.js",
+      "_PrimaryButton-iUcg8b6k.js",
+      "_transition-BfFJ3mnc.js"
+    ]
+  },
+  "resources/js/Pages/Welcome.jsx": {
+    "file": "assets/Welcome-DneWjqUK.js",
+    "name": "Welcome",
+    "src": "resources/js/Pages/Welcome.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "resources/js/app.jsx": {
+    "file": "assets/app-jqQzYWYD.js",
+    "name": "app",
+    "src": "resources/js/app.jsx",
+    "isEntry": true,
+    "dynamicImports": [
+      "resources/js/Pages/Auth/ConfirmPassword.jsx",
+      "resources/js/Pages/Auth/ForgotPassword.jsx",
+      "resources/js/Pages/Auth/Login.jsx",
+      "resources/js/Pages/Auth/Register.jsx",
+      "resources/js/Pages/Auth/ResetPassword.jsx",
+      "resources/js/Pages/Auth/VerifyEmail.jsx",
+      "resources/js/Pages/Collector/Create copy.jsx",
+      "resources/js/Pages/Collector/Create.jsx",
+      "resources/js/Pages/Collector/Edit.jsx",
+      "resources/js/Pages/Collector/Index copy 2.jsx",
+      "resources/js/Pages/Collector/Index copy.jsx",
+      "resources/js/Pages/Collector/Index.jsx",
+      "resources/js/Pages/Collector/Show.jsx",
+      "resources/js/Pages/Customer/Create copy.jsx",
+      "resources/js/Pages/Customer/Create.jsx",
+      "resources/js/Pages/Customer/Edit.jsx",
+      "resources/js/Pages/Customer/Index copy 2.jsx",
+      "resources/js/Pages/Customer/Index copy.jsx",
+      "resources/js/Pages/Customer/Index.jsx",
+      "resources/js/Pages/Customer/Show.jsx",
+      "resources/js/Pages/Dashboard.jsx",
+      "resources/js/Pages/Profile/Edit.jsx",
+      "resources/js/Pages/Profile/Partials/DeleteUserForm.jsx",
+      "resources/js/Pages/Profile/Partials/UpdatePasswordForm.jsx",
+      "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.jsx",
+      "resources/js/Pages/Welcome.jsx"
+    ],
+    "css": [
+      "assets/app-FghilOBc.css"
+    ]
+  }
+}

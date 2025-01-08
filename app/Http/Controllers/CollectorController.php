@@ -31,10 +31,10 @@ class CollectorController extends Controller
                     return $query->where('lastname', 'like', $search . '%');
                 });
 
-            $authors = $query->orderBy($sortColumn, $sortDirection)
+            $data = $query->orderBy($sortColumn, $sortDirection)
                 ->paginate(50);
 
-            return response()->json($authors, 200);
+            return response()->json($data, 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Error: ' . $e->getMessage()], 404);
         }
@@ -45,7 +45,7 @@ class CollectorController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Collector/Index', );
+        return Inertia::render('Collector/Index');
     }
 
     /**

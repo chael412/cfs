@@ -17,5 +17,8 @@ indent_size = 2
 [*.jsx]
 indent_size = 3
 
+[*.php]
+indent_size = 4
+
 [docker-compose.yml]
 indent_size = 4

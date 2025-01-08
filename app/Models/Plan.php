@@ -9,4 +9,9 @@ class Plan extends Model
 {
     /** @use HasFactory<\Database\Factories\PlanFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'mbps',
+        'plan_price',
+    ];
 }

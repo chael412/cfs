@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\CollectorController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\CustomerPlanController;
+use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +20,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('customers', CustomerController::class)->names('customers');
     Route::resource('collectors', CollectorController::class)->names('collectors');
+    Route::resource('plans', PlanController::class)->names('plans');
+    Route::resource('customer_plans', CustomerPlanController::class)->names('customer_plans');
+
+
 
 });
 

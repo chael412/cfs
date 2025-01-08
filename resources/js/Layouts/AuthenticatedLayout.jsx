@@ -1,3 +1,4 @@
+import { RiBankCard2Fill } from "react-icons/ri";
 import { MdOutlineCalendarMonth } from "react-icons/md";
 import { FaUserAltSlash } from "react-icons/fa";
 import { BsReverseLayoutTextSidebarReverse } from "react-icons/bs";
@@ -109,7 +110,7 @@ export default function AuthenticatedLayout({ children }) {
 
                   {!isCollapsed && (
                      <div className=" px-3 py-0 my-0 text-gray-600 text-[12.5px]">
-                        Billing
+                        Transaction
                      </div>
                   )}
 
@@ -117,14 +118,29 @@ export default function AuthenticatedLayout({ children }) {
                      className="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700"
                      href="#"
                   >
-                     <RiBillLine />
-
+                     <RiBankCard2Fill />
                      {!isCollapsed && (
                         <span className="mx-2 text-sm font-medium">
-                           Payment
+                           Billing
                         </span>
                      )}
                   </a>
+                  <NavLink
+                     href={route("customer_plans.index")}
+                     active={[
+                        "customer_plans.index",
+                        "customer_plans.create",
+                        "customer_plans.show",
+                        "customer_plans.edit",
+                     ].includes(route().current())}
+                  >
+                     <RiBillLine />
+                     {!isCollapsed && (
+                        <span className="mx-2 text-sm font-medium">
+                           Customer Plans
+                        </span>
+                     )}
+                  </NavLink>
                   <hr />
 
                   {!isCollapsed && (
@@ -168,12 +184,11 @@ export default function AuthenticatedLayout({ children }) {
                   </NavLink>
 
                   <NavLink
-                     href={route("collectors.index")}
+                     href={route("plans.index")}
                      active={[
-                        "collectors.index",
-                        "collectors.create",
-                        "collectors.show",
-                        "collectors.edit",
+                        "plans.index",
+                        "plans.create",
+                        "plans.edit",
                      ].includes(route().current())}
                   >
                      <MdOutlineCalendarMonth />

@@ -15,6 +15,8 @@ class CustomerPlan extends Model
         'plan_id'
     ];
 
+
+
     public function customer()
     {
         return $this->belongsTo(Customer::class);

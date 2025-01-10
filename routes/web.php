@@ -23,6 +23,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('plans', PlanController::class)->names('plans');
     Route::resource('customer_plans', CustomerPlanController::class)->names('customer_plans');
 
+    Route::get('/show_customers_plans/{id}/', [CustomerPlanController::class, 'ShowCustomerPlans'])
+    ->name('customers.showPlans');
+
 
 
 });

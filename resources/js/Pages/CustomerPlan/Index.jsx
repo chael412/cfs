@@ -7,6 +7,7 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { GiHamburgerMenu } from "react-icons/gi";
 import React, { useState } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { format } from "date-fns";
 
 import { Head, usePage, Deferred, Link } from "@inertiajs/react";
 import {
@@ -77,12 +78,16 @@ const Index = () => {
    const TABLE_ROWS =
       data?.data.map((customerPlan) => ({
          id: customerPlan.id,
+         customer_id: customerPlan.customer.id,
          customer_name: `${customerPlan.customer.lastname} ${
             customerPlan.customer.firstname
          } ${customerPlan.customer.middlename ?? ""} `,
          mbps: customerPlan.plan.mbps,
          plan_price: customerPlan.plan.plan_price,
-         date_registration: customerPlan.created_at,
+         date_registration: format(
+            new Date(customerPlan.created_at),
+            "M/d/yyyy"
+         ),
       })) || [];
 
    const handleSearch = (e) => {
@@ -213,7 +218,13 @@ const Index = () => {
                         </tr>
                      ) : (
                         TABLE_ROWS.map(
-                           ({ id, customer_name, mbps, date_registration }) => (
+                           ({
+                              id,
+                              customer_id,
+                              customer_name,
+                              mbps,
+                              date_registration,
+                           }) => (
                               <tr key={id} className="hover:bg-blue-gray-50 ">
                                  <td className="border border-blue-gray-100 px-4">
                                     <Typography
@@ -257,35 +268,12 @@ const Index = () => {
                                              <Link
                                                 className="hover:bg-blue-800 hover:rounded hover:text-white"
                                                 href={route(
-                                                   "customer_plans.show",
-                                                   {
-                                                      id,
-                                                   }
+                                                   "customers.showPlans",
+                                                   customer_id
                                                 )}
                                              >
                                                 <MenuItem>View</MenuItem>
                                              </Link>
-
-                                             <Link
-                                                className="hover:bg-blue-800 hover:rounded hover:text-white"
-                                                href={route(
-                                                   "customer_plans.edit",
-                                                   {
-                                                      id,
-                                                   }
-                                                )}
-                                             >
-                                                <MenuItem>Edit</MenuItem>
-                                             </Link>
-                                             <MenuItem>
-                                                <span
-                                                   onClick={() =>
-                                                      deleteCustomerPlan(id)
-                                                   }
-                                                >
-                                                   Delete
-                                                </span>
-                                             </MenuItem>
                                           </MenuList>
                                        </Menu>
                                     </div>

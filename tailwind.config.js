@@ -17,6 +17,9 @@ module.exports = withMT({
                 sans: ["Figtree", ...defaultTheme.fontFamily.sans],
                 cursive: ["Dancing Script", "cursive"],
             },
+            gridTemplateColumns: {
+                '40/60': '40% 60%',
+              },
         },
     },
 

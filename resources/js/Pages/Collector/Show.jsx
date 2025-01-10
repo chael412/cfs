@@ -13,6 +13,7 @@ import {
    Avatar,
 } from "@material-tailwind/react";
 import Select from "react-select";
+import { format } from "date-fns";
 
 const Show = ({ collector }) => {
    return (
@@ -140,7 +141,10 @@ const Show = ({ collector }) => {
                            </td>
                            <td className="px-4 py-2 text-gray-900 border border-gray-300">
                               <Typography variant="paragraph">
-                                 {collector.birthdate}
+                                 {format(
+                                    new Date(collector.birthdate),
+                                    "M/d/yyyy"
+                                 )}
                               </Typography>
                            </td>
                         </tr>

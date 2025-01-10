@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CustomerPlan;
 use App\Http\Requests\StoreCustomerPlanRequest;
 use App\Http\Requests\UpdateCustomerPlanRequest;
+use App\Http\Resources\CustomerPlanResource;
 use App\Models\Customer;
 use App\Models\Plan;
 use Inertia\Inertia;
@@ -13,6 +14,41 @@ use Illuminate\Support\Facades\DB;
 class CustomerPlanController extends Controller
 {
     //Api function
+    public function getLatestCustomerPlan($customerId)
+{
+    // Retrieve the customer with their associated plans, then get the latest plan
+    $customer = Customer::with('customerPlans.plan')->findOrFail($customerId);
+
+    // Get the latest plan from the associated plans
+    $latestPlan = $customer->customerPlans->sortByDesc(function($plan) {
+        return $plan->created_at; // or another timestamp field
+    })->first();
+
+    return $latestPlan;
+}
+
+public function ShowCustomerPlans($id)
+{
+    // Retrieve the customer and order the customerPlans by 'id' in descending order
+    $customer = Customer::with(['customerPlans' => function ($query) {
+        $query->orderBy('id', 'desc');
+    }, 'customerPlans.plan'])
+        ->findOrFail($id);
+
+    // Get the latest plan for the customer (if needed)
+    $latestPlan = $this->getLatestCustomerPlan($id);
+    $plans = Plan::orderBy('mbps')->get();
+
+    // Return the data to an Inertia.js view
+    return inertia('CustomerPlan/Show', [
+        'customer' => $customer,
+        'latestPlan' => $latestPlan,
+        'plans' => $plans,
+    ]);
+}
+
+
+
     public function indexApi()
 {
     try {
@@ -102,7 +138,13 @@ class CustomerPlanController extends Controller
      */
     public function show(CustomerPlan $customerPlan)
     {
-        //
+        $customerPlan->load('customer', 'plan');
+
+
+        return inertia('CustomerPlan/Show', [
+            'customerPlan' => new CustomerPlanResource($customerPlan),
+        ]);
+
     }
 
     /**
@@ -118,7 +160,16 @@ class CustomerPlanController extends Controller
      */
     public function update(UpdateCustomerPlanRequest $request, CustomerPlan $customerPlan)
     {
-        //
+        try {
+            $data = $request->validated();
+
+            $customerPlan->update($data);
+
+            return redirect()->route('customers.showPlans', ['id' => $customerPlan->customer_id]);
+            // return redirect()->route('customer_plans.index');
+        } catch (\Exception $e) {
+            return back()->withErrors(['message' => 'Error updating customer plan: ' . $e->getMessage()])->withInput();
+        }
     }
 
     /**

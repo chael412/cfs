@@ -26,4 +26,9 @@ class Customer extends Model
         'spouse_cellphone_no',
         'status'
     ];
+
+    public function customerPlans()
+    {
+        return $this->hasMany(CustomerPlan::class);
+    }
 }

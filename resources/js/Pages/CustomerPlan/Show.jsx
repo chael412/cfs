@@ -1,6 +1,8 @@
+import { BiEditAlt } from "react-icons/bi";
+import { MdCellTower } from "react-icons/md";
 import { BsArrowReturnLeft } from "react-icons/bs";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, Link, useForm } from "@inertiajs/react";
+import { Head, Link, useForm, Deferred, usePage } from "@inertiajs/react";
 import {
    Card,
    Input,
@@ -11,169 +13,260 @@ import {
    Textarea,
    Tooltip,
    Avatar,
+   Spinner,
+   Dialog,
+   DialogHeader,
+   DialogBody,
+   DialogFooter,
 } from "@material-tailwind/react";
 import Select from "react-select";
+import { format } from "date-fns";
+import { useState } from "react";
 
-const Show = ({ collector }) => {
+const Show = ({ latestPlan, plans }) => {
+   const { data, setData, patch, errors, reset, processing } = useForm({
+      customer_plan_id: latestPlan.id || "",
+      customer_id: latestPlan.customer_id || "",
+      plan_id: latestPlan.plan_id || "",
+   });
+   const { customer } = usePage().props;
+
+   const [open, setOpen] = useState(false);
+
+   const handleOpen = () => setOpen(!open);
+
+   const planOptions = plans.map((plan) => ({
+      value: plan.id,
+      label: `${plan.mbps} mbps - ${new Intl.NumberFormat("en-PH", {
+         style: "currency",
+         currency: "PHP",
+      }).format(plan.plan_price)}`,
+   }));
+
+   const onSubmit = () => {
+      patch(route("customer_plans.update", data.customer_plan_id), {
+         preserveScroll: true,
+         onSuccess: () => {
+            alert("Customer plan updated successfully!");
+            handleOpen();
+         },
+         onError: (errors) => {
+            console.error(errors);
+         },
+      });
+   };
+
    return (
       <AuthenticatedLayout>
          <Head title="Collector Profile" />
-         <div className="bg-white overflow-y-auto max-h-[590px] grid place-justify-center m-2">
-            <div className="flex justify-between items-center">
-               <Typography
-                  variant="lead"
-                  size="small"
-                  className="mb-5 text-lg font-bold"
-               >
-                  Collector Profile
-               </Typography>
-               <Tooltip content="Back">
-                  <Link
-                     href="/collectors"
-                     className="hover:bg-gray-200 px-2 py-1 rounded mr-4"
-                  >
-                     <BsArrowReturnLeft className="text-xl cursor-pointer" />
-                  </Link>
-               </Tooltip>
-            </div>
-
-            <div className="mb-6 flex">
-               <Card
-                  color="white"
-                  className="h-72 flex-2 justify-center gap-4 items-center p-8 shadow-sm rounded-md mt-1 mb-0 mr-2 w-72 border-2 border-gray-100"
-               >
-                  <Avatar
-                     size="xl"
-                     variant="circular"
-                     alt="collector profile"
-                     src="/img/account.png"
-                  />
-
-                  <div className="flex flex-col gap-5">
-                     <Typography variant="paragraph">
-                        <span>{collector.lastname}</span>,{" "}
-                        <span>{collector.firstname}</span>
+         <div className="bg-white overflow-y-auto max-h-[550px]">
+            <div className="mt-5 px-4 ">
+               <div className="mb-6 flex justify-between items-center ">
+                  <div>
+                     <Typography
+                        variant="lead"
+                        size="small"
+                        className="mb-0 text-lg font-bold border-b border-b-gray-700"
+                     >
+                        {customer.firstname} {customer.middlename ?? ""}
+                        {customer.lastname} Plans
+                     </Typography>
+                     <Typography
+                        className="text-sm"
+                        variant="paragraph"
+                        size="small"
+                     >
+                        All plans
                      </Typography>
                   </div>
-               </Card>
-               <Card
-                  color="white"
-                  className="flex-1 py-4 px-8 shadow-sm rounded-md mt-1 mb-0 mr-2  border-2 border-gray-100"
-               >
-                  <Typography variant="h6" color="blue-gray">
-                     Basic Information
-                  </Typography>
+                  <Tooltip content="Back">
+                     <Link
+                        href="/customers"
+                        className="hover:bg-gray-200 px-2 py-1 rounded mr-4"
+                     >
+                        <BsArrowReturnLeft className="text-xl cursor-pointer" />
+                     </Link>
+                  </Tooltip>
+               </div>
 
-                  <table className="min-w-full mt-4 border-collapse border border-gray-300">
-                     <tbody>
-                        <tr>
-                           <td className="px-4 w-56 py-2 font-medium text-gray-700 border border-gray-300">
-                              <Typography variant="paragraph">
-                                 First Name
+               <div className="grid grid-cols-40/60 ">
+                  <div className="flex flex-col justify-between items-center">
+                     <Card
+                        color="white"
+                        className=" h-60 flex-2 justify-center gap-4 items-center py-2 px-8 shadow-sm rounded-md mt-1 mb-0 mr-2 w-72 border-2 border-gray-100"
+                     >
+                        <div>
+                           <Tooltip content="Edit">
+                              <Button variant="text" onClick={handleOpen}>
+                                 <BiEditAlt className="text-blue-700 text-xl" />
+                              </Button>
+                           </Tooltip>
+                        </div>
+                        <MdCellTower className="text-4xl text-green-700" />
+                        <div className="flex flex-col justify-center gap-1">
+                           <Typography variant="h5">Current Plan</Typography>
+                           <div className="bg-green-100">
+                              <Typography
+                                 variant="paragraph"
+                                 className="text-center"
+                              >
+                                 {latestPlan.plan.mbps} mbps
                               </Typography>
-                           </td>
-                           <td
-                              colSpan="2"
-                              className="px-4 py-2 text-gray-900 border border-gray-300"
-                           >
-                              <Typography variant="paragraph">
-                                 {collector.firstname}
-                              </Typography>
-                           </td>
-                        </tr>
-
-                        <tr>
-                           <td className="px-4 py-2 font-medium text-gray-700 border border-gray-300">
-                              <Typography variant="paragraph">
-                                 Middle Name
-                              </Typography>
-                           </td>
-                           <td className="px-4 py-2 text-gray-900 border border-gray-300">
-                              <Typography variant="paragraph">
-                                 {collector.middlename}
-                              </Typography>
-                           </td>
-                        </tr>
-                        <tr>
-                           <td className="px-4 py-2 font-medium text-gray-700 border border-gray-300">
-                              <Typography variant="paragraph">
-                                 Last Name
-                              </Typography>
-                           </td>
-                           <td className="px-4 py-2 text-gray-900 border border-gray-300">
-                              <Typography variant="paragraph">
-                                 {collector.lastname}
-                              </Typography>
-                           </td>
-                        </tr>
-                        <tr>
-                           <td className="px-4 py-2 font-medium text-gray-700 border border-gray-300">
-                              <Typography variant="paragraph">Sex</Typography>
-                           </td>
-                           <td className="px-4 py-2 text-gray-900 border border-gray-300">
-                              <Typography variant="paragraph">
-                                 {collector.sex.charAt(0).toUpperCase() +
-                                    collector.sex.slice(1)}
-                              </Typography>
-                           </td>
-                        </tr>
-                        <tr>
-                           <td className="px-4 py-2 font-medium text-gray-700 border border-gray-300">
-                              <Typography variant="paragraph">
-                                 Marital Status
-                              </Typography>
-                           </td>
-                           <td className="px-4 py-2 text-gray-900 border border-gray-300">
-                              <Typography variant="paragraph">
-                                 {collector.marital_status
-                                    .charAt(0)
-                                    .toUpperCase() +
-                                    collector.marital_status.slice(1)}
-                              </Typography>
-                           </td>
-                        </tr>
-                        <tr>
-                           <td className="px-4 py-2 font-medium text-gray-700 border border-gray-300">
-                              <Typography variant="paragraph">
-                                 Bithdate
-                              </Typography>
-                           </td>
-                           <td className="px-4 py-2 text-gray-900 border border-gray-300">
-                              <Typography variant="paragraph">
-                                 {collector.birthdate}
-                              </Typography>
-                           </td>
-                        </tr>
-                        <tr>
-                           <td className="px-4 py-2 font-medium text-gray-700 border border-gray-300">
-                              <Typography variant="paragraph">
-                                 Address
-                              </Typography>
-                           </td>
-                           <td className="px-4 py-2 text-gray-900 border border-gray-300">
-                              <Typography variant="paragraph">
-                                 {collector.address}
-                              </Typography>
-                           </td>
-                        </tr>
-
-                        <tr>
-                           <td className="px-4 py-2 font-medium text-gray-700 border border-gray-300">
-                              <Typography variant="paragraph">
-                                 Cellphone No.
-                              </Typography>
-                           </td>
-                           <td className="px-4 py-2 text-gray-900 border border-gray-300">
-                              <Typography variant="paragraph">
-                                 {collector.cellphone_no}
-                              </Typography>
-                           </td>
-                        </tr>
-                     </tbody>
-                  </table>
-               </Card>
+                           </div>
+                        </div>
+                     </Card>
+                  </div>
+                  <div className="p-4 overflow-x-auto">
+                     <div className="">
+                        <table className="w-full text-left border border-gray-300">
+                           <thead>
+                              <tr className="bg-gray-100">
+                                 <th className="px-6 py-3 text-sm font-semibold bg-gray-300 text-gray-700 uppercase border border-gray-400">
+                                    <Typography
+                                       variant="small"
+                                       color="blue-gray"
+                                       className="text-[12px] font-normal leading-none opacity-70"
+                                    >
+                                       Mbps
+                                    </Typography>
+                                 </th>
+                                 <th className="px-6 py-3 text-sm font-semibold bg-gray-300 text-gray-700 uppercase border border-gray-400">
+                                    <Typography
+                                       variant="small"
+                                       color="blue-gray"
+                                       className="text-[12px] font-normal leading-none opacity-70"
+                                    >
+                                       Price Plan
+                                    </Typography>
+                                 </th>
+                                 <th className="w-[15%] px-6 py-3 text-sm font-semibold bg-gray-300 text-gray-700 uppercase border border-gray-400">
+                                    <Typography
+                                       variant="small"
+                                       color="blue-gray"
+                                       className="text-[12px] font-normal leading-none opacity-70 text-nowrap"
+                                    >
+                                       Date Registration
+                                    </Typography>
+                                 </th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              <Deferred
+                                 data={["customer"]}
+                                 fallback={
+                                    <tr>
+                                       <td
+                                          colSpan={3}
+                                          className="border border-blue-gray-100 p-4"
+                                       >
+                                          <div className="flex justify-center items-center h-full">
+                                             <Spinner
+                                                className="h-8 w-8"
+                                                color="green"
+                                             />
+                                          </div>
+                                       </td>
+                                    </tr>
+                                 }
+                              >
+                                 {customer?.customer_plans?.length > 0 ? (
+                                    customer.customer_plans.map((plan) => (
+                                       <tr
+                                          key={plan.id}
+                                          className="hover:bg-blue-gray-50"
+                                       >
+                                          <td className="border border-blue-gray-100 px-4 py-2">
+                                             <Typography
+                                                variant="small"
+                                                className="font-normal text-gray-800 text-[13px]"
+                                             >
+                                                {plan.plan.mbps} Mbps
+                                             </Typography>
+                                          </td>
+                                          <td className="border border-blue-gray-100 px-4">
+                                             <Typography
+                                                variant="small"
+                                                className="font-normal text-gray-800 text-[13px]"
+                                             >
+                                                {Number(
+                                                   plan.plan.plan_price
+                                                ).toLocaleString("en-PH", {
+                                                   style: "currency",
+                                                   currency: "PHP",
+                                                })}
+                                             </Typography>
+                                          </td>
+                                          <td className="border border-blue-gray-100 px-4">
+                                             <Typography
+                                                variant="small"
+                                                className="font-normal text-gray-800 text-[13px]"
+                                             >
+                                                {format(
+                                                   new Date(
+                                                      plan.plan.created_at
+                                                   ),
+                                                   "M/d/yyyy"
+                                                )}
+                                             </Typography>
+                                          </td>
+                                       </tr>
+                                    ))
+                                 ) : (
+                                    <tr>
+                                       <td
+                                          colSpan="3"
+                                          className="text-center text-gray-500"
+                                       >
+                                          No Customer plans found.
+                                       </td>
+                                    </tr>
+                                 )}
+                              </Deferred>
+                           </tbody>
+                        </table>
+                     </div>
+                  </div>
+               </div>
             </div>
          </div>
+         <Dialog open={open} handler={handleOpen} size="xs">
+            <DialogHeader>Edit Plan</DialogHeader>
+            <DialogBody>
+               <Select
+                  options={planOptions}
+                  placeholder="Choose a plan"
+                  isClearable
+                  value={planOptions.find(
+                     (option) => option.value === data.plan_id
+                  )}
+                  onChange={(selectedOption) =>
+                     setData(
+                        "plan_id",
+                        selectedOption ? selectedOption.value : ""
+                     )
+                  }
+                  className={`${errors.plan_id ? "border border-red-600" : ""}`}
+               />
+            </DialogBody>
+            <DialogFooter>
+               <Button
+                  variant="text"
+                  color="red"
+                  onClick={handleOpen}
+                  className="mr-1"
+               >
+                  <span>Cancel</span>
+               </Button>
+               <Button
+                  variant="gradient"
+                  color="green"
+                  onClick={onSubmit}
+                  disabled={processing}
+               >
+                  <span>Update</span>
+               </Button>
+            </DialogFooter>
+         </Dialog>
       </AuthenticatedLayout>
    );
 };

@@ -165,7 +165,7 @@ public function ShowCustomerPlans($id)
 
             $customerPlan->update($data);
 
-            return redirect()->route('customers.showPlans', ['id' => $customerPlan->customer_id]);
+            return redirect()->route('show_customer_plans', ['id' => $customerPlan->customer_id]);
             // return redirect()->route('customer_plans.index');
         } catch (\Exception $e) {
             return back()->withErrors(['message' => 'Error updating customer plan: ' . $e->getMessage()])->withInput();

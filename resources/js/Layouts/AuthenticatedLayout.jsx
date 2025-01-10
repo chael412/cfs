@@ -132,7 +132,7 @@ export default function AuthenticatedLayout({ children }) {
                         "customer_plans.create",
                         "customer_plans.show",
                         "customer_plans.edit",
-                        "customers.showPlans",
+                        "show_customer_plans",
                      ].includes(route().current())}
                   >
                      <RiBillLine />

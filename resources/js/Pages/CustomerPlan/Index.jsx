@@ -268,7 +268,7 @@ const Index = () => {
                                              <Link
                                                 className="hover:bg-blue-800 hover:rounded hover:text-white"
                                                 href={route(
-                                                   "customers.showPlans",
+                                                   "show_customer_plans",
                                                    customer_id
                                                 )}
                                              >

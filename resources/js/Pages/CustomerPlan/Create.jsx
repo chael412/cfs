@@ -56,7 +56,7 @@ const Create = ({ customers, plans }) => {
                      <div className="flex justify-end mb-2">
                         <Tooltip content="Back">
                            <Link
-                              href="/customers"
+                              href="/customer_plans"
                               className="hover:bg-gray-200 px-2 py-1 rounded"
                            >
                               <BsArrowReturnLeft className="text-xl cursor-pointer" />

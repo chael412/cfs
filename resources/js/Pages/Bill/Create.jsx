@@ -34,9 +34,9 @@ const Create = ({ customers, collectors }) => {
    const onSubmit = async (e) => {
       e.preventDefault();
 
-      await post(route("customers.store"), {
+      await post(route("bills.store"), {
          onSuccess: () => {
-            alert("Customer was added successfully!");
+            alert("Bill was added successfully!");
             reset();
          },
          onError: (errors) => {

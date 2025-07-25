@@ -11,7 +11,7 @@ class StoreBillRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,12 @@ class StoreBillRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'customer_id' => ['required', 'integer'],
+            'bill_no' => ['nullable', 'string', 'max:255'],
+            'or_no' => ['required', 'string', 'max:255'],
+            'amount' => ['required', 'decimal:0,2'], // allows from 0 to 2 decimal places
+            'remarks' => ['nullable', 'string', 'max:255'],
+            'collector_id' => ['required', 'integer'],
         ];
     }
 }

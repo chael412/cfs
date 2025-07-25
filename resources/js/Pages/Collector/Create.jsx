@@ -32,9 +32,9 @@ const Create = () => {
    const onSubmit = async (e) => {
       e.preventDefault();
 
-      await post(route("customers.store"), {
+      await post(route("collectors.store"), {
          onSuccess: () => {
-            alert("Customer was added successfully!");
+            alert("Collector was added successfully!");
             reset();
          },
          onError: (errors) => {
@@ -58,7 +58,7 @@ const Create = () => {
 
    return (
       <AuthenticatedLayout>
-         <Head title="Add Customer" />
+         <Head title="Add Collectors" />
          <div className="bg-white overflow-y-auto max-h-[590px] grid place-justify-center ">
             <div className="mt-2 px-4">
                <div className="mb-6 flex justify-between items-center">
@@ -69,7 +69,7 @@ const Create = () => {
                      <div className="flex justify-end mb-2">
                         <Tooltip content="Back">
                            <Link
-                              href="/customers"
+                              href="/collectors"
                               className="hover:bg-gray-200 px-2 py-1 rounded"
                            >
                               <BsArrowReturnLeft className="text-xl cursor-pointer" />
@@ -81,7 +81,7 @@ const Create = () => {
                         color="blue-gray"
                         className="text-center"
                      >
-                        Add Customer
+                        Add Collector
                      </Typography>
 
                      <form onSubmit={onSubmit} className="mt-8 mb-2">

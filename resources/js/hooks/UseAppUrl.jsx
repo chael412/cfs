@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 const UseAppUrl = () => {
-   // Define the URL constants for offline and online
+   // Define the URL constants for offline and online again1
    //const appUrl = "http://localhost:8000";
    const appUrl = "https://cfsinternetsolutions.com";
 

@@ -17,6 +17,7 @@ const Create = ({ customers, plans }) => {
    const { data, setData, post, errors, reset, processing } = useForm({
       customer_id: "",
       plan_id: "",
+      date_registration: "",
    });
 
    const onSubmit = async (e) => {
@@ -40,7 +41,9 @@ const Create = ({ customers, plans }) => {
 
    const planOptions = plans.map((plan) => ({
       value: plan.id,
-      label: `${plan.mbps} mbps - ${plan.plan_price}`,
+      label: `${plan.mbps} mbps - ₱ ${Number(plan.plan_price).toLocaleString(
+         "en-PH"
+      )}`,
    }));
 
    return (
@@ -131,6 +134,24 @@ const Create = ({ customers, plans }) => {
                                        ? "border border-red-600"
                                        : ""
                                  }`}
+                              />
+                           </div>
+                           <div className="mb-3">
+                              <Typography
+                                 variant="paragraph"
+                                 color="blue-gray"
+                                 className="mb-1 "
+                              >
+                                 Date Regisration
+                              </Typography>
+                              <Input
+                                 type="date"
+                                 size="md"
+                                 value={data.date_registration}
+                                 onChange={(e) =>
+                                    setData("date_registration", e.target.value)
+                                 }
+                                 error={Boolean(errors.date_registration)}
                               />
                            </div>
                         </div>

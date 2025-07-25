@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BillController;
 use App\Http\Controllers\CollectorController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerPlanController;
@@ -13,6 +14,13 @@ Route::get('/user', function (Request $request) {
 Route::get('get_customerx_paginate', [CustomerController::class, 'indexApi']);
 Route::get('get_collectorx_paginate', [CollectorController::class, 'indexApi']);
 Route::get('get_customer_planx_paginate', [CustomerPlanController::class, 'indexApi']);
+Route::get('get_billx_paginate', [BillController::class, 'indexApi']);
+
+Route::get('get_customerwplanx', [BillController::class, 'getCustomersWithPlans']);
+
+Route::get('/customers/{customerId}/latest-plan', [BillController::class, 'getLatestPlanForCustomer']);
+
+
 
 
 

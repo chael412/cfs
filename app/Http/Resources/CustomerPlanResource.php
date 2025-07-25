@@ -18,6 +18,7 @@ class CustomerPlanResource extends JsonResource
             'id' => $this->id,
             'customer_id' => $this->customer_id,
             'plan_id' => $this->plan_id,
+            'date_registration'=> $this->date_registration,
             'customer' => new CustomerResource($this->whenLoaded('customer')),
             'plan' => new PlanResource($this->whenLoaded('plan')),
         ];

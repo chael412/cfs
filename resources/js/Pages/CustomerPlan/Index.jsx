@@ -85,7 +85,7 @@ const Index = () => {
          mbps: customerPlan.plan.mbps,
          plan_price: customerPlan.plan.plan_price,
          date_registration: format(
-            new Date(customerPlan.created_at),
+            new Date(customerPlan.date_registration),
             "M/d/yyyy"
          ),
       })) || [];

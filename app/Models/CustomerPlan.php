@@ -12,7 +12,8 @@ class CustomerPlan extends Model
 
     protected $fillable = [
         'customer_id',
-        'plan_id'
+        'plan_id',
+        'date_registration'
     ];
 
 

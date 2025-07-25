@@ -92,7 +92,7 @@ public function ShowCustomerPlans($id)
     } catch (\Exception $e) {
         return response()->json(['message' => 'Error: ' . $e->getMessage()], 404);
     }
-}
+    }
 
 
     /**

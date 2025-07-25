@@ -114,9 +114,14 @@ export default function AuthenticatedLayout({ children }) {
                      </div>
                   )}
 
-                  <a
-                     className="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700"
-                     href="#"
+                  <NavLink
+                     href={route("bills.index")}
+                     active={[
+                        "bills.index",
+                        "bills.create",
+                        "bills.show",
+                        "bills.edit",
+                     ].includes(route().current())}
                   >
                      <RiBankCard2Fill />
                      {!isCollapsed && (
@@ -124,7 +129,7 @@ export default function AuthenticatedLayout({ children }) {
                            Billing
                         </span>
                      )}
-                  </a>
+                  </NavLink>
                   <NavLink
                      href={route("customer_plans.index")}
                      active={[

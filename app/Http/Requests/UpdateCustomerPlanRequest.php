@@ -24,6 +24,7 @@ class UpdateCustomerPlanRequest extends FormRequest
         return [
             'customer_id' => ['required', 'integer'],
             'plan_id' => ['required', 'integer'],
+            'date_registration'=> ['required', 'date'],
         ];
     }
 }

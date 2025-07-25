@@ -81,7 +81,7 @@ const Show = ({ latestPlan, plans }) => {
                   </div>
                   <Tooltip content="Back">
                      <Link
-                        href="/customers"
+                        href="/customer_plans"
                         className="hover:bg-gray-200 px-2 py-1 rounded mr-4"
                      >
                         <BsArrowReturnLeft className="text-xl cursor-pointer" />

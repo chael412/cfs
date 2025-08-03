@@ -14,13 +14,13 @@ class PlanSeeder extends Seeder
     public function run(): void
     {
         $plans = [
-            ['mbps' => '30 mbps',  'plan_price' => '₱600.00'],
-            ['mbps' => '50 mbps',  'plan_price' => '₱800.00'],
-            ['mbps' => '100 mbps', 'plan_price' => '₱1,000.00'],
-            ['mbps' => '150 mbps', 'plan_price' => '₱1,200.00'],
-            ['mbps' => '200 mbps', 'plan_price' => '₱1,500.00'],
-            ['mbps' => '300 mbps', 'plan_price' => '₱2,000.00'],
-            ['mbps' => '400 mbps', 'plan_price' => '₱2,500.00'],
+            ['mbps' => '30',  'plan_price' => '600'],
+            ['mbps' => '50',  'plan_price' => '800'],
+            ['mbps' => '100', 'plan_price' => '1000'],
+            ['mbps' => '150', 'plan_price' => '1200'],
+            ['mbps' => '200', 'plan_price' => '1500'],
+            ['mbps' => '300', 'plan_price' => '2000'],
+            ['mbps' => '400', 'plan_price' => '2500'],
         ];
 
         foreach ($plans as $plan) {

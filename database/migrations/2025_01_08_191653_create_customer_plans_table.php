@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('plan_id')->constrained('plans');
             $table->string('ppoe');
             $table->string('password');
+            $table->date('date_billing');
             $table->date('date_registration');
             $table->timestamps();
         });

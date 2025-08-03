@@ -36,6 +36,7 @@ class BillController extends Controller
                 $plan = $latestCustomerPlan->plan; // Get the associated plan
 
                 return [
+                    'id' => $latestCustomerPlan->id,
                     'registration_date' => $latestCustomerPlan->date_registration,
                     'plan_id' => $plan->id,
                     'mbps' => $plan->mbps,

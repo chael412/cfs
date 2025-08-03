@@ -23,10 +23,7 @@ const Create = () => {
       birthdate: "",
       address: "",
       occupation: "",
-      cellphone_no: "",
-      spouse_name: "",
-      spouse_occupation: "",
-      spouse_cellphone_no: "",
+      contact_no: "",
    });
 
    const onSubmit = async (e) => {
@@ -256,7 +253,7 @@ const Create = () => {
                               color="blue-gray"
                               className="mb-1 "
                            >
-                              Cellphone No
+                              Contact No
                            </Typography>
 
                            <div className="relative flex w-full">
@@ -269,93 +266,11 @@ const Create = () => {
                               </Button>
                               <Input
                                  type="number"
-                                 value={data.cellphone_no}
+                                 value={data.contact_no}
                                  onChange={(e) =>
-                                    setData("cellphone_no", e.target.value)
+                                    setData("contact_no", e.target.value)
                                  }
-                                 error={Boolean(errors.cellphone_no)}
-                                 inputMode="numeric"
-                                 maxLength={10}
-                                 onInput={(e) => {
-                                    if (e.target.value.length > 10) {
-                                       e.target.value = e.target.value.slice(
-                                          0,
-                                          10
-                                       );
-                                    }
-                                 }}
-                                 className="appearance-none rounded-l-none border-t-blue-gray-200 placeholder:text-blue-gray-300 placeholder:opacity-100 focus:!border-t-gray-900 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                                 labelProps={{
-                                    className:
-                                       "before:content-none after:content-none",
-                                 }}
-                                 containerProps={{
-                                    className: "min-w-0",
-                                 }}
-                              />
-                           </div>
-                        </div>
-                        <div className="mb-3">
-                           <Typography
-                              variant="paragraph"
-                              color="blue-gray"
-                              className="mb-1 "
-                           >
-                              Spouse Name
-                           </Typography>
-                           <Input
-                              size="md"
-                              value={data.spouse_name}
-                              onChange={(e) =>
-                                 setData("spouse_name", e.target.value)
-                              }
-                              error={Boolean(errors.spouse_name)}
-                           />
-                        </div>
-                        <div className="mb-3">
-                           <Typography
-                              variant="paragraph"
-                              color="blue-gray"
-                              className="mb-1 "
-                           >
-                              Spouse Occupation
-                           </Typography>
-                           <Input
-                              size="md"
-                              value={data.spouse_occupation}
-                              onChange={(e) =>
-                                 setData("spouse_occupation", e.target.value)
-                              }
-                              error={Boolean(errors.spouse_occupation)}
-                           />
-                        </div>
-                        <div className="mb-3">
-                           <Typography
-                              variant="paragraph"
-                              color="blue-gray"
-                              className="mb-1 "
-                           >
-                              Spouse Cellphone No
-                           </Typography>
-
-                           <div className="relative flex w-full">
-                              <Button
-                                 variant="text"
-                                 color="blue-gray"
-                                 className="h-10 w-14 shrink-0 rounded-r-none border border-r-0 border-blue-gray-200 bg-transparent px-3"
-                              >
-                                 +63
-                              </Button>
-                              <Input
-                                 type="number"
-                                 value={data.spouse_cellphone_no}
-                                 onChange={(e) =>
-                                    setData(
-                                       "spouse_cellphone_no",
-                                       e.target.value
-                                    )
-                                 }
-                                 error={Boolean(errors.spouse_cellphone_no)}
+                                 error={Boolean(errors.contact_no)}
                                  inputMode="numeric"
                                  maxLength={10}
                                  onInput={(e) => {

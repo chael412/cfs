@@ -16,6 +16,7 @@ import { useState } from "react";
 import axios from "axios";
 
 const Create = ({ customers, collectors }) => {
+   const [customerPlanId, setCustomerPlanId] = useState("");
    const [mbpsPlan, setMbpsPlan] = useState("");
    const [planPrice, setPlanPrice] = useState("");
    const [registrationDate, setRegistrationDate] = useState("");
@@ -29,7 +30,7 @@ const Create = ({ customers, collectors }) => {
       collector_id: "",
    });
 
-   console.log(mbpsPlan);
+   console.log(customerPlanId);
 
    const onSubmit = async (e) => {
       e.preventDefault();
@@ -69,13 +70,15 @@ const Create = ({ customers, collectors }) => {
             );
 
             if (response.data) {
-               const { mbps, plan_price, registration_date } = response.data;
+               const { id, mbps, plan_price, registration_date } =
+                  response.data;
 
                // Log the plan details
-               console.log("Latest Plan Mbps: ", mbps);
-               console.log("Plan Price: ", plan_price);
+               // console.log("Latest Plan Mbps: ", mbps);
+               // console.log("Plan Price: ", plan_price);
 
                // Set the Mbps plan and price
+               setCustomerPlanId(id);
                setMbpsPlan(mbps);
                setPlanPrice(plan_price);
                setRegistrationDate(registration_date);

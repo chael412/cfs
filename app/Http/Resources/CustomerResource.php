@@ -24,10 +24,7 @@ class CustomerResource extends JsonResource
             'birthdate' => $this->birthdate,
             'address' => $this->address,
             'occupation' => $this->occupation,
-            'cellphone_no' => $this->cellphone_no,
-            'spouse_name' => $this->spouse_name,
-            'spouse_occupation' => $this->spouse_occupation,
-            'spouse_cellphone_no' => $this->spouse_cellphone_no,
+            'contact_no' => $this->contact_no,
             'status' => $this->status,
         ];
     }

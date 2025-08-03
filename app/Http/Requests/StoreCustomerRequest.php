@@ -30,10 +30,8 @@ class StoreCustomerRequest extends FormRequest
             'birthdate' => ['required', 'max:255'],
             'address' => ['nullable', 'string', 'max:255'],
             'occupation' => ['nullable', 'string', 'max:255'],
-            'cellphone_no' => ['required', 'string', 'max:255'],
-            'spouse_name' => ['required', 'string', 'max:255'],
-            'spouse_occupation' => ['nullable', 'string', 'max:255'],
-            'spouse_cellphone_no' => ['required', 'string', 'max:255'],
+            'contact_no' => ['required', 'string', 'max:255'],
+
         ];
     }
 }

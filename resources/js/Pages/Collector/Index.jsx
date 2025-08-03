@@ -7,6 +7,7 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { GiHamburgerMenu } from "react-icons/gi";
 import React, { useState } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { format } from "date-fns";
 
 import { Head, usePage, Deferred, Link } from "@inertiajs/react";
 import {
@@ -30,7 +31,16 @@ import { Pagination } from "@/Components/Pagination";
 import axios from "axios";
 import UseAppUrl from "@/hooks/UseAppUrl";
 
-const TABLE_HEAD = ["Customer Name", "Address", "Cellphone No.", ""];
+const TABLE_HEAD = [
+   "Customer Name",
+   "Birthdate",
+   "Address",
+   "Cellphone No.",
+   "Sex",
+   "Marital Status",
+   "Occupation",
+   "Actions",
+];
 const Index = () => {
    const API_URL = UseAppUrl();
 
@@ -77,14 +87,18 @@ const Index = () => {
    const TABLE_ROWS =
       data?.data.map((collector) => ({
          id: collector.id,
-         collector_name: `${collector.lastname} ${collector.firstname} ${
+         collector_name: `${collector.lastname},  ${collector.firstname} ${
             collector.middlename ?? ""
          } `,
          firstname: collector.firstname,
          middlename: collector.middlename,
          lastname: collector.lastname,
          address: collector.address,
-         cellphone_no: collector.cellphone_no,
+         cellphone_no: collector.contact_no,
+         sex: collector.sex,
+         marital_status: collector.marital_status,
+         birthdate: collector.birthdate,
+         occupation: collector.occupation,
       })) || [];
 
    const handleSearch = (e) => {
@@ -227,7 +241,16 @@ const Index = () => {
                         </tr>
                      ) : (
                         TABLE_ROWS.map(
-                           ({ id, collector_name, address, cellphone_no }) => (
+                           ({
+                              id,
+                              collector_name,
+                              address,
+                              cellphone_no,
+                              sex,
+                              marital_status,
+                              occupation,
+                              birthdate,
+                           }) => (
                               <tr key={id} className="hover:bg-blue-gray-50 ">
                                  <td className="border border-blue-gray-100 px-4">
                                     <Typography
@@ -235,6 +258,17 @@ const Index = () => {
                                        className="font-normal text-gray-800"
                                     >
                                        {collector_name}
+                                    </Typography>
+                                 </td>
+                                 <td className="border border-blue-gray-100 px-4">
+                                    <Typography
+                                       variant="small"
+                                       className="font-normal text-gray-800"
+                                    >
+                                       {format(
+                                          new Date(birthdate),
+                                          "MM/dd/yyyy"
+                                       )}
                                     </Typography>
                                  </td>
                                  <td className="border border-blue-gray-100 px-4">
@@ -254,6 +288,30 @@ const Index = () => {
                                        {cellphone_no}
                                     </Typography>
                                  </td>
+                                 <td className="border border-blue-gray-100 px-4">
+                                    <Typography
+                                       variant="small"
+                                       className="font-normal text-gray-800"
+                                    >
+                                       {sex}
+                                    </Typography>
+                                 </td>
+                                 <td className="border border-blue-gray-100 px-4">
+                                    <Typography
+                                       variant="small"
+                                       className="font-normal text-gray-800"
+                                    >
+                                       {marital_status}
+                                    </Typography>
+                                 </td>
+                                 <td className="border border-blue-gray-100 px-4">
+                                    <Typography
+                                       variant="small"
+                                       className="font-normal text-gray-800"
+                                    >
+                                       {occupation ?? ""}
+                                    </Typography>
+                                 </td>
 
                                  <td className="border border-blue-gray-100 px-4">
                                     <div className="flex items-center gap-2 ">
@@ -269,14 +327,14 @@ const Index = () => {
                                              </IconButton>
                                           </MenuHandler>
                                           <MenuList>
-                                             <Link
+                                             {/* <Link
                                                 className="hover:bg-blue-800 hover:rounded hover:text-white"
                                                 href={route("collectors.show", {
                                                    id,
                                                 })}
                                              >
                                                 <MenuItem>View</MenuItem>
-                                             </Link>
+                                             </Link> */}
 
                                              <Link
                                                 className="hover:bg-blue-800 hover:rounded hover:text-white"

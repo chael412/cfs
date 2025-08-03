@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('customer_plans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('customer_id')->constrained('customers');
+            $table->foreignId('collector_id')->constrained('collectors');
             $table->foreignId('plan_id')->constrained('plans');
+            $table->string('ppoe');
+            $table->string('password');
             $table->date('date_registration');
             $table->timestamps();
         });

@@ -24,7 +24,8 @@ const Edit = ({ collector }) => {
       marital_status: collector.marital_status || "",
       birthdate: collector.birthdate || "",
       address: collector.address || "",
-      cellphone_no: collector.cellphone_no || "",
+      occupation: collector.occupation || "",
+      contact_no: collector.contact_no || "",
    });
 
    const onSubmit = async (e) => {
@@ -231,6 +232,22 @@ const Edit = ({ collector }) => {
                               error={Boolean(errors.address)}
                            />
                         </div>
+                        <div className="mb-3">
+                           <Typography
+                              variant="paragraph"
+                              color="blue-gray"
+                              className="mb-1 "
+                           >
+                              Occupation
+                           </Typography>
+                           <Textarea
+                              value={data.occupation}
+                              onChange={(e) =>
+                                 setData("occupation", e.target.value)
+                              }
+                              error={Boolean(errors.occupation)}
+                           />
+                        </div>
 
                         <div className="mb-3">
                            <Typography
@@ -238,7 +255,7 @@ const Edit = ({ collector }) => {
                               color="blue-gray"
                               className="mb-1"
                            >
-                              Cellphone No
+                              Contact No
                            </Typography>
 
                            <div className="relative flex w-full">
@@ -252,11 +269,11 @@ const Edit = ({ collector }) => {
                               </Button>
                               <Input
                                  type="number"
-                                 value={data.cellphone_no}
+                                 value={data.contact_no}
                                  onChange={(e) =>
-                                    setData("cellphone_no", e.target.value)
+                                    setData("contact_no", e.target.value)
                                  }
-                                 error={Boolean(errors.cellphone_no)}
+                                 error={Boolean(errors.contact_no)}
                                  inputMode="numeric"
                                  maxLength={10}
                                  onInput={(e) => {

@@ -19,7 +19,8 @@ return new class extends Migration {
             $table->enum('marital_status', ['single', 'married', 'divorced', 'widowed', 'separated']);
             $table->date('birthdate');
             $table->string('address')->nullable();
-            $table->string('cellphone_no');
+            $table->string('occupation');
+            $table->string('contact_no');
             $table->timestamps();
         });
     }

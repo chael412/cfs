@@ -13,11 +13,15 @@ import {
 } from "@material-tailwind/react";
 import Select from "react-select";
 
-const Create = ({ customers, plans }) => {
+const Create = ({ customers, collectors, plans }) => {
    const { data, setData, post, errors, reset, processing } = useForm({
       customer_id: "",
       plan_id: "",
+      ppoe: "",
+      password: "",
+      collector_id: "",
       date_registration: "",
+      date_billing: "",
    });
 
    const onSubmit = async (e) => {
@@ -37,6 +41,11 @@ const Create = ({ customers, plans }) => {
    const customerOptions = customers.map((customer) => ({
       value: customer.id,
       label: `${customer.lastname} ${customer.firstname}`,
+   }));
+
+   const collectorOptions = collectors.map((collector) => ({
+      value: collector.id,
+      label: `${collector.lastname} ${collector.firstname}`,
    }));
 
    const planOptions = plans.map((plan) => ({
@@ -119,7 +128,7 @@ const Create = ({ customers, plans }) => {
                                  placeholder="Choose a plan"
                                  isClearable
                                  value={customerOptions.find(
-                                    (option) => option.value === data.sex
+                                    (option) => option.value === data.id
                                  )}
                                  onChange={(selectedOption) =>
                                     setData(
@@ -142,6 +151,72 @@ const Create = ({ customers, plans }) => {
                                  color="blue-gray"
                                  className="mb-1 "
                               >
+                                 PPOE
+                              </Typography>
+                              <Input
+                                 size="md"
+                                 value={data.ppoe}
+                                 onChange={(e) =>
+                                    setData("ppoe", e.target.value)
+                                 }
+                                 error={Boolean(errors.ppoe)}
+                                 className="w-full"
+                              />
+                           </div>
+                           <div className="mb-3">
+                              <Typography
+                                 variant="paragraph"
+                                 color="blue-gray"
+                                 className="mb-1 "
+                              >
+                                 Password
+                              </Typography>
+                              <Input
+                                 size="md"
+                                 value={data.password}
+                                 onChange={(e) =>
+                                    setData("password", e.target.value)
+                                 }
+                                 error={Boolean(errors.password)}
+                                 className="w-full"
+                              />
+                           </div>
+                           <div className="mb-3">
+                              <Typography
+                                 variant="paragraph"
+                                 color="blue-gray"
+                                 className="mb-1 "
+                              >
+                                 Assign Collector
+                              </Typography>
+                              <Select
+                                 options={collectorOptions}
+                                 placeholder="Choose a collector"
+                                 isClearable
+                                 value={customerOptions.find(
+                                    (option) => option.value === data.id
+                                 )}
+                                 onChange={(selectedOption) =>
+                                    setData(
+                                       "collector_id",
+                                       selectedOption
+                                          ? selectedOption.value
+                                          : ""
+                                    )
+                                 }
+                                 className={`${
+                                    errors.collector_id
+                                       ? "border border-red-600"
+                                       : ""
+                                 }`}
+                              />
+                           </div>
+                           <div className="mb-3">
+                              <Typography
+                                 variant="paragraph"
+                                 color="blue-gray"
+                                 className="mb-1 "
+                              >
                                  Date Regisration
                               </Typography>
                               <Input
@@ -152,6 +227,24 @@ const Create = ({ customers, plans }) => {
                                     setData("date_registration", e.target.value)
                                  }
                                  error={Boolean(errors.date_registration)}
+                              />
+                           </div>
+                           <div className="mb-3">
+                              <Typography
+                                 variant="paragraph"
+                                 color="blue-gray"
+                                 className="mb-1 "
+                              >
+                                 Date of Billing
+                              </Typography>
+                              <Input
+                                 type="date"
+                                 size="md"
+                                 value={data.date_billing}
+                                 onChange={(e) =>
+                                    setData("date_billing", e.target.value)
+                                 }
+                                 error={Boolean(errors.date_billing)}
                               />
                            </div>
                         </div>

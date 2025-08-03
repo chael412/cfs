@@ -13,9 +13,12 @@ class CustomerPlan extends Model
     protected $fillable = [
         'customer_id',
         'plan_id',
-        'date_registration'
+        'ppoe',
+        'password',
+        'collector_id',
+        'date_registration',
+        'date_billing',
     ];
-
 
 
     public function customer()
@@ -26,5 +29,10 @@ class CustomerPlan extends Model
     public function plan()
     {
         return $this->belongsTo(Plan::class);
+    }
+
+    public function collector()
+    {
+        return $this->belongsTo(Collector::class);
     }
 }

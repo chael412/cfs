@@ -19,6 +19,12 @@ class Collector extends Model
         'marital_status',
         'birthdate',
         'address',
-        'cellphone_no',
+        'occupation',
+        'contact_no',
     ];
+
+    public function customers()
+    {
+        return $this->hasMany(Customer::class);
+    }
 }

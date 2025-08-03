@@ -115,13 +115,8 @@ export default function AuthenticatedLayout({ children }) {
                   )}
 
                   <NavLink
-                     href={route("bills.index")}
-                     active={[
-                        "bills.index",
-                        "bills.create",
-                        "bills.show",
-                        "bills.edit",
-                     ].includes(route().current())}
+                     href={route("bill_card")}
+                     active={["bill_card"].includes(route().current())}
                   >
                      <RiBankCard2Fill />
                      {!isCollapsed && (

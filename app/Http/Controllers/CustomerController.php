@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\CustomerResource;
+use App\Models\Collector;
 use App\Models\Customer;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
@@ -54,7 +55,9 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Customer/Create');
+        $collectors = Collector::orderBy('lastname', 'asc')->get();
+
+        return Inertia::render('Customer/Create', ['collectors' => $collectors]);
     }
 
     /**

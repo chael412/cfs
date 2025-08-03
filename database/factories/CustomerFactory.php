@@ -25,10 +25,8 @@ class CustomerFactory extends Factory
             'birthdate' => $this->faker->date(),
             'address' => $this->faker->address,
             'occupation' => $this->faker->jobTitle,
-            'cellphone_no' => '9' . $this->faker->numerify('##########'),
-            'spouse_name' => $this->faker->name,
-            'spouse_occupation' => $this->faker->optional()->jobTitle,
-            'spouse_cellphone_no' => '9' . $this->faker->numerify('##########'),
+            'contact_no' => '9' . $this->faker->numerify('##########'),
+
         ];
     }
 }

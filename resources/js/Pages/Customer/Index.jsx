@@ -30,7 +30,17 @@ import { Pagination } from "@/Components/Pagination";
 import axios from "axios";
 import UseAppUrl from "@/hooks/UseAppUrl";
 
-const TABLE_HEAD = ["Customer Name", "Address", "Cellphone No.", ""];
+const TABLE_HEAD = [
+   "Customer Name",
+   "Sex",
+   "Marital Status",
+   "Birthdate",
+   "Address",
+   "Occupation",
+   "Contact No.",
+   "Status",
+   "",
+];
 const Index = () => {
    const API_URL = UseAppUrl();
 
@@ -81,7 +91,12 @@ const Index = () => {
          middlename: customer.middlename,
          lastname: customer.lastname,
          address: customer.address,
-         cellphone_no: customer.cellphone_no,
+         contact_no: customer.contact_no,
+         sex: customer.sex,
+         marital_status: customer.marital_status,
+         birthdate: customer.birthdate,
+         occupation: customer.occupation,
+         status: customer.status,
       })) || [];
 
    const handleSearch = (e) => {
@@ -234,7 +249,17 @@ const Index = () => {
                         </tr>
                      ) : (
                         TABLE_ROWS.map(
-                           ({ id, customer_name, address, cellphone_no }) => (
+                           ({
+                              id,
+                              customer_name,
+                              sex,
+                              marital_status,
+                              birthdate,
+                              address,
+                              occupation,
+                              contact_no,
+                              status,
+                           }) => (
                               <tr key={id} className="hover:bg-blue-gray-50 ">
                                  <td className="border border-blue-gray-100 px-4">
                                     <Typography
@@ -249,7 +274,39 @@ const Index = () => {
                                        variant="small"
                                        className="font-normal text-gray-800"
                                     >
+                                       {sex}
+                                    </Typography>
+                                 </td>
+                                 <td className="border border-blue-gray-100 px-4">
+                                    <Typography
+                                       variant="small"
+                                       className="font-normal text-gray-800"
+                                    >
+                                       {marital_status}
+                                    </Typography>
+                                 </td>
+                                 <td className="border border-blue-gray-100 px-4">
+                                    <Typography
+                                       variant="small"
+                                       className="font-normal text-gray-800"
+                                    >
+                                       {birthdate}
+                                    </Typography>
+                                 </td>
+                                 <td className="border border-blue-gray-100 px-4">
+                                    <Typography
+                                       variant="small"
+                                       className="font-normal text-gray-800"
+                                    >
                                        {address ?? ""}
+                                    </Typography>
+                                 </td>
+                                 <td className="border border-blue-gray-100 px-4">
+                                    <Typography
+                                       variant="small"
+                                       className="font-normal text-gray-800"
+                                    >
+                                       {occupation ?? ""}
                                     </Typography>
                                  </td>
 
@@ -258,7 +315,15 @@ const Index = () => {
                                        variant="small"
                                        className="font-normal text-gray-800"
                                     >
-                                       {cellphone_no}
+                                       {contact_no}
+                                    </Typography>
+                                 </td>
+                                 <td className="border border-blue-gray-100 px-4">
+                                    <Typography
+                                       variant="small"
+                                       className="font-normal text-gray-800"
+                                    >
+                                       {status}
                                     </Typography>
                                  </td>
 

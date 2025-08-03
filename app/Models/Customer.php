@@ -20,15 +20,17 @@ class Customer extends Model
         'birthdate',
         'address',
         'occupation',
-        'cellphone_no',
-        'spouse_name',
-        'spouse_occupation',
-        'spouse_cellphone_no',
-        'status'
+        'contact_no',
+        'status',
     ];
 
     public function customerPlans()
     {
         return $this->hasMany(CustomerPlan::class);
+    }
+
+    public function collector()
+    {
+        return $this->belongsTo(Collector::class);
     }
 }

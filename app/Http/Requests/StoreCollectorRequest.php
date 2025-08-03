@@ -29,7 +29,8 @@ class StoreCollectorRequest extends FormRequest
             'marital_status' => ['required', 'in:single,married,divorced,widowed,separated'],
             'birthdate' => ['required', 'max:255'],
             'address' => ['nullable', 'string', 'max:255'],
-            'cellphone_no' => ['required', 'string', 'max:255'],
+            'occupation' => ['required', 'string', 'max:255'],
+            'contact_no' => ['required', 'string', 'max:255'],
         ];
     }
 }

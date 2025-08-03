@@ -31,7 +31,16 @@ import { Pagination } from "@/Components/Pagination";
 import axios from "axios";
 import UseAppUrl from "@/hooks/UseAppUrl";
 
-const TABLE_HEAD = ["Customer Name", "Mbps Plan", "Date Registration", ""];
+const TABLE_HEAD = [
+   "Customer Name",
+   "Mbps Plan",
+   "PPOE",
+   "Password",
+   "Date Registration",
+   "Date Billing",
+   "Assign Collector",
+   "",
+];
 const Index = () => {
    const API_URL = UseAppUrl();
 
@@ -82,12 +91,18 @@ const Index = () => {
          customer_name: `${customerPlan.customer.lastname} ${
             customerPlan.customer.firstname
          } ${customerPlan.customer.middlename ?? ""} `,
+         collector_name: `${customerPlan.collector.lastname} ${
+            customerPlan.collector.firstname
+         } ${customerPlan.collector.middlename ?? ""} `,
          mbps: customerPlan.plan.mbps,
          plan_price: customerPlan.plan.plan_price,
          date_registration: format(
             new Date(customerPlan.date_registration),
             "M/d/yyyy"
          ),
+         date_billing: format(new Date(customerPlan.date_billing), "M/d/yyyy"),
+         ppoe: customerPlan.ppoe,
+         password: customerPlan.password,
       })) || [];
 
    const handleSearch = (e) => {
@@ -222,8 +237,12 @@ const Index = () => {
                               id,
                               customer_id,
                               customer_name,
+                              collector_name,
+                              ppoe,
+                              password,
                               mbps,
                               date_registration,
+                              date_billing,
                            }) => (
                               <tr key={id} className="hover:bg-blue-gray-50 ">
                                  <td className="border border-blue-gray-100 px-4">
@@ -247,7 +266,39 @@ const Index = () => {
                                        variant="small"
                                        className="font-normal text-gray-800"
                                     >
+                                       {ppoe}
+                                    </Typography>
+                                 </td>
+                                 <td className="border border-blue-gray-100 px-4">
+                                    <Typography
+                                       variant="small"
+                                       className="font-normal text-gray-800"
+                                    >
+                                       {password}
+                                    </Typography>
+                                 </td>
+                                 <td className="border border-blue-gray-100 px-4">
+                                    <Typography
+                                       variant="small"
+                                       className="font-normal text-gray-800"
+                                    >
                                        {date_registration}
+                                    </Typography>
+                                 </td>
+                                 <td className="border border-blue-gray-100 px-4">
+                                    <Typography
+                                       variant="small"
+                                       className="font-normal text-gray-800"
+                                    >
+                                       {date_billing}
+                                    </Typography>
+                                 </td>
+                                 <td className="border border-blue-gray-100 px-4">
+                                    <Typography
+                                       variant="small"
+                                       className="font-normal text-gray-800"
+                                    >
+                                       {collector_name}
                                     </Typography>
                                  </td>
 

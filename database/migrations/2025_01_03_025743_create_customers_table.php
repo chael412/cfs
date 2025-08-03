@@ -17,14 +17,10 @@ return new class extends Migration {
             $table->string('lastname');
             $table->enum('sex', ['male', 'female']);
             $table->enum('marital_status', ['single', 'married', 'divorced', 'widowed', 'separated']);
-
             $table->date('birthdate');
             $table->string('address')->nullable();
             $table->string('occupation')->nullable();
-            $table->string('cellphone_no');
-            $table->string('spouse_name');
-            $table->string('spouse_occupation')->nullable();
-            $table->string('spouse_cellphone_no');
+            $table->string('contact_no');
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
         });

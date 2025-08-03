@@ -23,7 +23,7 @@ class CollectorResource extends JsonResource
             'marital_status' => $this->marital_status,
             'birthdate' => $this->birthdate,
             'address' => $this->address,
-            'cellphone_no' => $this->cellphone_no,
+            'contact_no' => $this->contact_no,
         ];
     }
 }

@@ -1,9 +1,12 @@
 <?php
 
+use App\Http\Controllers\AdvanceBillingController;
+use App\Http\Controllers\BatchBillingController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\CollectorController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerPlanController;
+use App\Http\Controllers\WalkinBillingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,10 +20,11 @@ Route::get('get_customer_planx_paginate', [CustomerPlanController::class, 'index
 Route::get('get_billx_paginate', [BillController::class, 'indexApi']);
 
 Route::get('get_customerwplanx', [BillController::class, 'getCustomersWithPlans']);
+Route::get('get_walkinbillx', [WalkinBillingController::class, 'indexApi']);
+Route::get('get_advancebillx', [AdvanceBillingController::class, 'indexApi']);
+Route::get('get_batchbillx', [BatchBillingController::class, 'indexApi']);
+
+
+
 
 Route::get('/customers/{customerId}/latest-plan', [BillController::class, 'getLatestPlanForCustomer']);
-
-
-
-
-

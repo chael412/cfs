@@ -181,48 +181,12 @@ const Show = ({ customer }) => {
                         <tr>
                            <td className="px-4 py-2 font-medium text-gray-700 border border-gray-300">
                               <Typography variant="paragraph">
-                                 Cellphone No.
+                                 Contact No.
                               </Typography>
                            </td>
                            <td className="px-4 py-2 text-gray-900 border border-gray-300">
                               <Typography variant="paragraph">
-                                 {customer.cellphone_no}
-                              </Typography>
-                           </td>
-                        </tr>
-                        <tr>
-                           <td className="px-4 py-2 font-medium text-gray-700 border border-gray-300">
-                              <Typography variant="paragraph">
-                                 Spouse Name
-                              </Typography>
-                           </td>
-                           <td className="px-4 py-2 text-gray-900 border border-gray-300">
-                              <Typography variant="paragraph">
-                                 {customer.spouse_name}
-                              </Typography>
-                           </td>
-                        </tr>
-                        <tr>
-                           <td className="px-4 py-2 font-medium text-gray-700 border border-gray-300">
-                              <Typography variant="paragraph">
-                                 Spouse Occupation
-                              </Typography>
-                           </td>
-                           <td className="px-4 py-2 text-gray-900 border border-gray-300">
-                              <Typography variant="paragraph">
-                                 {customer.spouse_occupation ?? ""}
-                              </Typography>
-                           </td>
-                        </tr>
-                        <tr>
-                           <td className="px-4 py-2 font-medium text-gray-700 border border-gray-300">
-                              <Typography variant="paragraph">
-                                 Spouse Cellphone No
-                              </Typography>
-                           </td>
-                           <td className="px-4 py-2 text-gray-900 border border-gray-300">
-                              <Typography variant="paragraph">
-                                 {customer.spouse_cellphone_no}
+                                 +63{customer.contact_no}
                               </Typography>
                            </td>
                         </tr>

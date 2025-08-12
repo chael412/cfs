@@ -35,4 +35,11 @@ class CustomerPlan extends Model
     {
         return $this->belongsTo(Collector::class);
     }
+
+    // App\Models\CustomerPlan.php
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'customer_plan_id');
+    }
 }

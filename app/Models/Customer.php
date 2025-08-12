@@ -33,4 +33,23 @@ class Customer extends Model
     {
         return $this->belongsTo(Collector::class);
     }
+
+    public function hasTransaction(): bool
+    {
+        return Transaction::whereHas('customerPlan', function ($query) {
+            $query->where('customer_id', $this->id);
+        })->exists();
+    }
+
+    public function transactions()
+    {
+        return $this->hasManyThrough(
+            Transaction::class,
+            CustomerPlan::class,
+            'customer_id',        // Foreign key on customer_plans
+            'customer_plan_id',   // Foreign key on transactions
+            'id',                 // Local key on customers
+            'id'                  // Local key on customer_plans
+        );
+    }
 }

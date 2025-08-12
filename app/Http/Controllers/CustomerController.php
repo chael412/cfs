@@ -12,6 +12,19 @@ use Inertia\Inertia;
 class CustomerController extends Controller
 {
     // api function
+    public function showCustomerTransaction($id)
+    {
+        $customer = Customer::with(['customerPlans.transactions'])
+            ->withExists('transactions') // ✅ now this works
+            ->findOrFail($id);
+
+        $customer->has_transaction = $customer->transactions_exists;
+        unset($customer->transactions_exists);
+
+        return response()->json($customer);
+    }
+
+
     public function indexApi()
     {
         try {

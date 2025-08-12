@@ -25,6 +25,7 @@ Route::get('get_advancebillx', [AdvanceBillingController::class, 'indexApi']);
 Route::get('get_batchbillx', [BatchBillingController::class, 'indexApi']);
 
 
+Route::get('/customers/{id}/transactions', [CustomerController::class, 'showCustomerTransaction']);
 
 
 Route::get('/customers/{customerId}/latest-plan', [BillController::class, 'getLatestPlanForCustomer']);

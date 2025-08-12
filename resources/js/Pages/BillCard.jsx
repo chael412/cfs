@@ -22,18 +22,12 @@ const BillCard = () => {
          href: "/advance_bills",
          buttonText: "Set Up Advance Bill",
       },
-      {
-         title: "Walk-in Billing",
-         description: "Quickly bill individual walk-in customers.",
-         href: "/walkin_bills",
-         buttonText: "New Walk-in Bill",
-      },
    ];
 
    return (
       <AuthenticatedLayout>
          <Head title="Customer Plans" />
-         <div className="flex flex-wrap justify-center items-center gap-4 mt-6 h-full">
+         <div className="flex flex-wrap justify-center items-center gap-6 mt-6 h-full">
             {billingData.map(({ title, description, href, buttonText }) => (
                <Card key={title} className="w-80 text-center">
                   <CardBody>

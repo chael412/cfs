@@ -31,6 +31,7 @@ import axios from "axios";
 import UseAppUrl from "@/hooks/UseAppUrl";
 
 const TABLE_HEAD = [
+   "Acc No.",
    "Customer Name",
    "Sex",
    "Marital Status",
@@ -173,21 +174,7 @@ const Index = () => {
                      />
                      <AiOutlineSearch className="absolute top-1/2 right-3 -translate-y-1/2 text-slate-400" />
                   </div>
-                  {/* <div>
-                            <Select label="Category">
-                                <Option>Material Tailwind HTML</Option>
-                                <Option>Material Tailwind React</Option>
-                                <Option>Material Tailwind Vue</Option>
-                                <Option>Material Tailwind Angular</Option>
-                                <Option>Material Tailwind Svelte</Option>
-                            </Select>
-                        </div>
-                        <div>
-                            <Select label="Select Status">
-                                <Option>Active</Option>
-                                <Option>Inactive</Option>
-                            </Select>
-                        </div> */}
+
                   <div>
                      <Link href="/customers/create">
                         <Button
@@ -261,6 +248,14 @@ const Index = () => {
                               status,
                            }) => (
                               <tr key={id} className="hover:bg-blue-gray-50 ">
+                                 <td className="border border-blue-gray-100 px-4">
+                                    <Typography
+                                       variant="small"
+                                       className="font-normal text-gray-800"
+                                    >
+                                       {id}
+                                    </Typography>
+                                 </td>
                                  <td className="border border-blue-gray-100 px-4">
                                     <Typography
                                        variant="small"

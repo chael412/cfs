@@ -339,7 +339,7 @@ const Index = () => {
                                                 <MenuItem>View</MenuItem>
                                              </Link>
 
-                                             <Link
+                                             {/* <Link
                                                 className="hover:bg-blue-800 hover:rounded hover:text-white"
                                                 href={route(
                                                    "batch_bills.edit",
@@ -349,8 +349,8 @@ const Index = () => {
                                                 )}
                                              >
                                                 <MenuItem>Edit</MenuItem>
-                                             </Link>
-                                             <MenuItem>
+                                             </Link> */}
+                                             {/* <MenuItem>
                                                 <span
                                                    onClick={() =>
                                                       deleteBill(id)
@@ -358,7 +358,7 @@ const Index = () => {
                                                 >
                                                    Delete
                                                 </span>
-                                             </MenuItem>
+                                             </MenuItem> */}
                                           </MenuList>
                                        </Menu>
                                     </div>

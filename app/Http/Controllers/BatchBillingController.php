@@ -6,11 +6,14 @@ use App\Models\BatchBilling;
 use App\Http\Requests\StoreBatchBillingRequest;
 use App\Http\Requests\UpdateBatchBillingRequest;
 use App\Models\Customer;
+use App\Models\Transaction;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 
 class BatchBillingController extends Controller
 {
+
+
     public function indexApi()
     {
         try {
@@ -24,30 +27,33 @@ class BatchBillingController extends Controller
                 $sortColumn = 'lastname';
             }
 
-            $query = BatchBilling::with([
+            $query = Transaction::with([
                 'customerPlan.customer',
                 'customerPlan.plan',
                 'customerPlan.collector',
             ])
-                ->join('customer_plans', 'batch_billings.customer_plan_id', '=', 'customer_plans.id')
+                ->join('customer_plans', 'transactions.customer_plan_id', '=', 'customer_plans.id')
                 ->join('customers', 'customer_plans.customer_id', '=', 'customers.id')
                 ->when($search, function ($query) use ($search) {
                     $query->where('customers.lastname', 'like', $search . '%');
-                });
+                })
+                ->where('transactions.remarks', 'batch'); // exact match
+
 
             // Apply sorting on the joined customers table
             if ($sortColumn === 'lastname') {
                 $query = $query->orderBy('customers.lastname', $sortDirection);
             }
 
-            // Important: select batch_billings.* to avoid column ambiguity
-            $data = $query->select('batch_billings.*')->paginate(50);
+            // select transactions.* to avoid ambiguity
+            $data = $query->select('transactions.*')->paginate(50);
 
             return response()->json($data, 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Error: ' . $e->getMessage()], 404);
         }
     }
+
 
 
     /**
@@ -63,25 +69,31 @@ class BatchBillingController extends Controller
      */
     public function create()
     {
-        $yearPrefix = now()->format('y'); // '25' for 2025
+        $yearPrefix = now()->format('y'); // e.g. '25' for 2025
+        $month = now()->format('n'); // month without leading zero (1–12)
 
-        // Get latest bill_no starting with current year prefix
-        $latestBill = BatchBilling::where('bill_no', 'like', $yearPrefix . '%')
+        $prefix = $yearPrefix . $month . '-'; // e.g. '251-'
+
+        // Get latest bill_no starting with this prefix (year + month)
+        $latestBill = Transaction::where('bill_no', 'like', $prefix . '%')
             ->orderBy('bill_no', 'desc')
             ->first();
 
         if ($latestBill) {
-            // Get the numeric suffix and increment it
-            $lastNumber = (int) Str::substr($latestBill->bill_no, 2); // remove '25'
+            // Extract the last 4 digits
+            $lastNumber = (int) Str::after($latestBill->bill_no, '-');
             $nextNumber = $lastNumber + 1;
         } else {
             $nextNumber = 1;
         }
 
-        // Pad to always have 3 digits
-        $newBillNo = $yearPrefix . str_pad($nextNumber, 3, '0', STR_PAD_LEFT); // e.g. 25001
+        // Pad the incrementing number to 4 digits
+        $newBillNo = $prefix . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
 
-        $customers = Customer::orderBy('lastname', 'asc')->get();
+        $customers = Customer::with('customerPlans.plan') // eager load customerPlans and their related plan
+            ->orderBy('lastname', 'asc')
+            ->get();
+
 
         return Inertia::render('BatchBill/Create', [
             'customers' => $customers,
@@ -109,25 +121,9 @@ class BatchBillingController extends Controller
      */
     public function show($id)
     {
-        $batchBilling = BatchBilling::with([
-            'customerPlan.customer',
-            'customerPlan.plan',
-            'customerPlan.collector'
-        ])->findOrFail($id);
 
-        return inertia('BatchBill/Show', [
-            'bill' => [
-                'id' => $batchBilling->id,
-                'customer_plan_id' => $batchBilling->customer_plan_id,
-                'bill_no' => $batchBilling->bill_no,
-                'bill_amount' => $batchBilling->bill_amount,
-                'customer' => $batchBilling->customerPlan->customer ?? null,
-                'plan' => $batchBilling->customerPlan->plan ?? null,
-                'collector' => $batchBilling->customerPlan->collector ?? null,
-                'created_at' => $batchBilling->created_at,
-                'updated_at' => $batchBilling->updated_at,
-            ],
-        ]);
+
+        return inertia('BatchBill/Show');
     }
 
     /**

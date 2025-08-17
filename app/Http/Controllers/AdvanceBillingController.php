@@ -6,6 +6,7 @@ use App\Models\AdvanceBilling;
 use App\Http\Requests\StoreAdvanceBillingRequest;
 use App\Http\Requests\UpdateAdvanceBillingRequest;
 use App\Models\Customer;
+use App\Models\Transaction;
 use Faker\Provider\ar_EG\Address;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
@@ -26,16 +27,18 @@ class AdvanceBillingController extends Controller
                 $sortColumn = 'lastname';
             }
 
-            $query = AdvanceBilling::with([
+            $query = Transaction::with([
                 'customerPlan.customer',
                 'customerPlan.plan',
                 'customerPlan.collector',
             ])
-                ->join('customer_plans', 'advance_billings.customer_plan_id', '=', 'customer_plans.id')
+                ->join('customer_plans', 'transactions.customer_plan_id', '=', 'customer_plans.id')
                 ->join('customers', 'customer_plans.customer_id', '=', 'customers.id')
                 ->when($search, function ($query) use ($search) {
                     $query->where('customers.lastname', 'like', $search . '%');
-                });
+                })
+                ->where('transactions.remarks', 'advance'); // exact match
+
 
             // Apply sorting on the joined customers table
             if ($sortColumn === 'lastname') {
@@ -43,7 +46,7 @@ class AdvanceBillingController extends Controller
             }
 
             // Important: select advance_billings.* to avoid column ambiguity
-            $data = $query->select('advance_billings.*')->paginate(50);
+            $data = $query->select('transactions.*')->paginate(50);
 
             return response()->json($data, 200);
         } catch (\Exception $e) {

@@ -1,6 +1,6 @@
 import { BsArrowReturnLeft } from "react-icons/bs";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, Link, useForm } from "@inertiajs/react";
+import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import {
    Card,
    Input,
@@ -14,212 +14,294 @@ import {
    DialogHeader,
    DialogBody,
    DialogFooter,
+   Radio,
+   Spinner,
+   Menu,
+   MenuHandler,
+   MenuList,
+   MenuItem,
 } from "@material-tailwind/react";
 import Select from "react-select";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import UseAppUrl from "@/hooks/UseAppUrl";
+import { useQuery } from "@tanstack/react-query";
 
-const Create = ({ customers, collectors, generated_bill_no }) => {
-   const [customerPlanId, setCustomerPlanId] = useState("");
-   const [mbpsPlan, setMbpsPlan] = useState("");
-   const [planPrice, setPlanPrice] = useState("");
-   const [registrationDate, setRegistrationDate] = useState("");
+const Create = ({ collectors, generated_bill_no }) => {
+   const API_URL = UseAppUrl();
+   const [selectedCustomerId, setSelectedCustomerId] = useState(null);
+   const [selectedCustomerPlan, setSelectedCustomerPlan] = useState({});
+
+   const [billingType, setBillingType] = useState("");
+
+   const fetchCustomers = async ({ queryKey }) => {
+      const [_key, page, query, sortColumn, sortDirection] = queryKey;
+      const response = await axios.get(
+         `${API_URL}/api/customers/transactions`,
+         {
+            params: {
+               page,
+               search: query,
+               sortColumn,
+               sortDirection,
+            },
+         }
+      );
+      //console.log(response.data);
+      return response.data;
+   };
+
+   const fetchCustomerTransactions = async ({ queryKey }) => {
+      const [_key, page, sortColumn, sortDirection, customerId] = queryKey;
+
+      if (!customerId) return { data: [], current_page: 1 }; // skip fetch if not selected
+
+      const response = await axios.get(
+         `${API_URL}/api/customers/transactions`,
+         {
+            params: {
+               page,
+               search: customerId,
+               sortColumn,
+               sortDirection,
+            },
+         }
+      );
+
+      return response.data;
+   };
+
+   const { customers } = usePage().props;
+   const [searchQuery, setSearchQuery] = useState("");
+   const [currentPage, setCurrentPage] = useState(customers?.current_page || 1);
+   const [sortConfig, setSortConfig] = useState({
+      column: "",
+      direction: "asc",
+   });
+
+   const { customer_transactions } = usePage().props;
+   const [searchTransQuery, setSearchTransQuery] = useState("");
+   const [currentTransPage, setCurrentTransPage] = useState(
+      customer_transactions?.current_page || 1
+   );
+   const [sortTransConfig, setSortTransConfig] = useState({
+      column: "",
+      direction: "asc",
+   });
+
+   const {
+      data: customerData,
+      error,
+      isLoading,
+      refetch,
+   } = useQuery({
+      queryKey: [
+         "customers",
+         currentPage,
+         searchQuery,
+         sortConfig.column,
+         sortConfig.direction,
+      ],
+      queryFn: fetchCustomers,
+      keepPreviousData: true,
+   });
+
+   const {
+      data: customerTransactionsData,
+      isTransLoading,
+      refetch: refetchTransData,
+   } = useQuery({
+      queryKey: [
+         "customer-transactions",
+         currentPage,
+         sortConfig.column,
+         sortConfig.direction,
+         selectedCustomerId, // pass the selected ID here
+      ],
+      queryFn: fetchCustomerTransactions,
+      enabled: !!selectedCustomerId, // only run query if ID is not null
+      keepPreviousData: true,
+   });
+
    const [open, setOpen] = useState(false);
    const handleOpen = () => setOpen(!open);
+
+   const [openModalPrint, setOpenModalPrint] = useState(false);
+   const handleOpenModalPrint = () => {
+      setOpenModalPrint(!openModalPrint);
+   };
 
    const { data, setData, post, errors, reset, processing } = useForm({
       customer_plan_id: "",
       bill_no: generated_bill_no,
-
+      rebate: "",
+      partial: "",
       bill_amount: "",
+      remarks: "",
+      status: "",
    });
 
    const onSubmit = async (e) => {
       e.preventDefault();
 
-      console.log(data);
+      // Ensure numeric values
+      const submitData = {
+         ...data,
+         bill_amount: Number(data.bill_amount) || 0.0,
+         rebate: Number(data.rebate) || 0.0,
+         partial: Number(data.partial) || 0.0,
+      };
 
-      await post(route("batch_bills.store"), {
-         onSuccess: () => {
-            alert("Batch Bill was created successfully!");
-            reset();
-         },
-         onError: (errors) => {
-            console.log(errors);
-         },
-      });
-   };
+      try {
+         console.log(
+            "Form data to submit:",
+            JSON.stringify(submitData, null, 2)
+         );
 
-   const customerOptions = customers.map((customer) => ({
-      value: customer.id,
-      label: `${customer.lastname} ${customer.firstname}`,
-   }));
+         const response = await axios.post(
+            `${API_URL}/api/transactions`,
+            submitData
+         );
 
-   const handleCustomerChange = async (selectedOption) => {
-      console.log("Selected Option: ", selectedOption.value);
+         console.log("Response:", response.data);
+         setOpenModalPrint(true);
 
-      if (selectedOption) {
-         // Set customer_id in your form data
-         setData("customer_id", selectedOption.value);
-
-         try {
-            // Send the request to fetch the latest plan for the selected customer
-            const response = await axios.get(
-               `/api/customers/${selectedOption.value}/latest-plan`
-            );
-
-            if (response.data) {
-               const { id, mbps, plan_price, registration_date } =
-                  response.data;
-
-               // Log the plan details
-               console.log("Latest Plan Mbps: ", mbps);
-               console.log("Plan Price: ", plan_price);
-
-               // Set the Mbps plan and price
-               setData("customer_plan_id", id);
-               setCustomerPlanId(id);
-               setMbpsPlan(mbps);
-               setPlanPrice(plan_price);
-               setRegistrationDate(registration_date);
-
-               // If you also want to set the plan price, you can update another state variable
-               // setPlanPrice(plan_price);
-            } else {
-               console.log("No plan found for the selected customer.");
-               setMbpsPlan("No Mbps plan available");
-            }
-         } catch (error) {
-            console.error("Error fetching the plan:", error);
-            setMbpsPlan("Error fetching Mbps plan");
-         }
-      } else {
-         setMbpsPlan(""); // Reset Mbps plan if no customer is selected
+         // Reset form
+         setData("bill_amount", "");
+         refetchTransData();
+      } catch (error) {
+         console.error("Error creating transaction:", error.response || error);
+         alert("Failed to create transaction. Check console for details.");
       }
    };
 
-   const RemarkOptions = [
+   const TABLE_HEAD = ["Month", "Bill Noww.", "Bill Amount", "Status"];
+   const THEAD_CUSTOMERS = ["Acc No.", "Customer Name", "Status"];
+
+   const StatusOptions = [
       { value: "paid", label: "Paid" },
       { value: "unpaid", label: "Unpaid" },
    ];
 
-   const TABLE_HEAD = ["Month", "Bill No.", "Bill Amount", "Status"];
-   const THEAD_CUSTOMER = ["Acc No.", "Customer Name"];
+   const TROW_CUSTOMERS =
+      customerData?.data.map((customer) => ({
+         id: customer.id,
+         customer_name: `${customer.lastname} ${customer.firstname} ${
+            customer.middlename ?? ""
+         }`,
+         firstname: customer.firstname,
+         middlename: customer.middlename,
+         lastname: customer.lastname,
+         address: customer.address,
+         contact_no: customer.contact_no,
+         sex: customer.sex,
+         marital_status: customer.marital_status,
+         birthdate: customer.birthdate,
+         occupation: customer.occupation,
+         status: customer.status,
+         plans: customer.customer_plans.map((plan) => ({
+            mbps: plan.plan.mbps,
+            plan_price: plan.plan.plan_price,
+            date_registration: plan.date_registration,
+            customer_plan_id: plan.id,
+         })),
+      })) || [];
 
-   const TABLE_ROWS = [
-      {
-         name: "John Michael",
-         job: "Manager",
-         date: "23/04/18",
-      },
-      {
-         name: "Alexa Liras",
-         job: "Developer",
-         date: "23/04/18",
-      },
-      {
-         name: "Laurent Perrier",
-         job: "Executive",
-         date: "19/09/17",
-      },
-      {
-         name: "Michael Levi",
-         job: "Developer",
-         date: "24/12/08",
-      },
-      {
-         name: "Richard Gran",
-         job: "Manager",
-         date: "04/10/21",
-      },
-      {
-         name: "Laurent Perrier",
-         job: "Executive",
-         date: "19/09/17",
-      },
-      {
-         name: "Michael Levi",
-         job: "Developer",
-         date: "24/12/08",
-      },
-      {
-         name: "Richard Gran",
-         job: "Manager",
-         date: "04/10/21",
-      },
-      {
-         name: "Laurent Perrier",
-         job: "Executive",
-         date: "19/09/17",
-      },
-      {
-         name: "Michael Levi",
-         job: "Developer",
-         date: "24/12/08",
-      },
-      {
-         name: "Richard Gran",
-         job: "Manager",
-         date: "04/10/21",
-      },
-   ];
+   const TROW_TRANSACTIONS =
+      customerTransactionsData?.data.map((customer) => ({
+         id: customer.id,
+         customer_name: `${customer.lastname} ${customer.firstname} ${
+            customer.middlename ?? ""
+         }`,
+         firstname: customer.firstname,
+         middlename: customer.middlename,
+         lastname: customer.lastname,
+         address: customer.address,
+         contact_no: customer.contact_no,
+         sex: customer.sex,
+         marital_status: customer.marital_status,
+         birthdate: customer.birthdate,
+         occupation: customer.occupation,
+         status: customer.status,
+         plans: customer.customer_plans.map((plan) => ({
+            customer_plan_id: plan.id,
+            mbps: plan.plan.mbps,
+            plan_price: plan.plan.plan_price,
+            date_registration: plan.date_registration,
+            transactions: plan.transactions.map((tx) => ({
+               id: tx.id,
+               bill_no: tx.bill_no,
+               rebate: Number(tx.rebate) || 0.0,
+               partial: Number(tx.partial) || 0.0,
+               bill_amount: Number(tx.bill_amount) || 0.0,
+               remarks: tx.remarks,
+               status: tx.status,
+               created_at: tx.created_at,
+               updated_at: tx.updated_at,
+            })),
+         })),
+      })) || [];
 
-   const TROW_CUSTOMER = [
-      {
-         name: "123",
-         job: "Wesly Ivan Gaffud",
-      },
-      {
-         name: "123",
-         job: "Wesly Ivan Gaffud",
-      },
-      {
-         name: "123",
-         job: "Wesly Ivan Gaffud",
-      },
-      {
-         name: "123",
-         job: "Wesly Ivan Gaffud",
-      },
-      {
-         name: "123",
-         job: "Wesly Ivan Gaffud",
-      },
-      {
-         name: "123",
-         job: "Wesly Ivan Gaffud",
-      },
-      {
-         name: "123",
-         job: "Wesly Ivan Gaffud",
-      },
-      {
-         name: "123",
-         job: "Wesly Ivan Gaffud",
-      },
-      {
-         name: "123",
-         job: "Wesly Ivan Gaffud",
-      },
-      {
-         name: "123",
-         job: "Wesly Ivan Gaffud",
-      },
-      {
-         name: "123",
-         job: "Wesly Ivan Gaffud",
-      },
-      {
-         name: "123",
-         job: "Wesly Ivan Gaffud",
-      },
-   ];
+   useEffect(() => {
+      if (selectedCustomerId !== null) {
+         alert(`Selected Customer: ${selectedCustomerPlan.customer_name}`);
+
+         // alert(
+         //    `Customer: ${selectedCustomerPlan.customer_name}\n` +
+         //       `Selected Customer ID: ${selectedCustomerId}\n` +
+         //       `Customer Plan Id: ${selectedCustomerPlan.customer_plan_id}\n` +
+         //       `Plan: ${selectedCustomerPlan.mbps} Mbps\n` +
+         //       `Price: ₱${selectedCustomerPlan.plan_price}\n` +
+         //       `Registered: ${selectedCustomerPlan.date_registration}`
+         // );
+      }
+   }, [selectedCustomerId, selectedCustomerPlan]);
+
+   const handleSelectCustomer = (customer) => {
+      const latestPlan = customer.plans[0] || {};
+
+      setSelectedCustomerId(customer.id);
+      setData("customer_plan_id", latestPlan.customer_plan_id);
+      setSelectedCustomerPlan({
+         customer_name: `${customer.firstname} ${customer.lastname}`,
+         customer_plan_id: latestPlan.customer_plan_id,
+         mbps: latestPlan.mbps || "N/A",
+         plan_price: latestPlan.plan_price || "N/A",
+         date_registration: latestPlan.date_registration || "N/A",
+      });
+
+      setOpen(false);
+   };
+
+   const handleBillingChange = (event) => {
+      const selected = event.target.value;
+      setBillingType(selected); // ✅ update the state for checked binding
+      setData("remarks", selected); // ✅ also update the form data
+      // alert(`Selected Billing Type: ${selected}`);
+   };
 
    return (
       <AuthenticatedLayout>
          <Head title="Create New Bill" />
          <div className="bg-white overflow-y-auto max-h-[590px] grid place-justify-center ">
-            <div className="flex justify-end mt-5 mb-2 px-4">
+            <div className="flex justify-between mt-5 mb-2 px-4">
+               <div className="flex gap-10">
+                  <Radio
+                     name="type"
+                     label="Advance Billing"
+                     value="advance"
+                     checked={billingType === "advance"}
+                     onChange={handleBillingChange}
+                  />
+                  <Radio
+                     name="type"
+                     label="Batch Billing"
+                     value="batch"
+                     checked={billingType === "batch"}
+                     onChange={handleBillingChange}
+                  />
+               </div>
+
                <Tooltip content="Back">
                   <Link
                      href="/batch_bills"
@@ -230,15 +312,163 @@ const Create = ({ customers, collectors, generated_bill_no }) => {
                </Tooltip>
             </div>
 
+            {/* dialog modal print */}
+            <Dialog
+               open={openModalPrint}
+               handler={handleOpenModalPrint}
+               size="lg"
+            >
+               <DialogHeader>Billing Notice</DialogHeader>
+
+               <DialogBody>
+                  <div className="relative bg-gray-100 p-6 rounded shadow h-[480px] overflow-auto">
+                     {/* Diagonal Stamp */}
+                     {/* Diagonal Stamp */}
+                     <div
+                        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rotate-[-30deg]
+                text-green-800 font-bold text-6xl border-2 border-green-800
+  px-8 py-4 opacity-40 select-none pointer-events-none
+                whitespace-nowrap inline-block"
+                     >
+                        CFS NOTICE PAID
+                     </div>
+
+                     {/* Bill Content */}
+                     <div className="flex justify-between items-start mb-4">
+                        <div>
+                           <img
+                              src="/img/internet.png"
+                              alt="CFS Logo"
+                              className="w-16 h-16"
+                           />
+                           <div className="text-sm mt-1">
+                              #2, Manguelod Bldg. National High Way
+                              <br />
+                              District II, Tumauini, Isabela
+                              <br />
+                              TIN: 295-973-965-001
+                              <br />
+                              CP#: 09453367030
+                           </div>
+                        </div>
+                        <div className="text-right">
+                           <p className="font-bold">Wesly Ivan Gaffud</p>
+                           <p>August 1, 2025</p>
+                        </div>
+                     </div>
+
+                     <div className="flex justify-between mb-2">
+                        <span>Acct. No:</span>
+                        <span>1258</span>
+                     </div>
+                     <div className="flex justify-between mb-4">
+                        <span>Bill No.</span>
+                        <span>2510000</span>
+                     </div>
+
+                     <div className="space-y-1 mb-4">
+                        <div className="flex justify-between">
+                           <span>Bill for the month of August</span>
+                           <span>₱800.00</span>
+                        </div>
+                        <div className="flex justify-between">
+                           <span>Rebate</span>
+                           <span>₱0.00</span>
+                        </div>
+                        <div className="flex justify-between">
+                           <span>Partial</span>
+                           <span>₱0.00</span>
+                        </div>
+                        <div className="flex justify-between">
+                           <span>Outstanding Balance Previous Month</span>
+                           <span>₱300.00</span>
+                        </div>
+                        <div className="flex justify-between font-bold border-t border-gray-400 pt-2">
+                           <span>Amount Due:</span>
+                           <span>₱1,100.00</span>
+                        </div>
+                     </div>
+
+                     <div className="flex justify-between text-sm mb-4">
+                        <span>Prepared by: John</span>
+                        <span>Collector: John Robert Linerto</span>
+                        <span>Date:</span>
+                     </div>
+
+                     <div className="border border-red-500 p-3 rounded text-sm bg-red-50 flex items-start gap-2">
+                        <div className="text-red-600 font-bold">⚠</div>
+                        <div>
+                           <p>
+                              7 Days Notice: To avoid temporary disconnection
+                              kindly settle your bill within 7 days of the due
+                              date. For assistance or to make a payment please
+                              call:
+                           </p>
+                           <p className="font-bold">
+                              CUSTOMER SERVICE NO: 09453367030
+                           </p>
+                           <p className="font-bold">
+                              BILLING DEPT. CP NO: 09162832206
+                           </p>
+                        </div>
+                     </div>
+                  </div>
+               </DialogBody>
+
+               <DialogFooter>
+                  <Button
+                     variant="text"
+                     color="red"
+                     onClick={handleOpenModalPrint}
+                     className="mr-2"
+                  >
+                     Cancel
+                  </Button>
+                  <Button
+                     variant="gradient"
+                     color="green"
+                     onClick={handleOpenModalPrint}
+                  >
+                     Print
+                  </Button>
+               </DialogFooter>
+            </Dialog>
+
             <div className="flex justify-between items-center px-4">
                <div className="flex gap-6 px-4">
                   <Typography variant="h6" color="blue-gray">
-                     ACC NO.: <span className="text-orange-900">123</span>
+                     ACC NO.:{" "}
+                     <span className="text-orange-900">
+                        {selectedCustomerId}
+                     </span>
                   </Typography>
                   <Typography variant="h6" color="blue-gray">
-                     CUSTOMER NAME:{" "}
-                     <span className="text-orange-900">Wesly Ivan Gaffud</span>
+                     CUSTOMER:{" "}
+                     <span className="text-orange-900">
+                        {selectedCustomerPlan?.customer_name || ""}
+                     </span>
                   </Typography>
+                  <Typography variant="h6" color="blue-gray">
+                     PLAN:{" "}
+                     <span className="text-orange-900">
+                        {selectedCustomerPlan && selectedCustomerPlan.mbps
+                           ? `${
+                                selectedCustomerPlan.mbps
+                             } mbps - ${new Intl.NumberFormat("en-PH", {
+                                style: "currency",
+                                currency: "PHP",
+                             }).format(selectedCustomerPlan.plan_price)}`
+                           : ""}
+                     </span>
+                  </Typography>
+
+                  <Typography variant="h6" color="blue-gray">
+                     REGISTRATION:{" "}
+                     <span className="text-orange-900">
+                        {selectedCustomerPlan.date_registration}
+                     </span>
+                  </Typography>
+
                   <Typography variant="h6" color="blue-gray">
                      BALANCE OF JULY:{" "}
                      <span className="text-orange-900">1.5m</span>
@@ -263,7 +493,7 @@ const Create = ({ customers, collectors, generated_bill_no }) => {
                            <table className="w-full min-w-max table-auto text-left">
                               <thead>
                                  <tr>
-                                    {THEAD_CUSTOMER.map((head) => (
+                                    {THEAD_CUSTOMERS.map((head) => (
                                        <th
                                           key={head}
                                           className="border-b border-blue-gray-100 bg-blue-gray-50 p-4"
@@ -280,40 +510,76 @@ const Create = ({ customers, collectors, generated_bill_no }) => {
                                  </tr>
                               </thead>
                               <tbody>
-                                 {TROW_CUSTOMER.map(
-                                    ({ name, job, date }, index) => {
-                                       const isLast =
-                                          index === TROW_CUSTOMER.length - 1;
-                                       const classes = isLast
-                                          ? "p-4"
-                                          : "p-4 border-b border-blue-gray-50";
+                                 {isLoading ? (
+                                    <tr>
+                                       <td
+                                          colSpan={THEAD_CUSTOMERS.length}
+                                          className="border border-blue-gray-100 p-4"
+                                       >
+                                          <div className="flex justify-center items-center h-full">
+                                             <Spinner
+                                                className="h-10 w-10"
+                                                color="green"
+                                             />
+                                          </div>
+                                       </td>
+                                    </tr>
+                                 ) : TROW_CUSTOMERS.length === 0 ? (
+                                    <tr>
+                                       <td
+                                          colSpan={TABLE_HEAD.length}
+                                          className="border border-blue-gray-100 p-4 text-center text-red-500"
+                                       >
+                                          <div className="flex justify-center items-center gap-2">
+                                             No customer records found
+                                             <CgDanger className="text-xl" />
+                                          </div>
+                                       </td>
+                                    </tr>
+                                 ) : (
+                                    TROW_CUSTOMERS.map((customer) => {
+                                       const {
+                                          id,
+                                          customer_name,
+                                          status,
+                                          plans,
+                                       } = customer;
 
                                        return (
                                           <tr
-                                             key={name}
-                                             className="hover:bg-gray-100 cursor-pointer"
+                                             key={id}
+                                             className="hover:bg-blue-gray-50 cursor-pointer"
+                                             onClick={() =>
+                                                handleSelectCustomer(customer)
+                                             }
                                           >
-                                             <td className={classes}>
+                                             <td className="border border-blue-gray-100 px-4 py-2 ">
                                                 <Typography
                                                    variant="small"
-                                                   color="blue-gray"
-                                                   className="font-normal"
+                                                   className="font-normal text-gray-800"
                                                 >
-                                                   {name}
+                                                   {id}
                                                 </Typography>
                                              </td>
-                                             <td className={classes}>
+                                             <td className="border border-blue-gray-100 px-4 py-2 ">
                                                 <Typography
                                                    variant="small"
-                                                   color="blue-gray"
-                                                   className="font-normal"
+                                                   className="font-normal text-gray-800"
                                                 >
-                                                   {job}
+                                                   {customer_name}
+                                                </Typography>
+                                             </td>
+                                             <td className="border border-blue-gray-100 px-4 py-2 ">
+                                                <Typography
+                                                   variant="small"
+                                                   className="font-normal text-gray-800"
+                                                >
+                                                   {status}
                                                 </Typography>
                                              </td>
                                           </tr>
                                        );
-                                    }
+                                    })
                                  )}
                               </tbody>
                            </table>
@@ -323,219 +589,236 @@ const Create = ({ customers, collectors, generated_bill_no }) => {
                </div>
             </div>
             <hr />
-            <div className="mt-8 px-4 flex gap-4">
-               <Card className="h-[380px] w-[450px] overflow-scroll">
+            <div className="flex flex-col lg:flex-row gap-1">
+               {/* Transaction Card */}
+               <div className="w-full lg:w-[60%] h-[480px] overflow-auto p-4 border-2 border-sky-500">
                   <Typography variant="h6" color="blue-gray">
                      ALL TRANSACTION
                   </Typography>
                   <table className="w-full min-w-max table-auto text-left">
                      <thead>
                         <tr>
-                           {TABLE_HEAD.map((head) => (
-                              <th
-                                 key={head}
-                                 className="border-b border-blue-gray-100 bg-blue-gray-50 p-4"
-                              >
-                                 <Typography
-                                    variant="small"
-                                    color="blue-gray"
-                                    className="font-normal leading-none opacity-70"
-                                 >
-                                    {head}
-                                 </Typography>
-                              </th>
-                           ))}
+                           <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                              Month
+                           </th>
+                           <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                              Bill No
+                           </th>
+                           <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                              Bill Amount
+                           </th>
+                           <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                              Remarks
+                           </th>
+                           <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                              Status
+                           </th>
                         </tr>
                      </thead>
                      <tbody>
-                        {TABLE_ROWS.map(({ name, job, date }, index) => {
-                           const isLast = index === TABLE_ROWS.length - 1;
-                           const classes = isLast
-                              ? "p-4"
-                              : "p-4 border-b border-blue-gray-50";
-
-                           return (
-                              <tr key={name}>
-                                 <td className={classes}>
-                                    <Typography
-                                       variant="small"
-                                       color="blue-gray"
-                                       className="font-normal"
+                        {isLoading ? (
+                           <tr>
+                              <td colSpan={4} className="border p-4">
+                                 <div className="flex justify-center items-center h-full">
+                                    <Spinner
+                                       className="h-10 w-10"
+                                       color="green"
+                                    />
+                                 </div>
+                              </td>
+                           </tr>
+                        ) : TROW_TRANSACTIONS.length === 0 ? (
+                           <tr>
+                              <td
+                                 colSpan={5}
+                                 className="border p-4 text-center text-red-500"
+                              >
+                                 No transaction records found
+                              </td>
+                           </tr>
+                        ) : (
+                           TROW_TRANSACTIONS.map((customer) =>
+                              customer.plans.flatMap((plan) =>
+                                 plan.transactions.map((tx) => (
+                                    <tr
+                                       key={tx.id}
+                                       className="hover:bg-blue-gray-50"
                                     >
-                                       {name}
-                                    </Typography>
-                                 </td>
-                                 <td className={classes}>
-                                    <Typography
-                                       variant="small"
-                                       color="blue-gray"
-                                       className="font-normal"
-                                    >
-                                       {job}
-                                    </Typography>
-                                 </td>
-                                 <td className={classes}>
-                                    <Typography
-                                       variant="small"
-                                       color="blue-gray"
-                                       className="font-normal"
-                                    >
-                                       {date}
-                                    </Typography>
-                                 </td>
-                                 <td className={classes}>
-                                    <Typography
-                                       as="a"
-                                       href="#"
-                                       variant="small"
-                                       color="blue-gray"
-                                       className="font-medium"
-                                    >
-                                       Edit
-                                    </Typography>
-                                 </td>
-                              </tr>
-                           );
-                        })}
+                                       <td className="border px-4 py-2">
+                                          {new Date(
+                                             tx.created_at
+                                          ).toLocaleDateString("en-US")}
+                                       </td>
+                                       <td className="border px-4 py-2">
+                                          {tx.bill_no}
+                                       </td>
+                                       <td className="border px-4 py-2">
+                                          {new Intl.NumberFormat("en-PH", {
+                                             style: "currency",
+                                             currency: "PHP",
+                                          }).format(tx.bill_amount)}
+                                       </td>
+                                       <td className="border px-4 py-2">
+                                          {tx.remarks}
+                                       </td>
+                                       <td className="border px-4 py-2">
+                                          {tx.status}
+                                       </td>
+                                    </tr>
+                                 ))
+                              )
+                           )
+                        )}
                      </tbody>
                   </table>
-               </Card>
-               <div className="mb-6 flex justify-between items-center ">
-                  <Card
-                     color="white"
-                     className=" mx-auto w-full max-w-xl  p-8 shadow-md rounded-md mt-1 mb-2"
-                  >
-                     <div className="">
-                        <form onSubmit={onSubmit} className=" mb-2">
-                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div className="mb-3">
-                                 <Typography
-                                    variant="paragraph"
-                                    color="blue-gray"
-                                    className="mb-1 "
-                                 >
-                                    Bill No.
-                                 </Typography>
-                                 <input
-                                    type="hidden"
-                                    value={data.customer_plan_id}
-                                    onChange={(e) =>
-                                       setData(
-                                          "customer_plan_id",
-                                          e.target.value
-                                       )
-                                    }
-                                 />
-                                 <input
-                                    type="hidden"
-                                    value={data.bill_no}
-                                    onChange={(e) =>
-                                       setData("bill_no", e.target.value)
-                                    }
-                                 />
-                                 <Input
-                                    size="md"
-                                    value={data.bill_no}
-                                    disabled
-                                 />
-                              </div>
-                           </div>
+               </div>
 
-                           {/* <div className="mb-3">
-                              <Typography
-                                 variant="paragraph"
-                                 color="blue-gray"
-                                 className="mb-1 "
-                              >
-                                 Customers
-                              </Typography>
-                              <Select
-                                 options={customerOptions}
-                                 placeholder="Choose a customer"
-                                 isSearchable
-                                 value={customerOptions.find(
-                                    (option) =>
-                                       option.value === data.customer_id
-                                 )}
-                                 onChange={handleCustomerChange}
-                                 className={`${
-                                    errors.customer_id
-                                       ? "border border-red-600"
-                                       : ""
-                                 }`}
-                              />
-                           </div> */}
-                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
-                              <div className="mb-3">
-                                 <Typography
-                                    variant="paragraph"
-                                    color="blue-gray"
-                                    className="mb-1 "
-                                 >
-                                    Mbps Plan
-                                 </Typography>
-                                 <Input
-                                    disabled
-                                    size="md"
-                                    value={`${mbpsPlan} mbps - ₱${new Intl.NumberFormat(
-                                       "en-PH"
-                                    ).format(planPrice)}`}
-                                    onChange={(e) =>
-                                       setMbpsPlan(e.target.value)
-                                    } // Added onChange here
-                                 />
-                              </div>
-                              <div className="mb-3">
-                                 <Typography
-                                    variant="paragraph"
-                                    color="blue-gray"
-                                    className="mb-1 "
-                                 >
-                                    Date Registration
-                                 </Typography>
-                                 <Input
-                                    disabled
-                                    type="date"
-                                    size="md"
-                                    value={registrationDate}
-                                    onChange={(e) =>
-                                       setMbpsPlan(e.target.value)
-                                    } // Added onChange here
-                                 />
-                              </div>
-                           </div>
-
-                           <div className="mb-3">
-                              <Typography
-                                 variant="paragraph"
-                                 color="blue-gray"
-                                 className="mb-1 "
-                              >
-                                 Amount
-                              </Typography>
-                              <Input
-                                 type="number"
-                                 size="md"
-                                 value={data.bill_amount}
-                                 onChange={(e) =>
-                                    setData("bill_amount", e.target.value)
-                                 }
-                                 error={Boolean(errors.bill_amount)}
-                              />
-                           </div>
-
-                           <Button
-                              type="submit"
-                              disabled={processing}
-                              className="mt-6 w-full"
-                              color="blue"
-                              fullWidth
-                           >
-                              Save
-                           </Button>
-                        </form>
+               {/* Form Card */}
+               <div className="w-full lg:w-[35%] p-4 overflow-auto shadow-md rounded-md border-2 border-sky-500">
+                  <form onSubmit={onSubmit}>
+                     <input
+                        type="hidden"
+                        value={data.customer_plan_id}
+                        onChange={(e) =>
+                           setData("customer_plan_id", e.target.value)
+                        }
+                        className="mb-2"
+                     />
+                     <div className="mb-1">
+                        <Typography
+                           variant="paragraph"
+                           color="blue-gray"
+                           className="mb-1 "
+                        >
+                           Acc No.
+                        </Typography>
+                        <Input
+                           size="md"
+                           value={data.customer_plan_id}
+                           disabled
+                           className="mb-3"
+                        />
                      </div>
-                  </Card>
+                     <div className="mb-1">
+                        <Typography
+                           variant="paragraph"
+                           color="blue-gray"
+                           className="mb-1 "
+                        >
+                           Bill No.
+                        </Typography>
+                        <Input
+                           size="md"
+                           value={data.bill_no}
+                           disabled
+                           className="mb-3"
+                        />
+                     </div>
+
+                     <div className="mb-1">
+                        <Typography
+                           variant="paragraph"
+                           color="blue-gray"
+                           className="mb-1 "
+                        >
+                           Rebate
+                        </Typography>
+                        <Input
+                           type="number"
+                           size="md"
+                           value={data.rebate || ""}
+                           onChange={(e) => setData("rebate", e.target.value)}
+                           className="mb-3"
+                        />
+                     </div>
+
+                     <div className="mb-1">
+                        <Typography
+                           variant="paragraph"
+                           color="blue-gray"
+                           className="mb-1 "
+                        >
+                           Partial
+                        </Typography>
+                        <Input
+                           type="number"
+                           size="md"
+                           value={data.partial || ""}
+                           onChange={(e) => setData("partial", e.target.value)}
+                           className="mb-3"
+                        />
+                     </div>
+
+                     <div className="mb-1">
+                        <Typography
+                           variant="paragraph"
+                           color="blue-gray"
+                           className="mb-1 "
+                        >
+                           Bill Amount
+                        </Typography>
+                        <Input
+                           type="number"
+                           size="md"
+                           value={data.bill_amount}
+                           onChange={(e) =>
+                              setData("bill_amount", e.target.value)
+                           }
+                           className="mb-3"
+                        />
+                     </div>
+
+                     <div className="mb-1">
+                        <Typography
+                           variant="paragraph"
+                           color="blue-gray"
+                           className="mb-1 "
+                        >
+                           Total Amount
+                        </Typography>
+                        <Input
+                           size="md"
+                           value={
+                              Number(selectedCustomerPlan.plan_price) -
+                              (Number(data.rebate) +
+                                 Number(data.partial) +
+                                 Number(data.bill_amount))
+                           }
+                           disabled
+                           className="mb-3"
+                        />
+                     </div>
+
+                     <div className="mb-1">
+                        <Typography
+                           variant="paragraph"
+                           color="blue-gray"
+                           className="mb-1 "
+                        >
+                           Status
+                        </Typography>
+                        <Select
+                           options={StatusOptions}
+                           placeholder="Choose a status"
+                           value={StatusOptions.find(
+                              (option) => option.value === data.status
+                           )}
+                           onChange={(selected) =>
+                              setData("status", selected ? selected.value : "")
+                           }
+                           className="mb-3"
+                        />
+                     </div>
+
+                     <Button
+                        type="submit"
+                        disabled={processing}
+                        color="blue"
+                        fullWidth
+                     >
+                        Save
+                     </Button>
+                  </form>
                </div>
             </div>
          </div>

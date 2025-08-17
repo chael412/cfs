@@ -6,6 +6,7 @@ use App\Http\Controllers\BillController;
 use App\Http\Controllers\CollectorController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerPlanController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\WalkinBillingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,12 @@ Route::get('get_batchbillx', [BatchBillingController::class, 'indexApi']);
 
 
 Route::get('/customers/{id}/transactions', [CustomerController::class, 'showCustomerTransaction']);
+Route::post('/transactions', [TransactionController::class, 'storeTransaction']);
+Route::get('/customers/transactions', [CustomerController::class, 'customerTransactions']);
+
 
 
 Route::get('/customers/{customerId}/latest-plan', [BillController::class, 'getLatestPlanForCustomer']);
+Route::get('/hello', function () {
+    return response()->json(['message' => 'Hello World']);
+});

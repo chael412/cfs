@@ -7,10 +7,80 @@ use App\Models\Collector;
 use App\Models\Customer;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class CustomerController extends Controller
 {
+    public function customerTransactions1(Request $request)
+    {
+        $search = $request->input('search');
+        $searchBy = $request->input('searchBy'); // choices: fullname, lastname, id
+
+        $query = Customer::with(['customerPlans.transactions']);
+
+        if ($search) {
+            if ($searchBy) {
+                // If searchBy is provided, respect it
+                if ($searchBy === 'lastname') {
+                    $query->where('lastname', 'like', "%{$search}%");
+                } elseif ($searchBy === 'id') {
+                    $query->where('id', $search);
+                } elseif ($searchBy === 'fullname') {
+                    $query->whereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ["%{$search}%"]);
+                }
+            } else {
+                // Automatic search across multiple fields
+                $query->where(function ($q) use ($search) {
+                    $q->where('lastname', 'like', "%{$search}%")
+                        ->orWhere('id', $search)
+                        ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ["%{$search}%"]);
+                });
+            }
+        }
+
+        $customers = $query->paginate(20);
+
+        return response()->json($customers);
+    }
+
+    public function customerTransactions()
+    {
+        try {
+            $search = request('search'); // unified search input
+            $sortColumn = request('sortColumn', 'lastname');
+            $sortDirection = request('sortDirection', 'asc');
+
+            $validSortColumns = [
+                'lastname',
+            ];
+
+            if (!in_array($sortColumn, $validSortColumns)) {
+                $sortColumn = 'lastname';
+            }
+
+            $query = Customer::with(['customerPlans.plan', 'customerPlans.transactions'])
+                ->where('status', 'active')
+                ->when($search, function ($query) use ($search) {
+                    $query->where(function ($q) use ($search) {
+                        $q->where('lastname', 'like', $search . '%')
+                            ->orWhere('id', $search)
+                            ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ["%{$search}%"]);
+                    });
+                });
+
+            $data = $query->orderBy($sortColumn, $sortDirection)
+                ->paginate(100);
+
+            return response()->json($data, 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error: ' . $e->getMessage()], 404);
+        }
+    }
+
+
+
+
     // api function
     public function showCustomerTransaction($id)
     {

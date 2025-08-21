@@ -851,15 +851,15 @@ const Create = ({ collectors, generated_bill_no }) => {
                            value={data.partial || ""}
                            onChange={(e) => {
                               const value = Number(e.target.value);
-                              const max = Number(
-                                 selectedCustomerPlan.plan_price
-                              );
+                              const computedTotal =
+                                 Number(selectedCustomerPlan.plan_price) -
+                                 Number(data.rebate || 0);
 
-                              if (value > max) {
+                              if (value > computedTotal) {
                                  alert(
-                                    `Partial cannot be greater than Plan Price (${max}).`
+                                    `Partial cannot be greater than Total Amount Paid (${computedTotal}).`
                                  );
-                                 setData("partial", max); // put back exact plan price
+                                 setData("partial", computedTotal); // reset to exact computed total
                               } else {
                                  setData("partial", value);
                               }

@@ -26,6 +26,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import UseAppUrl from "@/hooks/UseAppUrl";
 import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
 
 const Create = ({ collectors, generated_bill_no }) => {
    const API_URL = UseAppUrl();
@@ -165,10 +166,15 @@ const Create = ({ collectors, generated_bill_no }) => {
          return;
       }
 
+      // Compute bill_amount dynamically (plan price - rebate)
+      const computedBillAmount =
+         Number(selectedCustomerPlan?.plan_price || 0) -
+         Number(data.rebate || 0);
+
       // Ensure numeric values
       const submitData = {
          ...data,
-         bill_amount: Number(data.bill_amount) || 0.0,
+         bill_amount: computedBillAmount,
          rebate: Number(data.rebate) || 0.0,
          partial: Number(data.partial) || 0.0,
       };
@@ -205,28 +211,70 @@ const Create = ({ collectors, generated_bill_no }) => {
    ];
 
    const TROW_CUSTOMERS =
-      customerData?.data.map((customer) => ({
-         id: customer.id,
-         customer_name: `${customer.lastname} ${customer.firstname} ${
-            customer.middlename ?? ""
-         }`,
-         firstname: customer.firstname,
-         middlename: customer.middlename,
-         lastname: customer.lastname,
-         address: customer.address,
-         contact_no: customer.contact_no,
-         sex: customer.sex,
-         marital_status: customer.marital_status,
-         birthdate: customer.birthdate,
-         occupation: customer.occupation,
-         status: customer.status,
-         plans: customer.customer_plans.map((plan) => ({
-            mbps: plan.plan.mbps,
-            plan_price: plan.plan.plan_price,
-            date_registration: plan.date_registration,
-            customer_plan_id: plan.id,
-         })),
-      })) || [];
+      customerData?.data.map((customer) => {
+         return {
+            id: customer.id,
+            customer_name: `${customer.lastname} ${customer.firstname} ${
+               customer.middlename ?? ""
+            }`,
+            firstname: customer.firstname,
+            middlename: customer.middlename,
+            lastname: customer.lastname,
+            address: customer.address,
+            contact_no: customer.contact_no,
+            sex: customer.sex,
+            marital_status: customer.marital_status,
+            birthdate: customer.birthdate,
+            occupation: customer.occupation,
+            status: customer.status,
+
+            plans: customer.customer_plans.map((plan) => {
+               // get last transaction (by created_at)
+               const lastTransaction = plan.transactions.length
+                  ? [...plan.transactions].sort(
+                       (a, b) => new Date(b.created_at) - new Date(a.created_at)
+                    )[0]
+                  : null;
+
+               let balance = null;
+               let balanceMonth = null;
+
+               if (lastTransaction) {
+                  balance =
+                     Number(lastTransaction.bill_amount) -
+                     Number(lastTransaction.partial);
+
+                  balanceMonth = dayjs(lastTransaction.created_at).format(
+                     "MMMM"
+                  ); // e.g. "July"
+               }
+
+               return {
+                  customer_plan_id: plan.id,
+                  mbps: plan.plan.mbps,
+                  plan_price: plan.plan.plan_price,
+                  date_registration: plan.date_registration,
+
+                  // include transactions
+                  transactions: plan.transactions.map((trx) => ({
+                     id: trx.id,
+                     bill_no: trx.bill_no,
+                     rebate: trx.rebate,
+                     partial: trx.partial,
+                     bill_amount: trx.bill_amount,
+                     remarks: trx.remarks,
+                     status: trx.status,
+                     created_at: trx.created_at,
+                  })),
+
+                  // last transaction summary
+                  last_transaction: lastTransaction,
+                  balance,
+                  balanceMonth,
+               };
+            }),
+         };
+      }) || [];
 
    const TROW_TRANSACTIONS =
       customerTransactionsData?.data.map((customer) => ({
@@ -289,6 +337,8 @@ const Create = ({ collectors, generated_bill_no }) => {
          mbps: latestPlan.mbps || "N/A",
          plan_price: latestPlan.plan_price || "N/A",
          date_registration: latestPlan.date_registration || "N/A",
+         latest_balance: latestPlan.latest_balance || 0,
+         latest_balance_month: latestPlan.latest_balance_month || 0,
       });
 
       setOpen(false);
@@ -492,7 +542,9 @@ const Create = ({ collectors, generated_bill_no }) => {
 
                   <Typography variant="h6" color="blue-gray">
                      BALANCE OF JULY:{" "}
-                     <span className="text-orange-900">1.5m</span>
+                     <span className="text-orange-900">
+                        {selectedCustomerPlan.latest_balance}
+                     </span>
                   </Typography>
                </div>
                <div>
@@ -626,7 +678,10 @@ const Create = ({ collectors, generated_bill_no }) => {
                               Bill No
                            </th>
                            <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                              Bill Amount
+                              Partial
+                           </th>
+                           <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                              Total Amount Paid
                            </th>
                            <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
                               Remarks
@@ -672,6 +727,12 @@ const Create = ({ collectors, generated_bill_no }) => {
                                        </td>
                                        <td className="border px-4 py-2">
                                           {tx.bill_no}
+                                       </td>
+                                       <td className="border px-4 py-2">
+                                          {new Intl.NumberFormat("en-PH", {
+                                             style: "currency",
+                                             currency: "PHP",
+                                          }).format(tx.partial)}
                                        </td>
                                        <td className="border px-4 py-2">
                                           {new Intl.NumberFormat("en-PH", {

@@ -51,15 +51,15 @@ class CustomerController extends Controller
             $sortColumn = request('sortColumn', 'lastname');
             $sortDirection = request('sortDirection', 'asc');
 
-            $validSortColumns = [
-                'lastname',
-            ];
+            $validSortColumns = ['lastname'];
 
             if (!in_array($sortColumn, $validSortColumns)) {
                 $sortColumn = 'lastname';
             }
 
-            $query = Customer::with(['customerPlans.plan', 'customerPlans.transactions'])
+            $query = Customer::with(['customerPlans.plan', 'customerPlans.transactions' => function ($q) {
+                $q->latest(); // only fetch transactions in descending order
+            }])
                 ->where('status', 'active')
                 ->when($search, function ($query) use ($search) {
                     $query->where(function ($q) use ($search) {
@@ -71,6 +71,22 @@ class CustomerController extends Controller
 
             $data = $query->orderBy($sortColumn, $sortDirection)
                 ->paginate(100);
+
+            // Append balance + month of last transaction
+            $data->getCollection()->transform(function ($customer) {
+                foreach ($customer->customerPlans as $plan) {
+                    $latestTransaction = $plan->transactions->first(); // latest because of ->latest() above
+
+                    if ($latestTransaction) {
+                        $plan->latest_balance = $latestTransaction->bill_amount - $latestTransaction->partial;
+                        $plan->latest_balance_month = \Carbon\Carbon::parse($latestTransaction->created_at)->format('F'); // e.g. "July"
+                    } else {
+                        $plan->latest_balance = 0;
+                        $plan->latest_balance_month = null;
+                    }
+                }
+                return $customer;
+            });
 
             return response()->json($data, 200);
         } catch (\Exception $e) {

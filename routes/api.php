@@ -29,6 +29,8 @@ Route::get('get_batchbillx', [BatchBillingController::class, 'indexApi']);
 Route::get('/customers/{id}/transactions', [CustomerController::class, 'showCustomerTransaction']);
 Route::post('/transactions', [TransactionController::class, 'storeTransaction']);
 Route::get('/customers/transactions', [CustomerController::class, 'customerTransactions']);
+Route::get('get_transactions', [TransactionController::class, 'indexApi']);
+
 
 
 

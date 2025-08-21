@@ -9,6 +9,7 @@ use App\Http\Controllers\CustomerPlanController;
 use App\Http\Controllers\Main\DashboardController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\WalkinBillingController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +37,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('walkin_bills', WalkinBillingController::class)->names('walkin_bills');
     Route::resource('advance_bills', AdvanceBillingController::class)->names('advance_bills');
     Route::resource('batch_bills', BatchBillingController::class)->names('batch_bills');
+    Route::resource('transactions', TransactionController::class)->names('transactions');
+
 
 
 

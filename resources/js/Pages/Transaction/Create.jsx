@@ -194,7 +194,11 @@ const Create = ({ collectors, generated_bill_no }) => {
          setOpenModalPrint(true);
 
          // Reset form
-         setData("bill_amount", "");
+         setData("rebate", "");
+         setData("partial", "");
+         setData("remarks", "");
+         setData("status", "");
+
          refetchTransData();
       } catch (error) {
          console.error("Error creating transaction:", error.response || error);
@@ -246,7 +250,7 @@ const Create = ({ collectors, generated_bill_no }) => {
 
                   balanceMonth = dayjs(lastTransaction.created_at).format(
                      "MMMM"
-                  ); // e.g. "July"
+                  );
                }
 
                return {
@@ -254,6 +258,10 @@ const Create = ({ collectors, generated_bill_no }) => {
                   mbps: plan.plan.mbps,
                   plan_price: plan.plan.plan_price,
                   date_registration: plan.date_registration,
+
+                  // ✅ include API fields
+                  latest_balance: plan.latest_balance,
+                  latest_balance_month: plan.latest_balance_month,
 
                   // include transactions
                   transactions: plan.transactions.map((trx) => ({
@@ -338,7 +346,7 @@ const Create = ({ collectors, generated_bill_no }) => {
          plan_price: latestPlan.plan_price || "N/A",
          date_registration: latestPlan.date_registration || "N/A",
          latest_balance: latestPlan.latest_balance || 0,
-         latest_balance_month: latestPlan.latest_balance_month || 0,
+         latest_balance_month: latestPlan.latest_balance_month || "N/A",
       });
 
       setOpen(false);
@@ -541,7 +549,7 @@ const Create = ({ collectors, generated_bill_no }) => {
                   </Typography>
 
                   <Typography variant="h6" color="blue-gray">
-                     BALANCE OF JULY:{" "}
+                     BALANCE OF {selectedCustomerPlan.latest_balance_month}:{" "}
                      <span className="text-orange-900">
                         {selectedCustomerPlan.latest_balance}
                      </span>

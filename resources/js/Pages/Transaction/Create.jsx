@@ -383,7 +383,7 @@ const Create = ({ collectors, generated_bill_no }) => {
 
                <Tooltip content="Back">
                   <Link
-                     href="/batch_bills"
+                     href="/transactions"
                      className="hover:bg-gray-200 px-2 py-1 rounded"
                   >
                      <BsArrowReturnLeft className="text-xl cursor-pointer" />

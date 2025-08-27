@@ -133,7 +133,7 @@ class CustomerController extends Controller
                 });
 
             $data = $query->orderBy($sortColumn, $sortDirection)
-                ->paginate(10);
+                ->paginate(50);
 
             return response()->json($data, 200);
         } catch (\Exception $e) {

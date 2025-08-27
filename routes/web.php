@@ -11,6 +11,7 @@ use App\Http\Controllers\DisconnectionController;
 use App\Http\Controllers\Main\DashboardController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PurokController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\WalkinBillingController;
 use Illuminate\Foundation\Application;
@@ -40,6 +41,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('advance_bills', AdvanceBillingController::class)->names('advance_bills');
     Route::resource('batch_bills', BatchBillingController::class)->names('batch_bills');
     Route::resource('transactions', TransactionController::class)->names('transactions');
+    Route::resource('address', PurokController::class)->names('address');
+
 
 
     Route::resource('disconnections', DisconnectionController::class)->names('disconnections');

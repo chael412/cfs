@@ -11,7 +11,7 @@ class StorePurokRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,8 @@ class StorePurokRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'purok_name' => ['required', 'string', 'max:255'],
+            'barangay_id' => ['required', 'integer'],
         ];
     }
 }

@@ -135,22 +135,40 @@ class CustomerPlanController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(CustomerPlan $customerPlan)
+    public function show($id)
     {
-        $customerPlan->load('customer', 'plan');
+        $customer_plan = CustomerPlan::with(['customer', 'collector', 'plan'])
+            ->findOrFail($id);
 
+        // extract the customer_id from the customer_plan
+        $customerId = $customer_plan->customer_id;
+
+        // now pass customer_id to your helper function
+        $latestPlan = $this->getLatestCustomerPlan($customerId);
+
+        $plans = Plan::orderBy('mbps')->get();
 
         return inertia('CustomerPlan/Show', [
-            'customerPlan' => new CustomerPlanResource($customerPlan),
+            'customer_plan' => $customer_plan,
+            'latestPlan' => $latestPlan,
+            'plans' => $plans,
         ]);
     }
+
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(CustomerPlan $customerPlan)
+    public function edit($id)
     {
-        //
+        $customer_plan = CustomerPlan::with(['customer', 'collector', 'plan'])
+            ->findOrFail($id);
+
+        $customers = Customer::orderBy('lastname')->get();
+        $collectors = Collector::orderBy('lastname')->get();
+        $plans = Plan::orderBy('mbps')->get();
+
+        return Inertia::render('CustomerPlan/Edit', ['customer_plan' => $customer_plan, 'customers' => $customers, 'plans' => $plans, 'collectors' => $collectors]);
     }
 
     /**
@@ -163,7 +181,7 @@ class CustomerPlanController extends Controller
 
             $customerPlan->update($data);
 
-            return redirect()->route('show_customer_plans', ['id' => $customerPlan->customer_id]);
+            return redirect()->route('customer_plans', ['id' => $customerPlan->id]);
             // return redirect()->route('customer_plans.index');
         } catch (\Exception $e) {
             return back()->withErrors(['message' => 'Error updating customer plan: ' . $e->getMessage()])->withInput();
@@ -173,8 +191,19 @@ class CustomerPlanController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(CustomerPlan $customerPlan)
+    public function destroy($id)
     {
-        //
+        try {
+            $customer_plan = CustomerPlan::findOrFail($id);
+
+            $customer_plan->delete();
+            return response()->json([
+                'message' => 'Customer deleted successfully.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error deleting customer_plan: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

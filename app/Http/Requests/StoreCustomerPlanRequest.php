@@ -28,7 +28,7 @@ class StoreCustomerPlanRequest extends FormRequest
             'password' => ['required', 'string', 'max:255'],
             'collector_id' => ['required', 'integer'],
             'date_registration' => ['required', 'date'],
-            'date_billing' => ['required', 'date'],
+            'date_billing' => ['required', 'in:batch1,batch2'],
         ];
     }
 }

@@ -55,9 +55,14 @@ const Create = ({ customers, collectors, plans }) => {
       )}`,
    }));
 
+   const dateBillingOptions = [
+      { value: "batch1", label: "Batch1" },
+      { value: "batch2", label: "Batch2" },
+   ];
+
    return (
       <AuthenticatedLayout>
-         <Head title="Add Customer" />
+         <Head title="Add Customer Plan" />
          <div className="bg-white overflow-y-auto max-h-screen grid place-justify-center ">
             <div className="mt-2 px-4">
                <div className="mb-6 flex justify-between items-center">
@@ -237,14 +242,27 @@ const Create = ({ customers, collectors, plans }) => {
                               >
                                  Date of Billing
                               </Typography>
-                              <Input
-                                 type="date"
-                                 size="md"
-                                 value={data.date_billing}
-                                 onChange={(e) =>
-                                    setData("date_billing", e.target.value)
+                              <Select
+                                 options={dateBillingOptions}
+                                 placeholder="Choose a date billing"
+                                 isClearable
+                                 value={dateBillingOptions.find(
+                                    (option) =>
+                                       option.value === data.date_billing
+                                 )}
+                                 onChange={(selectedOption) =>
+                                    setData(
+                                       "date_billing",
+                                       selectedOption
+                                          ? selectedOption.value
+                                          : ""
+                                    )
                                  }
-                                 error={Boolean(errors.date_billing)}
+                                 className={`${
+                                    errors.date_billing
+                                       ? "border border-red-600"
+                                       : ""
+                                 }`}
                               />
                            </div>
                         </div>

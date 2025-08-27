@@ -100,7 +100,7 @@ const Index = () => {
             new Date(customerPlan.date_registration),
             "M/d/yyyy"
          ),
-         date_billing: format(new Date(customerPlan.date_billing), "M/d/yyyy"),
+         date_billing: customerPlan.date_billing,
          ppoe: customerPlan.ppoe,
          password: customerPlan.password,
       })) || [];
@@ -320,11 +320,20 @@ const Index = () => {
                                              <Link
                                                 className="hover:bg-blue-800 hover:rounded hover:text-white"
                                                 href={route(
-                                                   "show_customer_plans",
-                                                   customer_id
+                                                   "customer_plans.show",
+                                                   id
                                                 )}
                                              >
                                                 <MenuItem>View</MenuItem>
+                                             </Link>
+                                             <Link
+                                                className="hover:bg-blue-800 hover:rounded hover:text-white"
+                                                href={route(
+                                                   "customer_plans.edit",
+                                                   id
+                                                )}
+                                             >
+                                                <MenuItem>Edit</MenuItem>
                                              </Link>
                                           </MenuList>
                                        </Menu>

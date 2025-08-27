@@ -10,29 +10,27 @@ import {
    IconButton,
    Textarea,
    Tooltip,
-   MenuHandler,
-   Menu,
 } from "@material-tailwind/react";
 import Select from "react-select";
 
-const Edit = ({ collector }) => {
+const Edit = ({ customers, collectors, plans, customer_plan }) => {
    const { data, setData, patch, errors, reset, processing } = useForm({
-      firstname: collector.firstname || "",
-      middlename: collector.middlename || "",
-      lastname: collector.lastname || "",
-      sex: collector.sex || "",
-      marital_status: collector.marital_status || "",
-      birthdate: collector.birthdate || "",
-      address: collector.address || "",
-      cellphone_no: collector.cellphone_no || "",
+      customer_id: customer_plan.customer.id,
+      plan_id: customer_plan.plan.id,
+      ppoe: customer_plan.ppoe,
+      password: customer_plan.password,
+      collector_id: customer_plan.collector.id,
+      date_registration: customer_plan.date_registration,
+      date_billing: customer_plan.date_billing,
    });
 
    const onSubmit = async (e) => {
       e.preventDefault();
 
-      await patch(route("collectors.update", collector.id), {
+      await patch(route("customer_plans.update", customer_plan.id), {
          onSuccess: () => {
-            alert("Collector was updated successfully!");
+            alert("Customer plan was updated successfully!");
+            window.location.reload();
             reset();
          },
          onError: (errors) => {
@@ -41,33 +39,42 @@ const Edit = ({ collector }) => {
       });
    };
 
-   const sexOptions = [
-      { value: "male", label: "Male" },
-      { value: "female", label: "Female" },
-   ];
+   const customerOptions = customers.map((customer) => ({
+      value: customer.id,
+      label: `${customer.lastname} ${customer.firstname}`,
+   }));
 
-   const maritalStatusOptions = [
-      { value: "single", label: "Single" },
-      { value: "married", label: "Married" },
-      { value: "divorced", label: "Divorced" },
-      { value: "widowed", label: "Widowed" },
-      { value: "separated", label: "Separated" },
+   const collectorOptions = collectors.map((collector) => ({
+      value: collector.id,
+      label: `${collector.lastname} ${collector.firstname}`,
+   }));
+
+   const planOptions = plans.map((plan) => ({
+      value: plan.id,
+      label: `${plan.mbps} mbps - ₱ ${Number(plan.plan_price).toLocaleString(
+         "en-PH"
+      )}`,
+   }));
+
+   const dateBillingOptions = [
+      { value: "batch1", label: "Batch1" },
+      { value: "batch2", label: "Batch2" },
    ];
 
    return (
       <AuthenticatedLayout>
-         <Head title="Edit Collector" />
-         <div className="bg-white overflow-y-auto max-h-[590px] grid place-justify-center ">
+         <Head title="Edit Customer Plan" />
+         <div className="bg-white overflow-y-auto max-h-screen grid place-justify-center ">
             <div className="mt-2 px-4">
                <div className="mb-6 flex justify-between items-center">
                   <Card
                      color="white"
-                     className=" mx-auto w-full max-w-xl  p-8 shadow-md rounded-md mt-1 mb-2"
+                     className=" mx-auto w-full max-w-lg  p-8 shadow-md rounded-md mt-1 mb-2"
                   >
                      <div className="flex justify-end mb-2">
                         <Tooltip content="Back">
                            <Link
-                              href="/collectors"
+                              href="/customer_plans"
                               className="hover:bg-gray-200 px-2 py-1 rounded"
                            >
                               <BsArrowReturnLeft className="text-xl cursor-pointer" />
@@ -79,89 +86,29 @@ const Edit = ({ collector }) => {
                         color="blue-gray"
                         className="text-center"
                      >
-                        Edit Collector
+                        Edit Customer Plan
                      </Typography>
 
                      <form onSubmit={onSubmit} className="mt-8 mb-2">
-                        <div className="mb-3">
-                           <Typography
-                              variant="paragraph"
-                              color="blue-gray"
-                              className="mb-1 "
-                           >
-                              First Name
-                           </Typography>
-                           <Input
-                              size="md"
-                              value={data.firstname}
-                              onChange={(e) =>
-                                 setData("firstname", e.target.value)
-                              }
-                              error={Boolean(errors.firstname)}
-                              className="w-full"
-                           />
-                        </div>
-                        <div className="mb-3">
-                           <Typography
-                              variant="paragraph"
-                              color="blue-gray"
-                              className="mb-1 "
-                           >
-                              Middle Name
-                           </Typography>
-                           <Input
-                              size="md"
-                              value={data.middlename}
-                              onChange={(e) =>
-                                 setData("middlename", e.target.value)
-                              }
-                              error={Boolean(errors.middlename)}
-                           />
-                        </div>
-                        <div className="mb-3">
-                           <Typography
-                              variant="paragraph"
-                              color="blue-gray"
-                              className="mb-1 "
-                           >
-                              Last Name
-                           </Typography>
-                           <Input
-                              size="md"
-                              value={data.lastname}
-                              onChange={(e) =>
-                                 setData("lastname", e.target.value)
-                              }
-                              error={Boolean(errors.lastname)}
-                           />
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <div className="grid grid-cols-1 gap-2">
                            <div className="mb-3">
                               <Typography
                                  variant="paragraph"
                                  color="blue-gray"
                                  className="mb-1 "
                               >
-                                 Sex
+                                 Customer
                               </Typography>
-                              <Select
-                                 options={sexOptions}
-                                 placeholder="Choose a sex"
-                                 isClearable
-                                 value={sexOptions.find(
-                                    (option) => option.value === data.sex
-                                 )}
-                                 onChange={(selectedOption) =>
-                                    setData(
-                                       "sex",
-                                       selectedOption
-                                          ? selectedOption.value
-                                          : ""
-                                    )
+                              <Input
+                                 size="md"
+                                 value={
+                                    customer_plan.customer.firstname +
+                                       " " +
+                                       customer_plan.customer.firstname ??
+                                    " " + customer_plan.customer.lastname
                                  }
-                                 className={`${
-                                    errors.sex ? "border border-red-600" : ""
-                                 }`}
+                                 disabled
+                                 className="w-full"
                               />
                            </div>
                            <div className="mb-3">
@@ -170,112 +117,122 @@ const Edit = ({ collector }) => {
                                  color="blue-gray"
                                  className="mb-1 "
                               >
-                                 Marital Status
+                                 Plan
                               </Typography>
                               <Select
-                                 options={maritalStatusOptions}
-                                 placeholder="Choose a marital status"
+                                 options={planOptions}
+                                 placeholder="Choose a plan"
                                  isClearable
-                                 value={maritalStatusOptions.find(
-                                    (option) =>
-                                       option.value === data.marital_status
+                                 value={planOptions.find(
+                                    (option) => option.value === data.plan_id
                                  )}
                                  onChange={(selectedOption) =>
                                     setData(
-                                       "marital_status",
+                                       "plan_id",
                                        selectedOption
                                           ? selectedOption.value
                                           : ""
                                     )
                                  }
                                  className={`${
-                                    errors.marital_status
+                                    errors.plan_id
                                        ? "border border-red-600"
                                        : ""
                                  }`}
                               />
                            </div>
-                        </div>
-
-                        <div className="mb-3">
-                           <Typography
-                              variant="paragraph"
-                              color="blue-gray"
-                              className="mb-1 "
-                           >
-                              Birthdate
-                           </Typography>
-                           <Input
-                              type="date"
-                              value={data.birthdate}
-                              onChange={(e) =>
-                                 setData("birthdate", e.target.value)
-                              }
-                              error={Boolean(errors.birthdate)}
-                              size="md"
-                           />
-                        </div>
-                        <div className="mb-3">
-                           <Typography
-                              variant="paragraph"
-                              color="blue-gray"
-                              className="mb-1 "
-                           >
-                              Address
-                           </Typography>
-                           <Textarea
-                              value={data.address}
-                              onChange={(e) =>
-                                 setData("address", e.target.value)
-                              }
-                              error={Boolean(errors.address)}
-                           />
-                        </div>
-
-                        <div className="mb-3">
-                           <Typography
-                              variant="paragraph"
-                              color="blue-gray"
-                              className="mb-1"
-                           >
-                              Cellphone No
-                           </Typography>
-
-                           <div className="relative flex w-full">
-                              <Button
-                                 ripple={false}
-                                 variant="text"
+                           <div className="mb-3">
+                              <Typography
+                                 variant="paragraph"
                                  color="blue-gray"
-                                 className="h-10 w-14 shrink-0 rounded-r-none border border-r-0 border-blue-gray-200 bg-transparent px-3"
+                                 className="mb-1 "
                               >
-                                 +63
-                              </Button>
+                                 PPOE
+                              </Typography>
                               <Input
-                                 type="number"
-                                 value={data.cellphone_no}
+                                 size="md"
+                                 value={data.ppoe}
                                  onChange={(e) =>
-                                    setData("cellphone_no", e.target.value)
+                                    setData("ppoe", e.target.value)
                                  }
-                                 error={Boolean(errors.cellphone_no)}
-                                 inputMode="numeric"
-                                 maxLength={10}
-                                 onInput={(e) => {
-                                    if (e.target.value.length > 10) {
-                                       e.target.value = e.target.value.slice(
-                                          0,
-                                          10
-                                       );
-                                    }
-                                 }}
-                                 placeholder="324-456-2323"
-                                 className="appearance-none rounded-l-none !border-t-blue-gray-200 placeholder:text-blue-gray-300 placeholder:opacity-100 focus:!border-t-gray-900 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                                 labelProps={{
-                                    className:
-                                       "before:content-none after:content-none",
-                                 }}
-                                 containerProps={{
-                                    className: "min-w-0",
-                                 }}
+                                 error={Boolean(errors.ppoe)}
+                                 className="w-full"
+                              />
+                           </div>
+                           <div className="mb-3">
+                              <Typography
+                                 variant="paragraph"
+                                 color="blue-gray"
+                                 className="mb-1 "
+                              >
+                                 Password
+                              </Typography>
+                              <Input
+                                 size="md"
+                                 value={data.password}
+                                 onChange={(e) =>
+                                    setData("password", e.target.value)
+                                 }
+                                 error={Boolean(errors.password)}
+                                 className="w-full"
+                              />
+                           </div>
+                           <div className="mb-3">
+                              <Typography
+                                 variant="paragraph"
+                                 color="blue-gray"
+                                 className="mb-1 "
+                              >
+                                 Assign Collector
+                              </Typography>
+                              <Select
+                                 options={collectorOptions}
+                                 placeholder="Choose a collector"
+                                 isClearable
+                                 value={collectorOptions.find(
+                                    (option) =>
+                                       option.value === data.collector_id
+                                 )}
+                                 onChange={(selectedOption) =>
+                                    setData(
+                                       "collector_id",
+                                       selectedOption
+                                          ? selectedOption.value
+                                          : ""
+                                    )
+                                 }
+                              />
+                           </div>
+
+                           <div className="mb-3">
+                              <Typography
+                                 variant="paragraph"
+                                 color="blue-gray"
+                                 className="mb-1 "
+                              >
+                                 Date of Billing
+                              </Typography>
+                              <Select
+                                 options={dateBillingOptions}
+                                 placeholder="Choose a date billing"
+                                 isClearable
+                                 value={dateBillingOptions.find(
+                                    (option) =>
+                                       option.value === data.date_billing
+                                 )}
+                                 onChange={(selectedOption) =>
+                                    setData(
+                                       "date_billing",
+                                       selectedOption
+                                          ? selectedOption.value
+                                          : ""
+                                    )
+                                 }
+                                 className={`${
+                                    errors.date_billing
+                                       ? "border border-red-600"
+                                       : ""
+                                 }`}
                               />
                            </div>
                         </div>

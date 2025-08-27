@@ -23,15 +23,10 @@ import Select from "react-select";
 import { format } from "date-fns";
 import { useState } from "react";
 
-const Show = ({ latestPlan, plans }) => {
-   const { data, setData, patch, errors, reset, processing } = useForm({
-      customer_plan_id: latestPlan.id || "",
-      customer_id: latestPlan.customer_id || "",
-      plan_id: latestPlan.plan_id || "",
-   });
-   const { customer } = usePage().props;
-
+const Show = ({ customer_plan, latestPlan, plans }) => {
    const [open, setOpen] = useState(false);
+
+   console.log(customer_plan);
 
    const handleOpen = () => setOpen(!open);
 
@@ -68,8 +63,9 @@ const Show = ({ latestPlan, plans }) => {
                         size="small"
                         className="mb-0 text-lg font-bold border-b border-b-gray-700"
                      >
-                        {customer.firstname} {customer.middlename ?? ""}
-                        {customer.lastname} Plans
+                        {customer_plan.customer.firstname}{" "}
+                        {customer_plan.customer.middlename ?? ""}
+                        {customer_plan.customer.lastname} Plans
                      </Typography>
                      <Typography
                         className="text-sm"
@@ -151,77 +147,42 @@ const Show = ({ latestPlan, plans }) => {
                               </tr>
                            </thead>
                            <tbody>
-                              <Deferred
-                                 data={["customer"]}
-                                 fallback={
-                                    <tr>
-                                       <td
-                                          colSpan={3}
-                                          className="border border-blue-gray-100 p-4"
-                                       >
-                                          <div className="flex justify-center items-center h-full">
-                                             <Spinner
-                                                className="h-8 w-8"
-                                                color="green"
-                                             />
-                                          </div>
-                                       </td>
-                                    </tr>
-                                 }
-                              >
-                                 {customer?.customer_plans?.length > 0 ? (
-                                    customer.customer_plans.map((plan) => (
-                                       <tr
-                                          key={plan.id}
-                                          className="hover:bg-blue-gray-50"
-                                       >
-                                          <td className="border border-blue-gray-100 px-4 py-2">
-                                             <Typography
-                                                variant="small"
-                                                className="font-normal text-gray-800 text-[13px]"
-                                             >
-                                                {plan.plan.mbps} Mbps
-                                             </Typography>
-                                          </td>
-                                          <td className="border border-blue-gray-100 px-4">
-                                             <Typography
-                                                variant="small"
-                                                className="font-normal text-gray-800 text-[13px]"
-                                             >
-                                                {Number(
-                                                   plan.plan.plan_price
-                                                ).toLocaleString("en-PH", {
-                                                   style: "currency",
-                                                   currency: "PHP",
-                                                })}
-                                             </Typography>
-                                          </td>
-                                          <td className="border border-blue-gray-100 px-4">
-                                             <Typography
-                                                variant="small"
-                                                className="font-normal text-gray-800 text-[13px]"
-                                             >
-                                                {format(
-                                                   new Date(
-                                                      plan.plan.created_at
-                                                   ),
-                                                   "M/d/yyyy"
-                                                )}
-                                             </Typography>
-                                          </td>
-                                       </tr>
-                                    ))
-                                 ) : (
-                                    <tr>
-                                       <td
-                                          colSpan="3"
-                                          className="text-center text-gray-500"
-                                       >
-                                          No Customer plans found.
-                                       </td>
-                                    </tr>
-                                 )}
-                              </Deferred>
+                              <tr className="hover:bg-blue-gray-50">
+                                 <td className="border border-blue-gray-100 px-4 py-2">
+                                    <Typography
+                                       variant="small"
+                                       className="font-normal text-gray-800 text-[13px]"
+                                    >
+                                       {customer_plan.plan.mbps} Mbps
+                                    </Typography>
+                                 </td>
+                                 <td className="border border-blue-gray-100 px-4">
+                                    <Typography
+                                       variant="small"
+                                       className="font-normal text-gray-800 text-[13px]"
+                                    >
+                                       {Number(
+                                          customer_plan.plan.plan_price
+                                       ).toLocaleString("en-PH", {
+                                          style: "currency",
+                                          currency: "PHP",
+                                       })}
+                                    </Typography>
+                                 </td>
+                                 <td className="border border-blue-gray-100 px-4">
+                                    <Typography
+                                       variant="small"
+                                       className="font-normal text-gray-800 text-[13px]"
+                                    >
+                                       {format(
+                                          new Date(
+                                             customer_plan.plan.created_at
+                                          ),
+                                          "M/d/yyyy"
+                                       )}
+                                    </Typography>
+                                 </td>
+                              </tr>
                            </tbody>
                         </table>
                      </div>
@@ -229,44 +190,6 @@ const Show = ({ latestPlan, plans }) => {
                </div>
             </div>
          </div>
-         <Dialog open={open} handler={handleOpen} size="xs">
-            <DialogHeader>Edit Plan</DialogHeader>
-            <DialogBody>
-               <Select
-                  options={planOptions}
-                  placeholder="Choose a plan"
-                  isClearable
-                  value={planOptions.find(
-                     (option) => option.value === data.plan_id
-                  )}
-                  onChange={(selectedOption) =>
-                     setData(
-                        "plan_id",
-                        selectedOption ? selectedOption.value : ""
-                     )
-                  }
-                  className={`${errors.plan_id ? "border border-red-600" : ""}`}
-               />
-            </DialogBody>
-            <DialogFooter>
-               <Button
-                  variant="text"
-                  color="red"
-                  onClick={handleOpen}
-                  className="mr-1"
-               >
-                  <span>Cancel</span>
-               </Button>
-               <Button
-                  variant="gradient"
-                  color="green"
-                  onClick={onSubmit}
-                  disabled={processing}
-               >
-                  <span>Update</span>
-               </Button>
-            </DialogFooter>
-         </Dialog>
       </AuthenticatedLayout>
    );
 };

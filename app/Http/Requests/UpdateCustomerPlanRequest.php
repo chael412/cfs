@@ -24,7 +24,11 @@ class UpdateCustomerPlanRequest extends FormRequest
         return [
             'customer_id' => ['required', 'integer'],
             'plan_id' => ['required', 'integer'],
-            'date_registration'=> ['required', 'date'],
+            'ppoe' => ['required', 'string', 'max:255'],
+            'password' => ['required', 'string', 'max:255'],
+            'collector_id' => ['required', 'integer'],
+            'date_registration' => ['required', 'date'],
+            'date_billing' => ['required', 'in:batch1,batch2'],
         ];
     }
 }

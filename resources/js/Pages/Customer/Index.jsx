@@ -82,6 +82,15 @@ const Index = () => {
       keepPreviousData: true,
    });
 
+   console.log(data);
+   const toCamelCase = (str) => {
+      return str
+         .toLowerCase()
+         .split(" ")
+         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+         .join(" ");
+   };
+
    const TABLE_ROWS =
       data?.data.map((customer) => ({
          id: customer.id,
@@ -91,7 +100,15 @@ const Index = () => {
          firstname: customer.firstname,
          middlename: customer.middlename,
          lastname: customer.lastname,
-         address: customer.address,
+         address:
+            toCamelCase(
+               customer.purok.barangay.municipality.municipality_name
+            ) +
+            ", " +
+            toCamelCase(customer.purok.barangay.barangay_name) +
+            ", " +
+            toCamelCase(customer.purok.purok_name),
+
          contact_no: customer.contact_no,
          sex: customer.sex,
          marital_status: customer.marital_status,
@@ -127,6 +144,7 @@ const Index = () => {
          }
       }
    };
+
    return (
       <AuthenticatedLayout>
          <Head title="Customers" />

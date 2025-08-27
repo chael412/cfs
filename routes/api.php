@@ -1,11 +1,15 @@
 <?php
 
 use App\Http\Controllers\AdvanceBillingController;
+use App\Http\Controllers\BannedController;
+use App\Http\Controllers\BarangayController;
 use App\Http\Controllers\BatchBillingController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\CollectorController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerPlanController;
+use App\Http\Controllers\DisconnectionController;
+use App\Http\Controllers\PurokController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\WalkinBillingController;
 use Illuminate\Http\Request;
@@ -30,6 +34,17 @@ Route::get('/customers/{id}/transactions', [CustomerController::class, 'showCust
 Route::post('/transactions', [TransactionController::class, 'storeTransaction']);
 Route::get('/customers/transactions', [CustomerController::class, 'customerTransactions']);
 Route::get('get_transactions', [TransactionController::class, 'indexApi']);
+
+
+//disconnection
+Route::get('customer_disconnection', [DisconnectionController::class, 'indexApi']);
+
+//banned
+Route::get('customer_banned', [BannedController::class, 'indexApi']);
+
+//options
+Route::get('barangay_options', [BarangayController::class, 'barangayOptions']);
+Route::get('purok_options', [PurokController::class, 'purokOptions']);
 
 
 

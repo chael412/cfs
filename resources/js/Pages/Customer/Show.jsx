@@ -16,6 +16,14 @@ import Select from "react-select";
 import { format } from "date-fns";
 
 const Show = ({ customer }) => {
+   const toCamelCase = (str) => {
+      return str
+         .toLowerCase()
+         .split(" ")
+         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+         .join(" ");
+   };
+
    return (
       <AuthenticatedLayout>
          <Head title="Customer Profile" />
@@ -162,7 +170,16 @@ const Show = ({ customer }) => {
                            </td>
                            <td className="px-4 py-2 text-gray-900 border border-gray-300">
                               <Typography variant="paragraph">
-                                 {customer.address}
+                                 {toCamelCase(
+                                    customer.purok.barangay.municipality
+                                       .municipality_name
+                                 ) +
+                                    ", " +
+                                    toCamelCase(
+                                       customer.purok.barangay.barangay_name
+                                    ) +
+                                    ", " +
+                                    toCamelCase(customer.purok.purok_name)}
                               </Typography>
                            </td>
                         </tr>

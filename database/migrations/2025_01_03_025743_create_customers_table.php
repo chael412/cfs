@@ -18,10 +18,10 @@ return new class extends Migration {
             $table->enum('sex', ['male', 'female']);
             $table->enum('marital_status', ['single', 'married', 'divorced', 'widowed', 'separated']);
             $table->date('birthdate');
-            $table->string('address')->nullable();
+
             $table->string('occupation')->nullable();
             $table->string('contact_no');
-            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->enum('status', ['active', 'inactive', 'banned'])->default('active');
             $table->timestamps();
         });
     }

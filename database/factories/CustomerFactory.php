@@ -23,7 +23,7 @@ class CustomerFactory extends Factory
             'sex' => $this->faker->randomElement(['male', 'female']),
             'marital_status' => $this->faker->randomElement(['single', 'married', 'divorced', 'widowed', 'separated']),
             'birthdate' => $this->faker->date(),
-            'address' => $this->faker->address,
+            'purok_id' => $this->faker->numberBetween(1, 4),
             'occupation' => $this->faker->jobTitle,
             'contact_no' => '9' . $this->faker->numerify('##########'),
 

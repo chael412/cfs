@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CustomerResource;
+use App\Http\Resources\TransactionResource;
 use App\Models\Customer;
 use App\Models\Transaction;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
+use App\Http\Resources\CollectorResource;
+use App\Models\Collector;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class TransactionController extends Controller
 {
@@ -72,9 +77,35 @@ class TransactionController extends Controller
             // Create transaction
             $transaction = Transaction::create($data);
 
+            // Load relations (customer, collector)
+            $transaction->load([
+                'customerPlan.customer',
+                'customerPlan.collector'
+            ]);
+
+            // Get the latest transaction for this customer_plan
+            $lastTransaction = Transaction::where('customer_plan_id', $transaction->customer_plan_id)
+                ->where('id', '<', $transaction->id) // only older transactions
+                ->latest()
+                ->first();
+
+
+            // Compute outstanding balance
+            $outstandingBalance = null;
+            $billingMonth = null;
+
+            if ($lastTransaction) {
+                $outstandingBalance = $lastTransaction->bill_amount - $lastTransaction->partial;
+                $billingMonth = $lastTransaction->created_at->format('F Y'); // e.g. "August 2025"
+            }
+
             return response()->json([
                 'message' => 'Transaction created successfully.',
                 'transaction' => $transaction,
+                'collector' => $transaction->customerPlan->collector ?? null,
+                'customer' => $transaction->customerPlan->customer ?? null,
+                'outstanding_balance' => $outstandingBalance,
+                'billing_month' => $billingMonth,
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
@@ -83,6 +114,7 @@ class TransactionController extends Controller
             ], 500);
         }
     }
+
 
 
     /**
@@ -143,7 +175,37 @@ class TransactionController extends Controller
      */
     public function show(Transaction $transaction)
     {
-        //
+        // Load all needed relationships in one go
+        $transaction->load([
+            'customerPlan.customer',
+            'customerPlan.plan',
+            'customerPlan.collector',
+        ]);
+
+        // Fetch collectors
+        $collectors = Collector::all();
+
+        // ✅ Get the latest transaction for this customer plan
+        $latestTransaction = Transaction::where('customer_plan_id', $transaction->customer_plan_id)
+            ->latest('created_at')
+            ->first();
+
+        $balance = null;
+        $month = null;
+
+        if ($latestTransaction) {
+            $balance = $latestTransaction->bill_amount - $latestTransaction->partial;
+            $month = Carbon::parse($latestTransaction->created_at)->format('F');
+        }
+
+        return inertia('Transaction/Show', [
+            'transaction' => new TransactionResource($transaction),
+            'collectors'  => CollectorResource::collection($collectors),
+            'latest'      => [
+                'balance' => $balance,
+                'month'   => $month,
+            ],
+        ]);
     }
 
     /**
@@ -151,15 +213,53 @@ class TransactionController extends Controller
      */
     public function edit(Transaction $transaction)
     {
-        //
+        // Load all needed relationships in one go
+        $transaction->load([
+            'customerPlan.customer',
+            'customerPlan.plan',
+            'customerPlan.collector',
+        ]);
+
+        // Fetch collectors
+        $collectors = Collector::all();
+
+        // ✅ Get the latest transaction for this customer plan
+        $latestTransaction = Transaction::where('customer_plan_id', $transaction->customer_plan_id)
+            ->latest('created_at')
+            ->first();
+
+        $balance = null;
+        $month = null;
+
+        if ($latestTransaction) {
+            $balance = $latestTransaction->bill_amount - $latestTransaction->partial;
+            $month = Carbon::parse($latestTransaction->created_at)->format('F');
+        }
+
+        return inertia('Transaction/Edit', [
+            'transaction' => new TransactionResource($transaction),
+            'collectors'  => CollectorResource::collection($collectors),
+            'latest'      => [
+                'balance' => $balance,
+                'month'   => $month,
+            ],
+        ]);
     }
+
 
     /**
      * Update the specified resource in storage.
      */
     public function update(UpdateTransactionRequest $request, Transaction $transaction)
     {
-        //
+        try {
+            $data = $request->validated();
+            $transaction->update($data);
+
+            return to_route('transactions.edit', $transaction->id);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error: ' . $e->getMessage()], 500);
+        }
     }
 
     /**

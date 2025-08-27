@@ -24,7 +24,8 @@ class CollectorFactory extends Factory
             'marital_status' => $this->faker->randomElement(['single', 'married', 'divorced', 'widowed', 'separated']),
             'birthdate' => $this->faker->date,
             'address' => $this->faker->address,
-            'cellphone_no' => '9' . $this->faker->numerify('##########'),
+            'occupation' => $this->faker->jobTitle,
+            'contact_no' => '9' . $this->faker->numerify('##########'),
         ];
     }
 }

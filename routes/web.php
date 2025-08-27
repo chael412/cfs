@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\AdvanceBillingController;
+use App\Http\Controllers\BannedController;
 use App\Http\Controllers\BatchBillingController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\CollectorController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerPlanController;
+use App\Http\Controllers\DisconnectionController;
 use App\Http\Controllers\Main\DashboardController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProfileController;
@@ -38,6 +40,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('advance_bills', AdvanceBillingController::class)->names('advance_bills');
     Route::resource('batch_bills', BatchBillingController::class)->names('batch_bills');
     Route::resource('transactions', TransactionController::class)->names('transactions');
+
+
+    Route::resource('disconnections', DisconnectionController::class)->names('disconnections');
+    Route::resource('banned', BannedController::class)->names('banned');
 
 
 

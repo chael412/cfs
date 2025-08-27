@@ -11,7 +11,7 @@ class UpdateTransactionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,13 @@ class UpdateTransactionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'customer_plan_id' => ['required', 'integer'],
+            'bill_no' => ['required', 'string', 'max:255'],
+            'rebate' => ['nullable', 'numeric'],
+            'partial' => ['nullable', 'numeric'],
+            'bill_amount' => ['required', 'numeric'],
+            'remarks' => ['required', 'in:advance,batch'],
+            'status' => ['required', 'in:paid,unpaid'],
         ];
     }
 }

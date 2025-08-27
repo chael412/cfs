@@ -22,18 +22,23 @@ import {
    MenuItem,
 } from "@material-tailwind/react";
 import Select from "react-select";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import UseAppUrl from "@/hooks/UseAppUrl";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
+import { useReactToPrint } from "react-to-print";
+import { format } from "date-fns";
 
 const Create = ({ collectors, generated_bill_no }) => {
    const API_URL = UseAppUrl();
    const [selectedCustomerId, setSelectedCustomerId] = useState(null);
    const [selectedCustomerPlan, setSelectedCustomerPlan] = useState({});
-
    const [billingType, setBillingType] = useState("");
+   const [transactionResponse, setTransactionResponse] = useState(null);
+
+   const contentRef = useRef();
+   const reactToPrintFn = useReactToPrint({ contentRef });
 
    const fetchCustomers = async ({ queryKey }) => {
       const [_key, page, query, sortColumn, sortDirection] = queryKey;
@@ -189,6 +194,8 @@ const Create = ({ collectors, generated_bill_no }) => {
             `${API_URL}/api/transactions`,
             submitData
          );
+
+         setTransactionResponse(response.data);
 
          console.log("Response:", response.data);
          setOpenModalPrint(true);
@@ -400,95 +407,166 @@ const Create = ({ collectors, generated_bill_no }) => {
                <DialogHeader>Billing Notice</DialogHeader>
 
                <DialogBody>
-                  <div className="relative bg-gray-100 p-6 rounded shadow h-[480px] overflow-auto">
-                     {/* Diagonal Stamp */}
-
+                  <div className="h-[480px] overflow-auto">
                      <div
-                        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rotate-[-30deg]
+                        ref={contentRef}
+                        className="relative  p-6 rounded shadow"
+                     >
+                        <div
+                           className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rotate-[-30deg]
                 text-green-800 font-bold text-6xl border-2 border-green-800
   px-8 py-4 opacity-40 select-none pointer-events-none
                 whitespace-nowrap inline-block"
-                     >
-                        CFS NOTICE PAID
-                     </div>
+                        >
+                           CFS NOTICE PAID
+                        </div>
 
-                     {/* Bill Content */}
-                     <div className="flex justify-between items-start mb-4">
-                        <div>
-                           <img
-                              src="/img/internet.png"
-                              alt="CFS Logo"
-                              className="w-16 h-16"
-                           />
-                           <div className="text-sm mt-1">
-                              #2, Manguelod Bldg. National High Way
-                              <br />
-                              District II, Tumauini, Isabela
-                              <br />
-                              TIN: 295-973-965-001
-                              <br />
-                              CP#: 09453367030
+                        {/* Bill Content */}
+                        <div className="flex justify-between items-start mb-4">
+                           <div>
+                              <img
+                                 src="/img/internet.png"
+                                 alt="CFS Logo"
+                                 className="w-16 h-16"
+                              />
+                              <div className="text-sm mt-1">
+                                 #2, Manguelod Bldg. National High Way
+                                 <br />
+                                 District II, Tumauini, Isabela
+                                 <br />
+                                 TIN: 295-973-965-001
+                                 <br />
+                                 CP#: 09453367030
+                              </div>
+                           </div>
+                           <div className="text-right">
+                              <p className="font-bold">
+                                 {transactionResponse?.customer
+                                    ? [
+                                         transactionResponse.customer
+                                            ?.firstname,
+                                         transactionResponse.customer
+                                            ?.middlename,
+                                         transactionResponse.customer?.lastname,
+                                      ]
+                                         .filter(Boolean) // removes null/empty middlename
+                                         .join(" ")
+                                    : ""}
+                              </p>
+
+                              <p>
+                                 {transactionResponse?.transaction?.created_at
+                                    ? format(
+                                         new Date(
+                                            transactionResponse.transaction.created_at
+                                         ),
+                                         "MMMM dd, yyyy"
+                                      )
+                                    : ""}
+                              </p>
                            </div>
                         </div>
-                        <div className="text-right">
-                           <p className="font-bold">Wesly Ivan Gaffud</p>
-                           <p>August 1, 2025</p>
-                        </div>
-                     </div>
 
-                     <div className="flex justify-between mb-2">
-                        <span>Acct. No:</span>
-                        <span>1258</span>
-                     </div>
-                     <div className="flex justify-between mb-4">
-                        <span>Bill No.</span>
-                        <span>2510000</span>
-                     </div>
+                        <div className="flex justify-between mb-2">
+                           <span>Acct. No:</span>
+                           <span>
+                              {transactionResponse?.transaction?.customer_plan
+                                 ?.customer_id ?? ""}
+                           </span>
+                        </div>
+                        <div className="flex justify-between mb-4">
+                           <span>Bill No.</span>
+                           <span>
+                              {transactionResponse?.transaction?.bill_no ?? ""}
+                           </span>
+                        </div>
 
-                     <div className="space-y-1 mb-4">
-                        <div className="flex justify-between">
-                           <span>Bill for the month of August</span>
-                           <span>₱800.00</span>
+                        <div className="space-y-1 mb-4">
+                           <div className="flex justify-between">
+                              <span>Bill for the month of August</span>
+                              <span>
+                                 ₱{" "}
+                                 {transactionResponse?.transaction
+                                    ?.bill_amount ?? "0.00"}
+                              </span>
+                           </div>
+                           <div className="flex justify-between">
+                              <span>Rebate</span>
+                              <span>
+                                 ₱{" "}
+                                 {transactionResponse?.transaction?.rebate ??
+                                    "0.00"}
+                              </span>
+                           </div>
+                           <div className="flex justify-between">
+                              <span>Partial</span>
+                              <span>
+                                 ₱{" "}
+                                 {transactionResponse?.transaction?.partial ??
+                                    "0.00"}
+                              </span>
+                           </div>
+                           <div className="flex justify-between">
+                              <span>Outstanding Balance Previous Month</span>
+                              <span>
+                                 ₱{" "}
+                                 {transactionResponse?.outstanding_balance ??
+                                    "0.00"}
+                              </span>
+                           </div>
+                           <div className="flex justify-between font-bold border-t border-gray-400 pt-2">
+                              <span>Amount Due:</span>
+                              <span>
+                                 ₱{" "}
+                                 {transactionResponse?.transaction
+                                    ?.bill_amount ?? "0.00"}
+                              </span>
+                           </div>
                         </div>
-                        <div className="flex justify-between">
-                           <span>Rebate</span>
-                           <span>₱0.00</span>
-                        </div>
-                        <div className="flex justify-between">
-                           <span>Partial</span>
-                           <span>₱0.00</span>
-                        </div>
-                        <div className="flex justify-between">
-                           <span>Outstanding Balance Previous Month</span>
-                           <span>₱300.00</span>
-                        </div>
-                        <div className="flex justify-between font-bold border-t border-gray-400 pt-2">
-                           <span>Amount Due:</span>
-                           <span>₱1,100.00</span>
-                        </div>
-                     </div>
 
-                     <div className="flex justify-between text-sm mb-4">
-                        <span>Prepared by: John</span>
-                        <span>Collector: John Robert Linerto</span>
-                        <span>Date:</span>
-                     </div>
+                        <div className="flex justify-between text-sm mb-4">
+                           <span>Prepared by: John</span>
+                           <span>
+                              Collector:{" "}
+                              {transactionResponse?.customer
+                                 ? [
+                                      transactionResponse.collector?.firstname,
+                                      transactionResponse.collector?.middlename,
+                                      transactionResponse.collector?.lastname,
+                                   ]
+                                      .filter(Boolean) // removes null/empty middlename
+                                      .join(" ")
+                                 : ""}
+                           </span>
+                           <span>
+                              Date:{" "}
+                              {transactionResponse?.transaction?.created_at
+                                 ? format(
+                                      new Date(
+                                         transactionResponse.transaction.created_at
+                                      ),
+                                      "MMMM dd, yyyy"
+                                   )
+                                 : ""}
+                           </span>
+                        </div>
 
-                     <div className="border border-red-500 p-3 rounded text-sm bg-red-50 flex items-start gap-2">
-                        <div className="text-red-600 font-bold">⚠</div>
-                        <div>
-                           <p>
-                              7 Days Notice: To avoid temporary disconnection
-                              kindly settle your bill within 7 days of the due
-                              date. For assistance or to make a payment please
-                              call:
-                           </p>
-                           <p className="font-bold">
-                              CUSTOMER SERVICE NO: 09453367030
-                           </p>
-                           <p className="font-bold">
-                              BILLING DEPT. CP NO: 09162832206
-                           </p>
+                        <div className="border border-red-500 p-3 rounded text-sm bg-red-50 flex items-start gap-2">
+                           <div className="text-red-600 font-bold">⚠</div>
+                           <div>
+                              <p>
+                                 7 Days Notice: To avoid temporary disconnection
+                                 kindly settle your bill within 7 days of the
+                                 due date. For assistance or to make a payment
+                                 please call:
+                              </p>
+                              <p className="font-bold">
+                                 CUSTOMER SERVICE NO: 09453367030
+                              </p>
+                              <p className="font-bold">
+                                 BILLING DEPT. CP NO: 09162832206
+                              </p>
+                           </div>
                         </div>
                      </div>
                   </div>
@@ -506,7 +584,7 @@ const Create = ({ collectors, generated_bill_no }) => {
                   <Button
                      variant="gradient"
                      color="green"
-                     onClick={handleOpenModalPrint}
+                     onClick={() => reactToPrintFn()}
                   >
                      Print
                   </Button>
@@ -714,7 +792,7 @@ const Create = ({ collectors, generated_bill_no }) => {
                         ) : TROW_TRANSACTIONS.length === 0 ? (
                            <tr>
                               <td
-                                 colSpan={5}
+                                 colSpan={6}
                                  className="border p-4 text-center text-red-500"
                               >
                                  No transaction records found
@@ -918,25 +996,6 @@ const Create = ({ collectors, generated_bill_no }) => {
                            className="mb-3"
                         />
                      </div>
-
-                     {/* <div className="mb-1">
-                        <Typography
-                           variant="paragraph"
-                           color="blue-gray"
-                           className="mb-1 "
-                        >
-                           Change
-                        </Typography>
-                        <Input
-                           size="md"
-                           value={
-                              Number(selectedCustomerPlan.plan_price) -
-                              Number(data.partial)
-                           }
-                           disabled
-                           className="mb-3"
-                        />
-                     </div> */}
 
                      <div className="mb-1">
                         <Typography

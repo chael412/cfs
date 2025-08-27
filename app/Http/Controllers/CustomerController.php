@@ -126,7 +126,7 @@ class CustomerController extends Controller
                 $sortColumn = 'lastname';
             }
 
-            $query = Customer::query()
+            $query = Customer::with('purok.barangay.municipality')
                 ->where('status', 'active')
                 ->when($search, function ($query) use ($search) {
                     return $query->where('lastname', 'like', $search . '%');
@@ -177,20 +177,26 @@ class CustomerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Customer $customer)
+    public function show($id)
     {
+        $customer = Customer::with(['purok.barangay.municipality', 'customerPlans', 'collector'])
+            ->findOrFail($id);
+
         return inertia('Customer/Show', [
-            'customer' => new CustomerResource($customer),
+            'customer' => $customer,
         ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Customer $customer)
+    public function edit($id)
     {
+        $customer = Customer::with(['customerPlans', 'collector']) // eager load if needed
+            ->findOrFail($id);
+
         return inertia('Customer/Edit', [
-            'customer' => new CustomerResource($customer),
+            'customer' => $customer,
         ]);
     }
 
@@ -204,7 +210,7 @@ class CustomerController extends Controller
 
             $customer->update($data);
 
-            return redirect()->route('customers.index');
+            // return redirect()->route('customers.index');
         } catch (\Exception $e) {
             return back()->withErrors(['message' => 'Error updating material: ' . $e->getMessage()])->withInput();
         }

@@ -24,5 +24,11 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('123123123'), // Ensure to hash the password
             'email_verified_at' => now(),
         ]);
+
+        // $this->call([
+        //     CollectorSeeder::class,
+        //     CustomerSeeder::class,
+        //     PlanSeeder::class,
+        // ]);
     }
 }

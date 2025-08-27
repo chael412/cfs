@@ -12,8 +12,18 @@ import {
    Tooltip,
 } from "@material-tailwind/react";
 import Select from "react-select";
+import { useState, useEffect } from "react";
+import UseAppUrl from "@/hooks/UseAppUrl";
 
 const Edit = ({ customer }) => {
+   const API_URL = UseAppUrl();
+   const [barangays, setBarangays] = useState([]);
+   const [selectedPurokId, setSelectedPurokId] = useState(
+      customer.purok_id?.toString() || ""
+   );
+
+   console.log("customer:", JSON.stringify(customer, null, 2));
+
    const { data, setData, patch, errors, reset, processing } = useForm({
       firstname: customer.firstname || "",
       middlename: customer.middlename || "",
@@ -21,7 +31,7 @@ const Edit = ({ customer }) => {
       sex: customer.sex || "",
       marital_status: customer.marital_status || "",
       birthdate: customer.birthdate || "",
-      address: customer.address || "",
+      purok_id: customer.purok_id,
       occupation: customer.occupation || "",
       contact_no: customer.contact_no || "",
       status: customer.status || "",
@@ -56,7 +66,27 @@ const Edit = ({ customer }) => {
    const StatusOptions = [
       { value: "active", label: "Active" },
       { value: "inactive", label: "Inactive" },
+      { value: "banned", label: "Banned" },
    ];
+
+   const fetchBarangays = async () => {
+      try {
+         const response = await axios.get(`${API_URL}/api/purok_options`);
+         setBarangays(response.data);
+      } catch (error) {
+         console.error("Error fetching barangays:", error);
+         alert("Failed to fetch barangays.");
+      }
+   };
+
+   useEffect(() => {
+      fetchBarangays();
+   }, []);
+
+   const barangayOptions = barangays.map((barangay) => ({
+      value: barangay.id.toString(),
+      label: barangay.purok_name + " - " + barangay.barangay.barangay_name,
+   }));
 
    return (
       <AuthenticatedLayout>
@@ -227,12 +257,19 @@ const Edit = ({ customer }) => {
                            >
                               Address
                            </Typography>
-                           <Textarea
-                              value={data.address}
-                              onChange={(e) =>
-                                 setData("address", e.target.value)
-                              }
-                              error={Boolean(errors.address)}
+                           <Select
+                              value={barangayOptions.find(
+                                 (option) => option.value === selectedPurokId
+                              )}
+                              options={barangayOptions}
+                              onChange={(selectedOption) => {
+                                 const value = selectedOption?.value || "";
+                                 setSelectedPurokId(value);
+                                 setData(
+                                    "purok_id",
+                                    value ? parseInt(value, 10) : null
+                                 );
+                              }}
                            />
                         </div>
                         <div className="mb-3">

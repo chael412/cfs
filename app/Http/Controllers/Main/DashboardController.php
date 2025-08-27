@@ -13,10 +13,12 @@ class DashboardController extends Controller
     public function index()
     {
         $activeCustomers = Customer::where('status', 'active')->count();
+        $inactiveCustomers = Customer::where('status', 'inactive')->count();
         $collectors = Collector::count();
 
         return Inertia::render('Dashboard', [
             'activeCustomers' => $activeCustomers,
+            'inactiveCustomers' => $inactiveCustomers,
             'collectors' => $collectors
         ]);
     }

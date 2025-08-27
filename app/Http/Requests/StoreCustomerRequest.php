@@ -28,10 +28,10 @@ class StoreCustomerRequest extends FormRequest
             'sex' => ['required', 'in:male,female'],
             'marital_status' => ['required', 'in:single,married,divorced,widowed,separated'],
             'birthdate' => ['required', 'max:255'],
-            'address' => ['nullable', 'string', 'max:255'],
+
             'occupation' => ['nullable', 'string', 'max:255'],
             'contact_no' => ['required', 'string', 'max:255'],
-
+            'purok_id' => ['required', 'integer'],
         ];
     }
 }

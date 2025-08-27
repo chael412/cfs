@@ -14,8 +14,14 @@ import {
    CardFooter,
 } from "@material-tailwind/react";
 import Select from "react-select";
+import UseAppUrl from "@/hooks/UseAppUrl";
+import { useEffect, useState } from "react";
 
 const Create = ({ collectors }) => {
+   const API_URL = UseAppUrl();
+   const [barangays, setBarangays] = useState([]);
+   const [selectedPurokId, setSelectedPurokId] = useState("");
+
    const { data, setData, post, errors, reset, processing } = useForm({
       firstname: "",
       middlename: "",
@@ -23,7 +29,7 @@ const Create = ({ collectors }) => {
       sex: "",
       marital_status: "",
       birthdate: "",
-      address: "",
+      purok_id: selectedPurokId,
       occupation: "",
       contact_no: "",
    });
@@ -55,7 +61,25 @@ const Create = ({ collectors }) => {
       { value: "separated", label: "Separated" },
    ];
 
-   console.log(collectors);
+   console.log("test" + selectedPurokId);
+   const fetchBarangays = async () => {
+      try {
+         const response = await axios.get(`${API_URL}/api/purok_options`);
+         setBarangays(response.data);
+      } catch (error) {
+         console.error("Error fetching barangays:", error);
+         alert("Failed to fetch barangays.");
+      }
+   };
+
+   useEffect(() => {
+      fetchBarangays();
+   }, []);
+
+   const barangayOptions = barangays.map((barangay) => ({
+      value: barangay.id.toString(),
+      label: barangay.purok_name + " - " + barangay.barangay.barangay_name,
+   }));
 
    return (
       <AuthenticatedLayout>
@@ -218,21 +242,31 @@ const Create = ({ collectors }) => {
                               size="md"
                            />
                         </div>
-                        <div className="mb-3">
-                           <Typography
-                              variant="paragraph"
-                              color="blue-gray"
-                              className="mb-1 "
-                           >
-                              Address
-                           </Typography>
-                           <Textarea
-                              value={data.address}
-                              onChange={(e) =>
-                                 setData("address", e.target.value)
-                              }
-                              error={Boolean(errors.address)}
-                           />
+                        <div className=" mb-3">
+                           <div>
+                              <Typography
+                                 variant="paragraph"
+                                 color="blue-gray"
+                                 className="mb-1 "
+                              >
+                                 Address
+                              </Typography>
+
+                              <Select
+                                 value={barangayOptions.find(
+                                    (option) => option.value === selectedPurokId
+                                 )}
+                                 options={barangayOptions}
+                                 onChange={(selectedOption) => {
+                                    const value = selectedOption?.value || "";
+                                    setSelectedPurokId(value);
+                                    setData(
+                                       "purok_id",
+                                       value ? parseInt(value, 10) : null
+                                    );
+                                 }}
+                              />
+                           </div>
                         </div>
                         <div className="mb-3">
                            <Typography

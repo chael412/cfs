@@ -9,7 +9,11 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
 import { Head, usePage, Deferred, Link } from "@inertiajs/react";
 
-export default function Dashboard({ activeCustomers, collectors }) {
+export default function Dashboard({
+   activeCustomers,
+   inactiveCustomers,
+   collectors,
+}) {
    console.log(activeCustomers);
    return (
       <AuthenticatedLayout
@@ -64,7 +68,9 @@ export default function Dashboard({ activeCustomers, collectors }) {
                         <h3 className="text-lg font-semibold text-gray-700">
                            Total Disconnection
                         </h3>
-                        <p className="text-2xl font-bold text-gray-900">199</p>
+                        <p className="text-2xl font-bold text-gray-900">
+                           {inactiveCustomers}
+                        </p>
                      </div>
                   </div>
                </div>

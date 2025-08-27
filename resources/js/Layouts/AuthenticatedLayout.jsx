@@ -1,3 +1,4 @@
+import { ImBlocked } from "react-icons/im";
 import { RiBankCard2Fill } from "react-icons/ri";
 import { MdOutlineCalendarMonth } from "react-icons/md";
 import { FaUserAltSlash } from "react-icons/fa";
@@ -223,24 +224,44 @@ export default function AuthenticatedLayout({ children }) {
                         </span>
                      )}
                   </a>
-                  <a
-                     className="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700"
-                     href="#"
+
+                  <NavLink
+                     href={route("disconnections.index")}
+                     active={[
+                        "disconnections.index",
+                        "disconnections.create",
+                        "disconnections.edit",
+                     ].includes(route().current())}
                   >
                      <FaUserAltSlash />
 
                      {!isCollapsed && (
                         <span className="mx-2 text-sm font-medium">
-                           Disconnection
+                           Disconnections
                         </span>
                      )}
-                  </a>
+                  </NavLink>
+
+                  <NavLink
+                     href={route("banned.index")}
+                     active={[
+                        "banned.index",
+                        "banned.create",
+                        "banned.edit",
+                     ].includes(route().current())}
+                  >
+                     <ImBlocked />
+
+                     {!isCollapsed && (
+                        <span className="mx-2 text-sm font-medium">Banned</span>
+                     )}
+                  </NavLink>
                </nav>
             </div>
          </aside>
 
-         <Card className="flex-1 ">
-            <div className="bg-white py-4 px-8 border-b border-blue-gray-300  text-xl flex justify-between items-center">
+         <div className="flex-1">
+            <div className="bg-white py-4 px-8 border-b border-blue-gray-300  text-xl flex justify-between items-center mb-3 mt-1">
                <Typography variant="lead">
                   Internet Network Solutions
                </Typography>
@@ -330,7 +351,7 @@ export default function AuthenticatedLayout({ children }) {
             </div>
 
             <main>{children}</main>
-         </Card>
+         </div>
       </div>
    );
 }

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Customer extends Model
 {
     /** @use HasFactory<\Database\Factories\CustomerFactory> */
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
         'firstname',
@@ -18,11 +18,17 @@ class Customer extends Model
         'sex',
         'marital_status',
         'birthdate',
-        'address',
         'occupation',
         'contact_no',
+        'purok_id',
         'status',
     ];
+
+    // 🔗 Customer belongs to a Purok
+    public function purok()
+    {
+        return $this->belongsTo(Purok::class);
+    }
 
     public function customerPlans()
     {

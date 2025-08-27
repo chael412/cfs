@@ -38,6 +38,7 @@ const TABLE_HEAD = [
    "Partials",
    "Total Amount Paid",
    "Remarks",
+   "Status",
    "Date Billing",
    "Actions",
 ];
@@ -95,6 +96,7 @@ const Index = () => {
          date_registration: bill.customer_plan.date_registration,
          partial: bill.partial,
          remarks: bill.remarks,
+         status: bill.status,
          payment_date: bill.created_at,
       })) || [];
 
@@ -233,6 +235,7 @@ const Index = () => {
                               partial,
                               amount,
                               remarks,
+                              status,
                               date_billing,
                               date_registration,
                               payment_date,
@@ -306,6 +309,14 @@ const Index = () => {
                                        variant="small"
                                        className="font-normal text-gray-800"
                                     >
+                                       {status}
+                                    </Typography>
+                                 </td>
+                                 <td className="border border-blue-gray-100 px-4">
+                                    <Typography
+                                       variant="small"
+                                       className="font-normal text-gray-800"
+                                    >
                                        {format(
                                           new Date(payment_date),
                                           "MM/dd/yyyy"
@@ -330,7 +341,7 @@ const Index = () => {
                                              <Link
                                                 className="hover:bg-blue-800 hover:rounded hover:text-white"
                                                 href={route(
-                                                   "batch_bills.show",
+                                                   "transactions.show",
                                                    {
                                                       id,
                                                    }
@@ -339,17 +350,17 @@ const Index = () => {
                                                 <MenuItem>View</MenuItem>
                                              </Link>
 
-                                             {/* <Link
+                                             <Link
                                                 className="hover:bg-blue-800 hover:rounded hover:text-white"
                                                 href={route(
-                                                   "batch_bills.edit",
+                                                   "transactions.edit",
                                                    {
                                                       id,
                                                    }
                                                 )}
                                              >
                                                 <MenuItem>Edit</MenuItem>
-                                             </Link> */}
+                                             </Link>
                                              {/* <MenuItem>
                                                 <span
                                                    onClick={() =>

@@ -34,11 +34,9 @@ const TABLE_HEAD = [
    "Acc No.",
    "Customer Name",
    "Sex",
-   "Marital Status",
+
    "Birthdate",
    "Address",
-   "Occupation",
-   "Contact No.",
    "Status",
    "",
 ];
@@ -208,8 +206,8 @@ const Index = () => {
                </div>
             </div>
 
-            <div className="flex-1  p-4  overflow-x-auto max-w-min md:max-w-full">
-               <table className="w-full min-w-[350px] text-left  border border-gray-300">
+            <div className="flex-1  p-4  w-full">
+               <table className="w-full text-left  border border-gray-300 overflow-x-auto">
                   <thead>
                      <tr className="bg-gray-100">
                         {TABLE_HEAD.map((head) => (
@@ -290,14 +288,7 @@ const Index = () => {
                                        {sex}
                                     </Typography>
                                  </td>
-                                 <td className="border border-blue-gray-100 px-4">
-                                    <Typography
-                                       variant="small"
-                                       className="font-normal text-gray-800"
-                                    >
-                                       {marital_status}
-                                    </Typography>
-                                 </td>
+
                                  <td className="border border-blue-gray-100 px-4">
                                     <Typography
                                        variant="small"
@@ -314,23 +305,7 @@ const Index = () => {
                                        {address ?? ""}
                                     </Typography>
                                  </td>
-                                 <td className="border border-blue-gray-100 px-4">
-                                    <Typography
-                                       variant="small"
-                                       className="font-normal text-gray-800"
-                                    >
-                                       {occupation ?? ""}
-                                    </Typography>
-                                 </td>
 
-                                 <td className="border border-blue-gray-100 px-4">
-                                    <Typography
-                                       variant="small"
-                                       className="font-normal text-gray-800"
-                                    >
-                                       {contact_no}
-                                    </Typography>
-                                 </td>
                                  <td className="border border-blue-gray-100 px-4">
                                     <Typography
                                        variant="small"

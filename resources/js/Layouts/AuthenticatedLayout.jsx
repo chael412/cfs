@@ -51,7 +51,7 @@ export default function AuthenticatedLayout({ children }) {
       <div className="flex h-screen gap-0">
          <aside
             className={`flex flex-col ${
-               isCollapsed ? "w-16" : "w-64"
+               isCollapsed ? "w-16" : "w-[260px]"
             } overflow-y-auto h-screen px-5 pt-2 pb-8  bg-white border-r border-r-gray-300 `}
          >
             <div

@@ -107,24 +107,6 @@ const Edit = ({ barangay }) => {
                      </Typography>
 
                      <form onSubmit={onSubmit} className="mt-8 mb-2">
-                        <div className="mb-3">
-                           <Typography
-                              variant="paragraph"
-                              color="blue-gray"
-                              className="mb-1 "
-                           >
-                              Barangay Name
-                           </Typography>
-                           <Input
-                              size="md"
-                              value={data.barangay_name}
-                              onChange={(e) =>
-                                 setData("barangay_name", e.target.value)
-                              }
-                              error={Boolean(errors.barangay_name)}
-                              className="w-full"
-                           />
-                        </div>
                         <div className=" mb-3">
                            <div>
                               <Typography
@@ -151,6 +133,24 @@ const Edit = ({ barangay }) => {
                                  }}
                               />
                            </div>
+                        </div>
+                        <div className="mb-3">
+                           <Typography
+                              variant="paragraph"
+                              color="blue-gray"
+                              className="mb-1 "
+                           >
+                              Barangay Name
+                           </Typography>
+                           <Input
+                              size="md"
+                              value={data.barangay_name}
+                              onChange={(e) =>
+                                 setData("barangay_name", e.target.value)
+                              }
+                              error={Boolean(errors.barangay_name)}
+                              className="w-full"
+                           />
                         </div>
 
                         <Button

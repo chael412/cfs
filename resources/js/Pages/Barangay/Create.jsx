@@ -75,8 +75,8 @@ const Create = () => {
 
    return (
       <AuthenticatedLayout>
-         <Head title="Add Address" />
-         <div className="bg-white overflow-y-auto max-h-[590px] grid place-justify-center ">
+         <Head title="Add Barangay" />
+         <div className="bg-white overflow-y-auto  grid place-justify-center ">
             <div className="mt-2 px-4">
                <div className="mb-6 flex justify-between items-center">
                   <Card
@@ -102,32 +102,14 @@ const Create = () => {
                      </Typography>
 
                      <form onSubmit={onSubmit} className="mt-8 mb-2">
-                        <div className="mb-3">
-                           <Typography
-                              variant="paragraph"
-                              color="blue-gray"
-                              className="mb-1 "
-                           >
-                              Barangay Name
-                           </Typography>
-                           <Input
-                              size="md"
-                              value={data.purok_name}
-                              onChange={(e) =>
-                                 setData("barangay_name", e.target.value)
-                              }
-                              error={Boolean(errors.purok_name)}
-                              className="w-full"
-                           />
-                        </div>
-                        <div className=" mb-3">
+                        <div className=" mb-5">
                            <div>
                               <Typography
                                  variant="paragraph"
                                  color="blue-gray"
                                  className="mb-1 "
                               >
-                                 Barangay
+                                 Municipality
                               </Typography>
 
                               <Select
@@ -146,6 +128,25 @@ const Create = () => {
                                  }}
                               />
                            </div>
+                        </div>
+
+                        <div className="mb-3">
+                           <Typography
+                              variant="paragraph"
+                              color="blue-gray"
+                              className="mb-1 "
+                           >
+                              Barangay Name
+                           </Typography>
+                           <Input
+                              size="md"
+                              value={data.purok_name}
+                              onChange={(e) =>
+                                 setData("barangay_name", e.target.value)
+                              }
+                              error={Boolean(errors.purok_name)}
+                              className="w-full"
+                           />
                         </div>
 
                         <Button

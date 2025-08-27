@@ -9,6 +9,7 @@ use App\Http\Controllers\CollectorController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerPlanController;
 use App\Http\Controllers\DisconnectionController;
+use App\Http\Controllers\MunicipalityController;
 use App\Http\Controllers\PurokController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\WalkinBillingController;
@@ -24,6 +25,9 @@ Route::get('get_collectorx_paginate', [CollectorController::class, 'indexApi']);
 Route::get('get_customer_planx_paginate', [CustomerPlanController::class, 'indexApi']);
 Route::get('get_billx_paginate', [BillController::class, 'indexApi']);
 Route::get('get_address', [PurokController::class, 'indexApi']);
+Route::get('get_barangays', [BarangayController::class, 'indexApi']);
+
+
 
 
 Route::get('get_customerwplanx', [BillController::class, 'getCustomersWithPlans']);
@@ -47,6 +51,8 @@ Route::get('customer_banned', [BannedController::class, 'indexApi']);
 //options
 Route::get('barangay_options', [BarangayController::class, 'barangayOptions']);
 Route::get('purok_options', [PurokController::class, 'purokOptions']);
+Route::get('municipality_options', [MunicipalityController::class, 'municipalityOptions']);
+
 
 
 

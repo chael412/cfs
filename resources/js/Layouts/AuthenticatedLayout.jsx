@@ -217,8 +217,23 @@ export default function AuthenticatedLayout({ children }) {
                      <CiLocationOn />
 
                      {!isCollapsed && (
+                        <span className="mx-2 text-sm font-medium">Purok</span>
+                     )}
+                  </NavLink>
+
+                  <NavLink
+                     href={route("barangays.index")}
+                     active={[
+                        "barangays.index",
+                        "barangays.create",
+                        "barangays.edit",
+                     ].includes(route().current())}
+                  >
+                     <CiLocationOn />
+
+                     {!isCollapsed && (
                         <span className="mx-2 text-sm font-medium">
-                           Address
+                           Barangays
                         </span>
                      )}
                   </NavLink>

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdvanceBillingController;
 use App\Http\Controllers\BannedController;
+use App\Http\Controllers\BarangayController;
 use App\Http\Controllers\BatchBillingController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\CollectorController;
@@ -42,6 +43,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('batch_bills', BatchBillingController::class)->names('batch_bills');
     Route::resource('transactions', TransactionController::class)->names('transactions');
     Route::resource('address', PurokController::class)->names('address');
+    Route::resource('barangays', BarangayController::class)->names('barangays');
+
 
 
 

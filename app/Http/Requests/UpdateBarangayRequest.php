@@ -11,7 +11,7 @@ class UpdateBarangayRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,8 @@ class UpdateBarangayRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'barangay_name' => ['required', 'string', 'max:255'],
+            'municipality_id' => ['required', 'integer'],
         ];
     }
 }

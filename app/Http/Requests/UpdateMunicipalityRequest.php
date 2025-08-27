@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreBarangayRequest extends FormRequest
+class UpdateMunicipalityRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -22,8 +22,7 @@ class StoreBarangayRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'barangay_name' => ['required', 'string', 'max:255'],
-            'municipality_id' => ['required', 'integer'],
+            //
         ];
     }
 }

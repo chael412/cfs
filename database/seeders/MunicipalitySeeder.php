@@ -14,9 +14,11 @@ class MunicipalitySeeder extends Seeder
     public function run(): void
     {
         $municipalities = [
-            ['municipality_name' => 'Delfin Albano'],
-            ['municipality_name' => 'Tumauini'],
-            ['municipality_name' => 'Cabagan'],
+            // ['municipality_name' => 'Delfin Albano'],
+            // ['municipality_name' => 'Tumauini'],
+            // ['municipality_name' => 'Cabagan'],
+
+            ['municipality_name' => 'San Pablo'],
         ];
 
         foreach ($municipalities as $municipality) {

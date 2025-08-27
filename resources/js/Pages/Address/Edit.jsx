@@ -84,7 +84,7 @@ const Create = ({ purok }) => {
 
    return (
       <AuthenticatedLayout>
-         <Head title="Add Address" />
+         <Head title="Edit Address" />
          <div className="bg-white overflow-y-auto max-h-[590px] grid place-justify-center ">
             <div className="mt-2 px-4">
                <div className="mb-6 flex justify-between items-center">
@@ -107,7 +107,7 @@ const Create = ({ purok }) => {
                         color="blue-gray"
                         className="text-center"
                      >
-                        Add Address
+                        Edit Address
                      </Typography>
 
                      <form onSubmit={onSubmit} className="mt-8 mb-2">
@@ -164,7 +164,7 @@ const Create = ({ purok }) => {
                            color="blue"
                            fullWidth
                         >
-                           Save
+                           Update
                         </Button>
                      </form>
                   </Card>

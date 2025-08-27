@@ -226,7 +226,7 @@ const Index = () => {
                               className="border border-blue-gray-100 p-4 text-center text-red-500"
                            >
                               <div className="flex justify-center items-center gap-2">
-                                 No collector records found
+                                 No customer plan records found
                                  <CgDanger className="text-xl" />
                               </div>
                            </td>

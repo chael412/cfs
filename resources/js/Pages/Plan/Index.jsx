@@ -1,4 +1,5 @@
 import React from "react";
+import { CgDanger } from "react-icons/cg";
 import { AiOutlinePlus } from "react-icons/ai";
 import { BiDotsVertical } from "react-icons/bi";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
@@ -193,9 +194,12 @@ const Index = () => {
                                  <tr>
                                     <td
                                        colSpan="3"
-                                       className="text-center text-gray-500"
+                                       className="border border-blue-gray-100 p-4 text-center text-red-500"
                                     >
-                                       No Customer found.
+                                       <div className="flex justify-center items-center gap-2">
+                                          No plan records found
+                                          <CgDanger className="text-xl" />
+                                       </div>
                                     </td>
                                  </tr>
                               )}

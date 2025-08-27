@@ -1,3 +1,4 @@
+import { CgDanger } from "react-icons/cg";
 import { BsArrowReturnLeft } from "react-icons/bs";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm, usePage } from "@inertiajs/react";

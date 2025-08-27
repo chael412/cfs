@@ -1,3 +1,4 @@
+import { CiLocationOn } from "react-icons/ci";
 import { ImBlocked } from "react-icons/im";
 import { RiBankCard2Fill } from "react-icons/ri";
 import { MdOutlineCalendarMonth } from "react-icons/md";
@@ -202,6 +203,23 @@ export default function AuthenticatedLayout({ children }) {
 
                      {!isCollapsed && (
                         <span className="mx-2 text-sm font-medium">Plans</span>
+                     )}
+                  </NavLink>
+
+                  <NavLink
+                     href={route("address.index")}
+                     active={[
+                        "address.index",
+                        "address.create",
+                        "address.edit",
+                     ].includes(route().current())}
+                  >
+                     <CiLocationOn />
+
+                     {!isCollapsed && (
+                        <span className="mx-2 text-sm font-medium">
+                           Address
+                        </span>
                      )}
                   </NavLink>
 

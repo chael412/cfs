@@ -181,10 +181,13 @@ class CustomerPlanController extends Controller
 
             $customerPlan->update($data);
 
-            return redirect()->route('customer_plans', ['id' => $customerPlan->id]);
-            // return redirect()->route('customer_plans.index');
+             return response()->json([
+                'message' => 'Customer plan updated successfully.'
+                ], 200); // Make sure to return a 200 OK status
         } catch (\Exception $e) {
-            return back()->withErrors(['message' => 'Error updating customer plan: ' . $e->getMessage()])->withInput();
+            return response()->json([
+                'message' => 'Error updating customer plan: ' . $e->getMessage()
+                ], 500); // Internal Server Error if something goes wrong
         }
     }
 

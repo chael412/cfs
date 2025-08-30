@@ -13,7 +13,8 @@ class Transaction extends Model
         'partial',
         'bill_amount',
         'remarks',
-        'status'
+        'status',
+        'date_billing'
     ];
 
     public function customerPlan()

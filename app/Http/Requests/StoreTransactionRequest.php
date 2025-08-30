@@ -23,12 +23,14 @@ class StoreTransactionRequest extends FormRequest
     {
         return [
             'customer_plan_id' => ['required', 'integer'],
+            'collector_id' => ['required', 'integer'],
             'bill_no' => ['required', 'string', 'max:255'],
             'rebate' => ['nullable', 'numeric'],
             'partial' => ['nullable', 'numeric'],
             'bill_amount' => ['required', 'numeric'],
             'remarks' => ['required', 'in:advance,batch'],
             'status' => ['required', 'in:paid,unpaid'],
+            'date_billing' => ['required', 'date']
         ];
     }
 }

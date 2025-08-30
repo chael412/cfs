@@ -58,6 +58,9 @@ const Create = ({ customers, collectors, plans }) => {
    const dateBillingOptions = [
       { value: "batch1", label: "Batch1" },
       { value: "batch2", label: "Batch2" },
+      { value: "batch3", label: "Batch3" },
+      { value: "batch4", label: "Batch4" },
+      { value: "batch5", label: "Batch5" },
    ];
 
    return (

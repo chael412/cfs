@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('transactions', function (Blueprint $table) {
-            $table->date('date_billing')->after('day_billing');
+            $table->date('date_billing')->after('bill_amount');
         });
     }
 

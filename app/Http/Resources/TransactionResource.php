@@ -22,6 +22,7 @@ class TransactionResource extends JsonResource
             'partial' => $this->partial,
             'bill_amount' => $this->bill_amount,
             'remarks' => $this->remarks,
+            'date_billing' => $this->date_billing,
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

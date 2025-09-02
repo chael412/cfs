@@ -44,6 +44,56 @@ class CustomerController extends Controller
         return response()->json($customers);
     }
 
+    // public function customerTransactions()
+    // {
+    //     try {
+    //         $search = request('search'); // unified search input
+    //         $sortColumn = request('sortColumn', 'lastname');
+    //         $sortDirection = request('sortDirection', 'asc');
+
+    //         $validSortColumns = ['lastname'];
+
+    //         if (!in_array($sortColumn, $validSortColumns)) {
+    //             $sortColumn = 'lastname';
+    //         }
+
+    //         $query = Customer::with(['customerPlans.plan', 'customerPlans.transactions' => function ($q) {
+    //             $q->latest(); // only fetch transactions in descending order
+    //         }])
+    //             ->where('status', 'active')
+    //             ->when($search, function ($query) use ($search) {
+    //                 $query->where(function ($q) use ($search) {
+    //                     $q->where('lastname', 'like', $search . '%')
+    //                         ->orWhere('id', $search)
+    //                         ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ["%{$search}%"]);
+    //                 });
+    //             });
+
+    //         $data = $query->orderBy($sortColumn, $sortDirection)
+    //             ->paginate(100);
+
+    //         // Append balance + month of last transaction
+    //         $data->getCollection()->transform(function ($customer) {
+    //             foreach ($customer->customerPlans as $plan) {
+    //                 $latestTransaction = $plan->transactions->first(); // latest because of ->latest() above
+
+    //                 if ($latestTransaction) {
+    //                     $plan->latest_balance = $latestTransaction->bill_amount - $latestTransaction->partial;
+    //                     $plan->latest_balance_month = \Carbon\Carbon::parse($latestTransaction->created_at)->format('F'); // e.g. "July"
+    //                 } else {
+    //                     $plan->latest_balance = 0;
+    //                     $plan->latest_balance_month = null;
+    //                 }
+    //             }
+    //             return $customer;
+    //         });
+
+    //         return response()->json($data, 200);
+    //     } catch (\Exception $e) {
+    //         return response()->json(['message' => 'Error: ' . $e->getMessage()], 404);
+    //     }
+    // }
+
     public function customerTransactions()
     {
         try {
@@ -57,10 +107,14 @@ class CustomerController extends Controller
                 $sortColumn = 'lastname';
             }
 
-            $query = Customer::with(['customerPlans.plan', 'customerPlans.transactions' => function ($q) {
-                $q->latest(); // only fetch transactions in descending order
-            }])
+            $query = Customer::with([
+                'customerPlans.plan',
+                'customerPlans.transactions' => function ($q) {
+                    $q->latest(); // only fetch transactions in descending order
+                }
+            ])
                 ->where('status', 'active')
+                ->whereHas('customerPlans') // ✅ only customers with at least one plan
                 ->when($search, function ($query) use ($search) {
                     $query->where(function ($q) use ($search) {
                         $q->where('lastname', 'like', $search . '%')
@@ -93,6 +147,7 @@ class CustomerController extends Controller
             return response()->json(['message' => 'Error: ' . $e->getMessage()], 404);
         }
     }
+
 
 
 
@@ -192,13 +247,42 @@ class CustomerController extends Controller
      */
     public function edit($id)
     {
-        $customer = Customer::with(['customerPlans', 'collector']) // eager load if needed
-            ->findOrFail($id);
+        $customer = Customer::with([
+            'customerPlans.plan',
+            'customerPlans.transactions' => function ($q) {
+                $q->latest();
+            },
+            'collector'
+        ])->findOrFail($id);
+
+        // Add computed balances
+        foreach ($customer->customerPlans as $plan) {
+            $latestTransaction = $plan->transactions->first();
+
+            if ($latestTransaction) {
+                $plan->latest_balance = $latestTransaction->bill_amount - $latestTransaction->partial;
+                $plan->latest_balance_month = \Carbon\Carbon::parse($latestTransaction->created_at)->format('F');
+            } else {
+                $plan->latest_balance = 0;
+                $plan->latest_balance_month = null;
+            }
+        }
 
         return inertia('Customer/Edit', [
             'customer' => $customer,
         ]);
     }
+
+
+    // public function edit($id)
+    // {
+    //     $customer = Customer::with(['customerPlans', 'collector']) // eager load if needed
+    //         ->findOrFail($id);
+
+    //     return inertia('Customer/Edit', [
+    //         'customer' => $customer,
+    //     ]);
+    // }
 
     /**
      * Update the specified resource in storage.

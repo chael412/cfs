@@ -74,6 +74,8 @@ class TransactionController extends Controller
             // Get validated data
             $data = $request->validated();
 
+
+
             // Create transaction
             $transaction = Transaction::create($data);
 
@@ -223,17 +225,18 @@ class TransactionController extends Controller
         // Fetch collectors
         $collectors = Collector::all();
 
-        // ✅ Get the latest transaction for this customer plan
-        $latestTransaction = Transaction::where('customer_plan_id', $transaction->customer_plan_id)
+        // ✅ Get the last transaction *before* this one
+        $lastTransaction = Transaction::where('customer_plan_id', $transaction->customer_plan_id)
+            ->where('id', '<', $transaction->id) // exclude the current one
             ->latest('created_at')
             ->first();
 
         $balance = null;
-        $month = null;
+        $month   = null;
 
-        if ($latestTransaction) {
-            $balance = $latestTransaction->bill_amount - $latestTransaction->partial;
-            $month = Carbon::parse($latestTransaction->created_at)->format('F');
+        if ($lastTransaction) {
+            $balance = $lastTransaction->bill_amount - $lastTransaction->partial;
+            $month   = $lastTransaction->created_at->format('F');
         }
 
         return inertia('Transaction/Edit', [
@@ -245,6 +248,42 @@ class TransactionController extends Controller
             ],
         ]);
     }
+
+
+    // public function edit(Transaction $transaction)
+    // {
+    //     // Load all needed relationships in one go
+    //     $transaction->load([
+    //         'customerPlan.customer',
+    //         'customerPlan.plan',
+    //         'customerPlan.collector',
+    //     ]);
+
+    //     // Fetch collectors
+    //     $collectors = Collector::all();
+
+    //     // ✅ Get the latest transaction for this customer plan
+    //     $latestTransaction = Transaction::where('customer_plan_id', $transaction->customer_plan_id)
+    //         ->latest('created_at')
+    //         ->first();
+
+    //     $balance = null;
+    //     $month = null;
+
+    //     if ($latestTransaction) {
+    //         $balance = $latestTransaction->bill_amount - $latestTransaction->partial;
+    //         $month = Carbon::parse($latestTransaction->created_at)->format('F');
+    //     }
+
+    //     return inertia('Transaction/Edit', [
+    //         'transaction' => new TransactionResource($transaction),
+    //         'collectors'  => CollectorResource::collection($collectors),
+    //         'latest'      => [
+    //             'balance' => $balance,
+    //             'month'   => $month,
+    //         ],
+    //     ]);
+    // }
 
 
     /**

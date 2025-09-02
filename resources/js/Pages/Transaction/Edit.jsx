@@ -14,21 +14,25 @@ const Edit = ({ transaction, collectors, latest }) => {
    const { data, setData, patch, errors, reset, processing } = useForm({
       id: transaction.id,
       customer_id: transaction.customer_plan.customer.id,
+      collector_id: transaction.customer_plan.collector.id,
       customer_plan_id: transaction.customer_plan_id,
       bill_no: transaction.bill_no,
       rebate: transaction.rebate,
       partial: transaction.partial,
       bill_amount: transaction.bill_amount,
       remarks: transaction.remarks,
+      date_billing: transaction.date_billing,
       status: transaction.status,
    });
+
+   //console.log("latest", latest);
 
    const StatusOptions = [
       { value: "paid", label: "Paid" },
       { value: "unpaid", label: "Unpaid" },
    ];
 
-   // console.log("trisha" + editTotalAmountPaid);
+   console.log("Waw", JSON.stringify(transaction, null, 2));
 
    useEffect(() => {
       const planPrice = Number(transaction.customer_plan.plan.plan_price) || 0;
@@ -48,7 +52,7 @@ const Edit = ({ transaction, collectors, latest }) => {
    const onSubmit = async (e) => {
       e.preventDefault();
 
-      console.log("Form Data:", JSON.stringify(data, null, 2)); // pretty print
+      console.log("Form Dataee:", JSON.stringify(data, null, 2)); // pretty print
 
       await patch(route("transactions.update", data.id), {
          onSuccess: () => {
@@ -67,15 +71,30 @@ const Edit = ({ transaction, collectors, latest }) => {
          <Head title="Billing Transactions" />
          {/* <div>{transaction.customer_plan.customer.firstname}</div>
          <div>{transaction.customer_plan.collector.firstname}</div> */}
-         <div className="flex justify-center ">
-            <div className="mb-10 w-full lg:w-[35%] p-4 overflow-auto shadow-md rounded-md border-2 border-sky-500 ">
+         <div className="flex justify-center overflow-y-auto max-h-[590px]">
+            <div className="mb-10 w-full lg:w-[45%] p-4 overflow-auto shadow-md rounded-md border-2 border-sky-500 ">
                <form onSubmit={onSubmit}>
                   <input
                      type="hidden"
-                     // value={data.customer_plan_id}
-                     // onChange={(e) => setData("customer_plan_id", e.target.value)}
+                     value={data.collector_id}
+                     onChange={(e) => setData("collector_id", e.target.value)}
                      className="mb-2"
                   />
+                  <div className="mb-1">
+                     <Typography
+                        variant="paragraph"
+                        color="blue-gray"
+                        className="mb-1 "
+                     >
+                        Customer Name
+                     </Typography>
+                     <Input
+                        size="md"
+                        value={`${transaction.customer_plan.customer.firstname} ${transaction.customer_plan.customer.lastname}`}
+                        disabled
+                        className="mb-3"
+                     />
+                  </div>
                   <div className="mb-1">
                      <Typography
                         variant="paragraph"
@@ -102,6 +121,38 @@ const Edit = ({ transaction, collectors, latest }) => {
                      <Input
                         size="md"
                         value={data.bill_no}
+                        disabled
+                        className="mb-3"
+                     />
+                  </div>
+
+                  <div className="mb-1">
+                     <Typography
+                        variant="paragraph"
+                        color="blue-gray"
+                        className="mb-1 "
+                     >
+                        Bill Amount
+                     </Typography>
+                     <Input
+                        size="md"
+                        value={transaction.customer_plan.plan.plan_price}
+                        disabled
+                        className="mb-3"
+                     />
+                  </div>
+
+                  <div className="mb-1">
+                     <Typography
+                        variant="paragraph"
+                        color="blue-gray"
+                        className="mb-1 "
+                     >
+                        Outstanding Balance Previous Month
+                     </Typography>
+                     <Input
+                        size="md"
+                        value={latest.balance ?? 0}
                         disabled
                         className="mb-3"
                      />
@@ -146,7 +197,24 @@ const Edit = ({ transaction, collectors, latest }) => {
                         color="blue-gray"
                         className="mb-1 "
                      >
-                        Partial
+                        Total Amount Due
+                     </Typography>
+                     <Input
+                        type="number"
+                        size="md"
+                        value={editTotalAmountPaid}
+                        className="mb-3"
+                        disabled
+                     />
+                  </div>
+
+                  <div className="mb-1">
+                     <Typography
+                        variant="paragraph"
+                        color="blue-gray"
+                        className="mb-1 "
+                     >
+                        Payment
                      </Typography>
                      <Input
                         type="number"
@@ -181,23 +249,6 @@ const Edit = ({ transaction, collectors, latest }) => {
                         color="blue-gray"
                         className="mb-1 "
                      >
-                        Total Amount Paid
-                     </Typography>
-                     <Input
-                        type="number"
-                        size="md"
-                        value={editTotalAmountPaid}
-                        className="mb-3"
-                        disabled
-                     />
-                  </div>
-
-                  <div className="mb-1">
-                     <Typography
-                        variant="paragraph"
-                        color="blue-gray"
-                        className="mb-1 "
-                     >
                         Outstanding Balance
                      </Typography>
                      <Input
@@ -205,6 +256,26 @@ const Edit = ({ transaction, collectors, latest }) => {
                         value={outstandingBalance}
                         disabled
                         className="mb-3"
+                     />
+                  </div>
+
+                  <div className="mb-3">
+                     <Typography
+                        variant="paragraph"
+                        color="blue-gray"
+                        className="mb-1 "
+                     >
+                        Date Billing
+                     </Typography>
+                     <Input
+                        size="md"
+                        type="date"
+                        value={data.date_billing}
+                        onChange={(e) =>
+                           setData("date_billing", e.target.value)
+                        }
+                        error={Boolean(errors.date_billing)}
+                        className="w-full"
                      />
                   </div>
 

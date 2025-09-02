@@ -6,11 +6,130 @@ use App\Models\Collector;
 use App\Http\Requests\StoreCollectorRequest;
 use App\Http\Requests\UpdateCollectorRequest;
 use App\Http\Resources\CollectorResource;
+use App\Models\Transaction;
 use Inertia\Inertia;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CollectorController extends Controller
 {
     // API function
+    public function totalCollectedRaw(Request $request)
+    {
+        //GET http://localhost:8000/api/raw_collections?filter=month&search=Liberato&page=1
+
+
+        $query = Transaction::with([
+            'customerPlan.plan',
+            'customerPlan.collector',
+            'customerPlan.customer.purok.barangay.municipality',
+        ]);
+
+        // ✅ Filter by period (day, week, month)
+        if ($request->has('filter')) {
+            $filter = $request->filter;
+            $query->when($filter === 'day', function ($q) {
+                $q->whereDate('date_billing', now()->toDateString());
+            })->when($filter === 'week', function ($q) {
+                $q->whereBetween('date_billing', [now()->startOfWeek(), now()->endOfWeek()]);
+            })->when($filter === 'month', function ($q) {
+                $q->whereMonth('date_billing', now()->month)
+                    ->whereYear('date_billing', now()->year);
+            });
+        }
+
+        // ✅ Search by collector lastname
+        if ($request->has('search') && $request->search !== '') {
+            $search = $request->search;
+            $query->whereHas('customerPlan.collector', function ($q) use ($search) {
+                $q->where('lastname', 'like', "%{$search}%");
+            });
+        }
+
+        // ✅ Paginate 50 per page
+        $transactions = $query->paginate(50);
+
+        // ✅ Compute outstanding balance (bill_amount - partial)
+        $transactions->getCollection()->transform(function ($transaction) {
+            $transaction->outstanding_balance = ($transaction->bill_amount ?? 0) - ($transaction->partial ?? 0);
+            return $transaction;
+        });
+
+        return response()->json($transactions);
+    }
+
+    public function totalCollected(Request $request)
+    {
+        //GET http://localhost:8000/api/raw_collections?filter=month&search=Liberato&page=1
+
+        try {
+            $filter = $request->input('filter', 'day');
+            $search = $request->input('lastname');
+            $sortColumn = $request->input('sortColumn', 'lastname');
+            $sortDirection = $request->input('sortDirection', 'asc');
+
+            $validSortColumns = ['lastname', 'firstname', 'total_collected', 'outstanding_balance'];
+
+            if (!in_array($sortColumn, $validSortColumns)) {
+                $sortColumn = 'lastname';
+            }
+
+            $query = Collector::with('transactions.customerPlan.customer')
+                // ✅ Total collected = sum of bill_amount
+                ->withSum(['transactions as total_collected' => function ($q) use ($filter) {
+                    if ($filter === 'day') {
+                        $q->whereDate('date_billing', Carbon::today());
+                    } elseif ($filter === 'week') {
+                        $q->whereBetween('date_billing', [
+                            Carbon::now()->startOfWeek(),
+                            Carbon::now()->endOfWeek()
+                        ]);
+                    } elseif ($filter === 'month') {
+                        $q->whereMonth('date_billing', Carbon::now()->month)
+                            ->whereYear('date_billing', Carbon::now()->year);
+                    }
+                }], 'bill_amount')
+                // ✅ Outstanding balance = sum(plan_price - partial)
+                ->withSum(['transactions as outstanding_balance' => function ($q) use ($filter) {
+                    $q->join('customer_plans', 'transactions.customer_plan_id', '=', 'customer_plans.id')
+                        ->join('plans', 'customer_plans.plan_id', '=', 'plans.id');
+
+                    if ($filter === 'day') {
+                        $q->whereDate('transactions.date_billing', Carbon::today());
+                    } elseif ($filter === 'week') {
+                        $q->whereBetween('transactions.date_billing', [
+                            Carbon::now()->startOfWeek(),
+                            Carbon::now()->endOfWeek()
+                        ]);
+                    } elseif ($filter === 'month') {
+                        $q->whereMonth('transactions.date_billing', Carbon::now()->month)
+                            ->whereYear('transactions.date_billing', Carbon::now()->year);
+                    }
+                }], DB::raw('plans.plan_price - transactions.partial'));
+
+            // ✅ Search by lastname
+            if ($search) {
+                $query->where('lastname', 'like', $search . '%');
+            }
+
+            // ✅ Sorting
+            if (in_array($sortColumn, ['total_collected', 'outstanding_balance'])) {
+                $query->orderBy($sortColumn, $sortDirection);
+            } else {
+                $query->orderBy($sortColumn, $sortDirection);
+            }
+
+            $data = $query->paginate(50);
+
+            return response()->json($data, 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error: ' . $e->getMessage()], 500);
+        }
+    }
+
+
+
     public function indexApi()
     {
         try {

@@ -8,6 +8,7 @@ class Transaction extends Model
 {
     protected $fillable = [
         'customer_plan_id',
+        'collector_id',
         'bill_no',
         'rebate',
         'partial',

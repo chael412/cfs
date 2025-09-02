@@ -85,7 +85,7 @@ const Show = ({ transaction, collectors, latest }) => {
                         <p>
                            {transaction.created_at
                               ? format(
-                                   new Date(transaction.created_at),
+                                   new Date(transaction.date_billing),
                                    "MMMM dd, yyyy"
                                 )
                               : ""}

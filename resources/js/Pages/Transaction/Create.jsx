@@ -148,7 +148,7 @@ const Create = ({ collectors, generated_bill_no }) => {
       bill_amount: "",
       remarks: "",
       status: "",
-      date_billing: ""
+      date_billing: "",
    });
 
    const onSubmit = async (e) => {
@@ -234,7 +234,9 @@ const Create = ({ collectors, generated_bill_no }) => {
       customerData?.data.map((customer) => {
          return {
             id: customer.id,
-            customer_name: `${customer.lastname} ${customer.firstname} ${customer.middlename ?? ""}`,
+            customer_name: `${customer.lastname} ${customer.firstname} ${
+               customer.middlename ?? ""
+            }`,
             firstname: customer.firstname,
             middlename: customer.middlename,
             lastname: customer.lastname,
@@ -247,57 +249,59 @@ const Create = ({ collectors, generated_bill_no }) => {
             status: customer.status,
 
             plans: customer.customer_plans.map((plan) => {
-            // get last transaction (by created_at)
-            const lastTransaction = plan.transactions.length
-               ? [...plan.transactions].sort(
-                  (a, b) => new Date(b.created_at) - new Date(a.created_at)
-                  )[0]
-               : null;
+               // get last transaction (by created_at)
+               const lastTransaction = plan.transactions.length
+                  ? [...plan.transactions].sort(
+                       (a, b) => new Date(b.created_at) - new Date(a.created_at)
+                    )[0]
+                  : null;
 
-            let balance = null;
-            let balanceMonth = null;
+               let balance = null;
+               let balanceMonth = null;
 
-            if (lastTransaction) {
-               balance =
-                  Number(lastTransaction.bill_amount) - Number(lastTransaction.partial);
+               if (lastTransaction) {
+                  balance =
+                     Number(lastTransaction.bill_amount) -
+                     Number(lastTransaction.partial);
 
-               balanceMonth = dayjs(lastTransaction.created_at).format("MMMM");
-            }
+                  balanceMonth = dayjs(lastTransaction.created_at).format(
+                     "MMMM"
+                  );
+               }
 
-            return {
-               customer_plan_id: plan.id,
-               mbps: plan.plan.mbps,
-               plan_price: plan.plan.plan_price,
-               date_registration: plan.date_registration,
+               return {
+                  customer_plan_id: plan.id,
+                  mbps: plan.plan.mbps,
+                  plan_price: plan.plan.plan_price,
+                  date_registration: plan.date_registration,
 
-               // ✅ include API fields
-               latest_balance: plan.latest_balance,
-               latest_balance_month: plan.latest_balance_month,
+                  // ✅ include API fields
+                  latest_balance: plan.latest_balance,
+                  latest_balance_month: plan.latest_balance_month,
 
-               // include transactions
-               transactions: plan.transactions.map((trx) => ({
-                  id: trx.id,
-                  bill_no: trx.bill_no,
-                  rebate: trx.rebate,
-                  partial: trx.partial,
-                  bill_amount: trx.bill_amount,
-                  remarks: trx.remarks,
-                  status: trx.status,
-                  created_at: trx.created_at,
-               })),
+                  // include transactions
+                  transactions: plan.transactions.map((trx) => ({
+                     id: trx.id,
+                     bill_no: trx.bill_no,
+                     rebate: trx.rebate,
+                     partial: trx.partial,
+                     bill_amount: trx.bill_amount,
+                     remarks: trx.remarks,
+                     status: trx.status,
+                     created_at: trx.created_at,
+                  })),
 
-               // last transaction summary
-               last_transaction: lastTransaction,
-               balance,
-               balanceMonth,
+                  // last transaction summary
+                  last_transaction: lastTransaction,
+                  balance,
+                  balanceMonth,
 
-               // Extract and include the collector_id
-               collector_id: plan.collector_id,  // Add this line to extract collector_id
-            };
+                  // Extract and include the collector_id
+                  collector_id: plan.collector_id, // Add this line to extract collector_id
+               };
             }),
          };
       }) || [];
-
 
    const TROW_TRANSACTIONS =
       customerTransactionsData?.data.map((customer) => ({
@@ -338,17 +342,17 @@ const Create = ({ collectors, generated_bill_no }) => {
    useEffect(() => {
       if (selectedCustomerId !== null) {
          alert(`Selected Customer: ${selectedCustomerPlan.customer_name}`);
-
-         // alert(
-         //    `Customer: ${selectedCustomerPlan.customer_name}\n` +
-         //       `Selected Customer ID: ${selectedCustomerId}\n` +
-         //       `Customer Plan Id: ${selectedCustomerPlan.customer_plan_id}\n` +
-         //       `Plan: ${selectedCustomerPlan.mbps} Mbps\n` +
-         //       `Price: ₱${selectedCustomerPlan.plan_price}\n` +
-         //       `Registered: ${selectedCustomerPlan.date_registration}`
-         // );
       }
    }, [selectedCustomerId, selectedCustomerPlan]);
+
+   useEffect(() => {
+      if (selectedCustomerPlan?.customer_plan_id) {
+         setData("customer_plan_id", selectedCustomerPlan.customer_plan_id);
+      }
+      if (selectedCustomerPlan?.collector_id) {
+         setData("collector_id", selectedCustomerPlan.collector_id);
+      }
+   }, [selectedCustomerPlan]);
 
    const handleSelectCustomer = (customer) => {
       const latestPlan = customer.plans[0] || {};
@@ -356,7 +360,6 @@ const Create = ({ collectors, generated_bill_no }) => {
       setSelectedCustomerId(customer.id);
       setData("customer_plan_id", latestPlan.customer_plan_id);
       setData("collector_id", latestPlan.collector_id);
-     
 
       setSelectedCustomerPlan({
          customer_name: `${customer.firstname} ${customer.lastname}`,
@@ -366,7 +369,7 @@ const Create = ({ collectors, generated_bill_no }) => {
          date_registration: latestPlan.date_registration || "N/A",
          latest_balance: latestPlan.latest_balance || 0,
          latest_balance_month: latestPlan.latest_balance_month || "N/A",
-         collector_id: latestPlan.collector_id || "", 
+         collector_id: latestPlan.collector_id || "",
       });
 
       setOpen(false);
@@ -378,7 +381,6 @@ const Create = ({ collectors, generated_bill_no }) => {
       setData("remarks", selected); // ✅ also update the form data
       // alert(`Selected Billing Type: ${selected}`);
    };
-
 
    return (
       <AuthenticatedLayout>
@@ -617,7 +619,6 @@ const Create = ({ collectors, generated_bill_no }) => {
                      CUSTOMER:{" "}
                      <span className="text-orange-900">
                         {selectedCustomerPlan?.customer_name || ""}
-
                         -- {selectedCustomerPlan?.collector_id || ""}
                      </span>
                   </Typography>
@@ -861,23 +862,22 @@ const Create = ({ collectors, generated_bill_no }) => {
                <div className="w-full lg:w-[35%] p-4 overflow-auto shadow-md rounded-md border-2 border-sky-500">
                   <form onSubmit={onSubmit}>
                      <input
-                        type="text"
+                        type="hidden"
                         value={data.customer_plan_id}
                         onChange={(e) =>
                            setData("customer_plan_id", e.target.value)
                         }
                         className="mb-2"
                      />
-                     ----
+
                      <input
-                        type="text"
+                        type="hidden"
                         value={data.collector_id}
                         onChange={(e) =>
                            setData("collector__id", e.target.value)
                         }
                         className="mb-2"
                      />
-
                      <div className="mb-1">
                         <Typography
                            variant="paragraph"
@@ -892,7 +892,6 @@ const Create = ({ collectors, generated_bill_no }) => {
                            disabled
                            className="mb-3"
                         />
-                        
                      </div>
                      <div className="mb-1">
                         <Typography
@@ -919,21 +918,22 @@ const Create = ({ collectors, generated_bill_no }) => {
                         </Typography>
                         <Input
                            size="md"
-                           value={selectedCustomerPlan && selectedCustomerPlan.mbps
-                           ? selectedCustomerPlan.plan_price
-                           : ""}
+                           value={
+                              selectedCustomerPlan && selectedCustomerPlan.mbps
+                                 ? selectedCustomerPlan.plan_price
+                                 : ""
+                           }
                            disabled
                            className="mb-3"
                         />
                      </div>
-
                      <div className="mb-1">
                         <Typography
                            variant="paragraph"
                            color="blue-gray"
                            className="mb-1 "
                         >
-                           Outstanding Balance  Previous Month
+                           Outstanding Balance Previous Month
                         </Typography>
                         <Input
                            size="md"
@@ -942,7 +942,6 @@ const Create = ({ collectors, generated_bill_no }) => {
                            className="mb-3"
                         />
                      </div>
-
                      <div className="mb-1">
                         <Typography
                            variant="paragraph"
@@ -974,9 +973,6 @@ const Create = ({ collectors, generated_bill_no }) => {
                            onWheel={(e) => e.target.blur()}
                         />
                      </div>
-
-                     
-
                      <div className="mb-1">
                         <Typography
                            variant="paragraph"
@@ -999,7 +995,6 @@ const Create = ({ collectors, generated_bill_no }) => {
                            disabled
                         />
                      </div>
-
                      <div className="mb-1">
                         <Typography
                            variant="paragraph"
@@ -1031,7 +1026,6 @@ const Create = ({ collectors, generated_bill_no }) => {
                            onWheel={(e) => e.target.blur()}
                         />
                      </div>
-
                      <div className="mb-1">
                         <Typography
                            variant="paragraph"
@@ -1058,7 +1052,6 @@ const Create = ({ collectors, generated_bill_no }) => {
                            className="mb-3"
                         />
                      </div>
-
                      <div className="mb-3">
                         <Typography
                            variant="paragraph"
@@ -1078,7 +1071,6 @@ const Create = ({ collectors, generated_bill_no }) => {
                            className="w-full"
                         />
                      </div>
-
                      <div className="mb-1">
                         <Typography
                            variant="paragraph"
@@ -1099,7 +1091,6 @@ const Create = ({ collectors, generated_bill_no }) => {
                            className="mb-3"
                         />
                      </div>
-
                      <Button
                         type="submit"
                         disabled={processing}

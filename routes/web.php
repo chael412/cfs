@@ -5,6 +5,7 @@ use App\Http\Controllers\BannedController;
 use App\Http\Controllers\BarangayController;
 use App\Http\Controllers\BatchBillingController;
 use App\Http\Controllers\BillController;
+use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\CollectorController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerPlanController;
@@ -51,6 +52,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('disconnections', DisconnectionController::class)->names('disconnections');
     Route::resource('banned', BannedController::class)->names('banned');
 
+    Route::get('/collections', [CollectionController::class, 'index'])->name('collections.index');
+    Route::get('/collection-show', [CollectionController::class, 'show'])->name('collections.show');
 
 
 

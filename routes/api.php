@@ -54,6 +54,13 @@ Route::get('purok_options', [PurokController::class, 'purokOptions']);
 Route::get('municipality_options', [MunicipalityController::class, 'municipalityOptions']);
 
 
+//Collectors collection
+Route::get('/collectors/total-collected', [CollectorController::class, 'totalCollected']);
+Route::get('/raw_collections', [CollectorController::class, 'totalCollectedRaw']);
+
+
+
+
 
 
 

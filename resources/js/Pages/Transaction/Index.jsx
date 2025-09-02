@@ -35,7 +35,7 @@ const TABLE_HEAD = [
    "Bill NO.",
    "Customer Name",
    "Mbps Plan",
-   "Partials",
+   "Payment",
    "Total Amount Paid",
    "Remarks",
    "Status",

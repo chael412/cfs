@@ -41,7 +41,7 @@ const TABLE_HEAD = [
 ];
 const Index = () => {
    const API_URL = UseAppUrl();
-   const [filter, setFilter] = useState("day");
+   const [filter, setFilter] = useState("month");
 
    const handleFilterChange = (e) => {
       setFilter(e.target.value);

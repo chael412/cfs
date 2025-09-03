@@ -17,9 +17,6 @@ class CollectorController extends Controller
     // API function
     public function totalCollectedRaw(Request $request)
     {
-        //GET http://localhost:8000/api/raw_collections?filter=month&search=Liberato&page=1
-
-
         $query = Transaction::with([
             'customerPlan.plan',
             'customerPlan.collector',
@@ -39,8 +36,20 @@ class CollectorController extends Controller
             });
         }
 
+        // ✅ Filter by custom start_date and end_date
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('date_billing', [
+                $request->start_date,
+                $request->end_date
+            ]);
+        } elseif ($request->filled('start_date')) {
+            $query->whereDate('date_billing', '>=', $request->start_date);
+        } elseif ($request->filled('end_date')) {
+            $query->whereDate('date_billing', '<=', $request->end_date);
+        }
+
         // ✅ Search by collector lastname
-        if ($request->has('search') && $request->search !== '') {
+        if ($request->filled('search')) {
             $search = $request->search;
             $query->whereHas('customerPlan.collector', function ($q) use ($search) {
                 $q->where('lastname', 'like', "%{$search}%");
@@ -58,6 +67,51 @@ class CollectorController extends Controller
 
         return response()->json($transactions);
     }
+
+
+    // public function totalCollectedRaw(Request $request)
+    // {
+    //     //GET http://localhost:8000/api/raw_collections?filter=month&search=Liberato&page=1
+
+
+    //     $query = Transaction::with([
+    //         'customerPlan.plan',
+    //         'customerPlan.collector',
+    //         'customerPlan.customer.purok.barangay.municipality',
+    //     ]);
+
+    //     // ✅ Filter by period (day, week, month)
+    //     if ($request->has('filter')) {
+    //         $filter = $request->filter;
+    //         $query->when($filter === 'day', function ($q) {
+    //             $q->whereDate('date_billing', now()->toDateString());
+    //         })->when($filter === 'week', function ($q) {
+    //             $q->whereBetween('date_billing', [now()->startOfWeek(), now()->endOfWeek()]);
+    //         })->when($filter === 'month', function ($q) {
+    //             $q->whereMonth('date_billing', now()->month)
+    //                 ->whereYear('date_billing', now()->year);
+    //         });
+    //     }
+
+    //     // ✅ Search by collector lastname
+    //     if ($request->has('search') && $request->search !== '') {
+    //         $search = $request->search;
+    //         $query->whereHas('customerPlan.collector', function ($q) use ($search) {
+    //             $q->where('lastname', 'like', "%{$search}%");
+    //         });
+    //     }
+
+    //     // ✅ Paginate 50 per page
+    //     $transactions = $query->paginate(50);
+
+    //     // ✅ Compute outstanding balance (bill_amount - partial)
+    //     $transactions->getCollection()->transform(function ($transaction) {
+    //         $transaction->outstanding_balance = ($transaction->bill_amount ?? 0) - ($transaction->partial ?? 0);
+    //         return $transaction;
+    //     });
+
+    //     return response()->json($transactions);
+    // }
 
     public function totalCollected(Request $request)
     {

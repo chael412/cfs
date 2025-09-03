@@ -5,9 +5,12 @@ import React from "react";
 import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 
-const Show = () => {
+const Show = ({ transactions, grand_totals, filters }) => {
    const contentRef = useRef();
    const reactToPrintFn = useReactToPrint({ contentRef });
+
+   console.log("high", JSON.stringify(grand_totals, null, 2));
+
    return (
       <AuthenticatedLayout>
          <Head title="Collections" />
@@ -26,7 +29,7 @@ const Show = () => {
                {/* Logo + Info */}
                <div className="flex space-x-4">
                   <img
-                     src="/img/logo.png" // replace with your logo path
+                     src="/img/logo.png"
                      alt="CFS Logo"
                      className="w-20 h-20 object-contain"
                   />
@@ -45,116 +48,129 @@ const Show = () => {
             {/* Title */}
             <div className="flex justify-between items-center my-4 border-b pb-2">
                <h2 className="font-semibold text-gray-700">
-                  Collection of August 4, 2025
+                  Collection of{" "}
+                  <span>
+                     {new Date(filters.start_date).toLocaleDateString("en-PH", {
+                        year: "numeric",
+                        month: "numeric",
+                        day: "numeric",
+                     })}
+                  </span>
+                  {" - "}
+                  <span>
+                     {new Date(filters.end_date).toLocaleDateString("en-PH", {
+                        year: "numeric",
+                        month: "numeric",
+                        day: "numeric",
+                     })}
+                  </span>
                </h2>
-               <span className="text-gray-600">Collector: Jang Jang</span>
             </div>
 
             {/* Table */}
             <table className="w-full border-collapse text-sm">
                <thead>
                   <tr className="bg-gray-100 text-left">
-                     <th className="border px-3 py-2">#</th>
-                     <th className="border px-3 py-2">Bill No.</th>
+                     <th className="border px-3 py-2 text-sm">#</th>
+                     <th className="border px-3 py-2 text-sm">Bill No.</th>
                      <th className="border px-3 py-2">Billing Day</th>
-                     <th className="border px-3 py-2">Name</th>
-                     <th className="border px-3 py-2">Address</th>
-                     <th className="border px-3 py-2 text-right">
+                     <th className="border px-3 py-2">Cusstomer Name</th>
+                     <th className="border px-3 py-2 text-sm">Address</th>
+                     <th className="border px-3 py-2 text-right text-sm">
                         Payment Amount
                      </th>
-                     <th className="border px-3 py-2 text-right">Rebate</th>
+                     <th className="border px-3 py-2 text-right text-sm">
+                        Rebate
+                     </th>
+                     <th className="border px-3 py-2 text-sm">
+                        Assigned Collector
+                     </th>
                   </tr>
                </thead>
                <tbody>
-                  <tr>
-                     <td className="border px-3 py-2">1</td>
-                     <td className="border px-3 py-2">250001</td>
-                     <td className="border px-3 py-2">August 4, 2025</td>
-                     <td className="border px-3 py-2">GAffud, Wesly</td>
-                     <td className="border px-3 py-2">Masipi West</td>
-                     <td className="border px-3 py-2 text-right">1,000.00</td>
-                     <td className="border px-3 py-2 text-right">0</td>
-                  </tr>
-                  <tr>
-                     <td className="border px-3 py-2">2</td>
-                     <td className="border px-3 py-2">250002</td>
-                     <td className="border px-3 py-2">August 5, 2025</td>
-                     <td className="border px-3 py-2">Reyes, Patrick</td>
-                     <td className="border px-3 py-2">Antagan 1st</td>
-                     <td className="border px-3 py-2 text-right">2,500.00</td>
-                     <td className="border px-3 py-2 text-right">0</td>
-                  </tr>
-                  <tr>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2 text-right"></td>
-                     <td className="border px-3 py-2 text-right"></td>
-                  </tr>
-                  <tr>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2 text-right"></td>
-                     <td className="border px-3 py-2 text-right"></td>
-                  </tr>
-                  <tr>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2 text-right"></td>
-                     <td className="border px-3 py-2 text-right"></td>
-                  </tr>
-                  <tr>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2 text-right"></td>
-                     <td className="border px-3 py-2 text-right"></td>
-                  </tr>
-                  <tr>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2 text-right"></td>
-                     <td className="border px-3 py-2 text-right"></td>
-                  </tr>
-                  <tr>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2 text-right"></td>
-                     <td className="border px-3 py-2 text-right"></td>
-                  </tr>
-                  <tr>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2"></td>
-                     <td className="border px-3 py-2 text-right"></td>
-                     <td className="border px-3 py-2 text-right"></td>
-                  </tr>
+                  {transactions.length > 0 ? (
+                     transactions.map((transaction, index) => (
+                        <tr key={transaction.id}>
+                           <td className="border px-3 py-2">{index + 1}</td>
+                           <td className="border px-3 py-2 text-sm">
+                              {transaction.bill_no}
+                           </td>
+                           <td className="border px-3 py-2">
+                              {new Date(
+                                 transaction.date_billing
+                              ).toLocaleDateString("en-US", {
+                                 year: "numeric",
+                                 month: "numeric",
+                                 day: "numeric",
+                              })}
+                           </td>
+                           <td className="border px-3 py-2">
+                              {transaction.customer_plan?.customer?.lastname},{" "}
+                              {transaction.customer_plan?.customer?.firstname}
+                           </td>
+                           <td className="border px-3 py-2">
+                              {
+                                 transaction.customer_plan?.customer?.purok
+                                    ?.purok_name
+                              }
+                              ,{" "}
+                              {
+                                 transaction.customer_plan?.customer?.purok
+                                    ?.barangay?.barangay_name
+                              }
+                           </td>
+                           <td className="border px-3 py-2 text-right">
+                              ₱
+                              {transaction.partial.toLocaleString("en-PH", {
+                                 minimumFractionDigits: 2,
+                                 maximumFractionDigits: 2,
+                              })}
+                           </td>
+                           <td className="border px-3 py-2 text-right">
+                              ₱
+                              {transaction.rebate.toLocaleString("en-PH", {
+                                 minimumFractionDigits: 2,
+                                 maximumFractionDigits: 2,
+                              })}
+                           </td>
+                           <td className="border px-3 py-2">
+                              {transaction.customer_plan?.collector?.lastname},{" "}
+                              {transaction.customer_plan?.collector?.firstname}
+                           </td>
+                        </tr>
+                     ))
+                  ) : (
+                     <tr>
+                        <td
+                           colSpan="7"
+                           className="text-center py-4 text-gray-500"
+                        >
+                           No collection records found
+                        </td>
+                     </tr>
+                  )}
                </tbody>
             </table>
 
             {/* Totals */}
             <div className="flex justify-end border-t mt-4 pt-2">
                <p className="font-semibold text-gray-700">
-                  Grand Total: <span className="ml-2">9,550.00</span> &nbsp; |
-                  &nbsp; Rebate - 0
+                  Grand Total:{" "}
+                  <span className="ml-2">
+                     ₱
+                     {grand_totals.partial.toLocaleString("en-PH", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                     })}
+                  </span>
+                  &nbsp; | &nbsp; Rebate -{" "}
+                  <span>
+                     ₱
+                     {grand_totals.rebate.toLocaleString("en-PH", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                     })}
+                  </span>
                </p>
             </div>
 

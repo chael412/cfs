@@ -56,6 +56,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/collection-show', [CollectionController::class, 'show'])->name('collections.show');
 
 
+    // routes/web.php
+    Route::get('/transactions/print/{id}', [TransactionController::class, 'print'])->name('transactions.print');
+
+
+
+
+
+
 
 
 

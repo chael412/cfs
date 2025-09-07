@@ -112,13 +112,15 @@ const Index = () => {
       setCurrentPage(page);
    };
 
-   const deleteBill = async (batchId) => {
+   const deleteBill = async (transactionID) => {
       const confirmDelete = window.confirm(
-         "Are you sure you want to delete this batch bill?"
+         "Are you sure you want to delete this bill transaction?"
       );
       if (confirmDelete) {
          try {
-            const response = await axios.delete(`/batch_bills/${batchId}`);
+            const response = await axios.delete(
+               `/transactions/${transactionID}`
+            );
             alert(response.data.message);
             refetch();
          } catch (error) {
@@ -361,15 +363,11 @@ const Index = () => {
                                              >
                                                 <MenuItem>Edit</MenuItem>
                                              </Link>
-                                             {/* <MenuItem>
-                                                <span
-                                                   onClick={() =>
-                                                      deleteBill(id)
-                                                   }
-                                                >
-                                                   Delete
-                                                </span>
-                                             </MenuItem> */}
+                                             <MenuItem
+                                                onClick={() => deleteBill(id)}
+                                             >
+                                                <span>Delete</span>
+                                             </MenuItem>
                                           </MenuList>
                                        </Menu>
                                     </div>

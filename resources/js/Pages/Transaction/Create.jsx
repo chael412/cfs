@@ -31,13 +31,15 @@ import dayjs from "dayjs";
 import { useReactToPrint } from "react-to-print";
 import { format } from "date-fns";
 
-const Create = ({ collectors, generated_bill_no }) => {
+const Create = ({ collectors }) => {
    const API_URL = UseAppUrl();
    const [selectedCustomerId, setSelectedCustomerId] = useState(null);
    const [selectedCustomerPlan, setSelectedCustomerPlan] = useState({});
    const [billingType, setBillingType] = useState("");
    const [transactionResponse, setTransactionResponse] = useState(null);
    const [selectedCollectorId, setSelectedCollectorId] = useState("");
+
+   const [billNo, setBillNo] = useState("");
 
    const contentRef = useRef();
    const reactToPrintFn = useReactToPrint({ contentRef });
@@ -139,10 +141,22 @@ const Create = ({ collectors, generated_bill_no }) => {
       setOpenModalPrint(!openModalPrint);
    };
 
+   const fetchBillNo = async () => {
+      try {
+         const res = await axios.get(
+            `${API_URL}/api/transactions/generate-bill-no`
+         );
+         setBillNo(res.data.bill_no);
+         setData("bill_no", res.data.bill_no);
+      } catch (error) {
+         console.error("Failed to fetch new bill number", error);
+      }
+   };
+
    const { data, setData, post, errors, reset, processing } = useForm({
       customer_plan_id: "",
       collector_id: "",
-      bill_no: generated_bill_no,
+      bill_no: billNo,
       rebate: "",
       partial: "",
       bill_amount: "",
@@ -154,38 +168,12 @@ const Create = ({ collectors, generated_bill_no }) => {
    const onSubmit = async (e) => {
       e.preventDefault();
 
-      // Client-side validation for required fields
-      if (!data.customer_plan_id || Number(data.customer_plan_id) <= 0) {
-         alert("Please select a customer.");
-         return;
-      }
+      // validation checks...
 
-      if (!data.remarks?.trim()) {
-         alert("Choose a billing type.");
-         return;
-      }
-
-      if (!data.partial || Number(data.partial) <= 0) {
-         alert("Partial payment is required");
-         return;
-      }
-
-      if (!data.status?.trim()) {
-         alert("Status is required.");
-         return;
-      }
-
-      // if (!data.collector_id?.trim()) {
-      //    alert("Collector is required.");
-      //    return;
-      // }
-
-      // Compute bill_amount dynamically (plan price - rebate)
       const computedBillAmount =
          Number(selectedCustomerPlan?.plan_price || 0) -
          Number(data.rebate || 0);
 
-      // Ensure numeric values
       const submitData = {
          ...data,
          bill_amount: computedBillAmount,
@@ -194,28 +182,16 @@ const Create = ({ collectors, generated_bill_no }) => {
       };
 
       try {
-         console.log(
-            "Form data to submityaaaaa:",
-            JSON.stringify(submitData, null, 2)
-         );
-
          const response = await axios.post(
             `${API_URL}/api/transactions`,
             submitData
          );
 
-         setTransactionResponse(response.data);
+         // ✅ Open the print page in a new tab
+         const transactionId = response.data.transaction.id;
+         window.open(`/transactions/print/${transactionId}`, "_blank");
 
-         console.log("Response:", response.data);
-         setOpenModalPrint(true);
-
-         // Reset form
-         setData("rebate", "");
-         setData("partial", "");
-         setData("remarks", "");
-         setData("status", "");
-
-         refetchTransData();
+         window.location.reload();
       } catch (error) {
          console.error("Error creating transaction:", error.response || error);
          alert("Failed to create transaction. Check console for details.");
@@ -338,6 +314,10 @@ const Create = ({ collectors, generated_bill_no }) => {
             })),
          })),
       })) || [];
+
+   useEffect(() => {
+      fetchBillNo();
+   }, []);
 
    useEffect(() => {
       if (selectedCustomerId !== null) {

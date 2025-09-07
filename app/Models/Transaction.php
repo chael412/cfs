@@ -15,7 +15,9 @@ class Transaction extends Model
         'bill_amount',
         'remarks',
         'status',
-        'date_billing'
+        'date_billing',
+        'plan_price',
+        'plan_mbps'
     ];
 
     public function customerPlan()

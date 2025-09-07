@@ -59,6 +59,8 @@ Route::get('/collectors/total-collected', [CollectorController::class, 'totalCol
 Route::get('/raw_collections', [CollectorController::class, 'totalCollectedRaw']);
 
 
+// routes/api.php
+Route::get('/transactions/generate-bill-no', [TransactionController::class, 'generateBillNo']);
 
 
 

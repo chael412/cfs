@@ -269,6 +269,7 @@ const Edit = ({ transaction, collectors, latest }) => {
                      </Typography>
                      <Input
                         size="md"
+                        disabled
                         type="date"
                         value={data.date_billing}
                         onChange={(e) =>

@@ -16,7 +16,66 @@ use Carbon\Carbon;
 
 class TransactionController extends Controller
 {
+
+    public function print($id)
+    {
+        $transaction = Transaction::with(['customerPlan.customer', 'customerPlan.collector'])
+            ->findOrFail($id);
+
+        // Get the last transaction before this one
+        $lastTransaction = Transaction::where('customer_plan_id', $transaction->customer_plan_id)
+            ->where('id', '<', $transaction->id)
+            ->latest()
+            ->first();
+
+        $outstandingBalance = null;
+        $billingMonth = null;
+
+        if ($lastTransaction) {
+            $outstandingBalance = $lastTransaction->bill_amount - $lastTransaction->partial;
+            $billingMonth = $lastTransaction->created_at->format('F Y');
+        }
+
+        return Inertia::render('Transaction/Print', [
+            'transaction' => $transaction,
+            'outstanding_balance' => $outstandingBalance,
+            'billing_month' => $billingMonth,
+        ]);
+    }
+
+
+
+
     // API METHODS
+    public function generateBillNo()
+    {
+        $yearPrefix = now()->format('y'); // e.g. '25' for 2025
+        $month = now()->format('n'); // month without leading zero (1–12)
+
+        $prefix = $yearPrefix . $month . '-'; // e.g. '251-'
+
+        // Get latest bill_no starting with this prefix (year + month)
+        $latestBill = Transaction::where('bill_no', 'like', $prefix . '%')
+            ->orderBy('bill_no', 'desc')
+            ->first();
+
+        if ($latestBill) {
+            // Extract the last 4 digits
+            $lastNumber = (int) Str::after($latestBill->bill_no, '-');
+            $nextNumber = $lastNumber + 1;
+        } else {
+            $nextNumber = 1;
+        }
+
+        // Pad the incrementing number to 4 digits
+        $newBillNo = $prefix . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+
+        return response()->json([
+            'bill_no' => $newBillNo,
+        ]);
+    }
+
+
     public function indexApi()
     {
         try {
@@ -71,34 +130,30 @@ class TransactionController extends Controller
     public function storeTransaction(StoreTransactionRequest $request)
     {
         try {
-            // Get validated data
             $data = $request->validated();
 
-
+            // 🔹 Get the plan details
+            $customerPlan = \App\Models\CustomerPlan::with('plan')->findOrFail($data['customer_plan_id']);
+            $data['plan_price'] = $customerPlan->plan->plan_price ?? null;
+            $data['plan_mbps']  = $customerPlan->plan->mbps ?? null;
 
             // Create transaction
             $transaction = Transaction::create($data);
 
-            // Load relations (customer, collector)
-            $transaction->load([
-                'customerPlan.customer',
-                'customerPlan.collector'
-            ]);
+            $transaction->load(['customerPlan.customer', 'customerPlan.collector']);
 
-            // Get the latest transaction for this customer_plan
+            // Get the latest transaction for balance computation
             $lastTransaction = Transaction::where('customer_plan_id', $transaction->customer_plan_id)
-                ->where('id', '<', $transaction->id) // only older transactions
+                ->where('id', '<', $transaction->id)
                 ->latest()
                 ->first();
 
-
-            // Compute outstanding balance
             $outstandingBalance = null;
             $billingMonth = null;
 
             if ($lastTransaction) {
                 $outstandingBalance = $lastTransaction->bill_amount - $lastTransaction->partial;
-                $billingMonth = $lastTransaction->created_at->format('F Y'); // e.g. "August 2025"
+                $billingMonth = $lastTransaction->created_at->format('F Y');
             }
 
             return response()->json([
@@ -116,6 +171,7 @@ class TransactionController extends Controller
             ], 500);
         }
     }
+
 
 
 
@@ -304,8 +360,19 @@ class TransactionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Transaction $transaction)
+    public function destroy($id)
     {
-        //
+        try {
+            $transaction = Transaction::findOrFail($id);
+
+            $transaction->delete();
+            return response()->json([
+                'message' => 'Bill Transaction deleted successfully.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error deleting bill transaction: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

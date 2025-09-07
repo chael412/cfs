@@ -180,11 +180,15 @@ const Index = () => {
                            <th className="border border-gray-400 px-2 py-1">
                               Billing Date
                            </th>
-                           <th className="border border-gray-400 px-2 py-1">
-                              Outstanding Balance
-                           </th>
+
                            <th className="border border-gray-400 px-2 py-1">
                               Plan Price
+                           </th>
+                           <th className="border border-gray-400 px-2 py-1">
+                              Payment
+                           </th>
+                           <th className="border border-gray-400 px-2 py-1">
+                              Outstanding Balance
                            </th>
                            <th className="border border-gray-400 px-2 py-1">
                               Remarks
@@ -209,11 +213,15 @@ const Index = () => {
                               <td className="border border-gray-400 px-2 py-1">
                                  {t.date_billing}
                               </td>
+
+                              <td className="border border-gray-400 px-2 py-1">
+                                 ₱{t.plan_price}
+                              </td>
                               <td className="border border-gray-400 px-2 py-1">
                                  ₱{t.bill_amount}
                               </td>
                               <td className="border border-gray-400 px-2 py-1">
-                                 ₱{t.plan_price}
+                                 ₱{t.outstanding_balance}
                               </td>
                               <td className="border border-gray-400 px-2 py-1">
                                  {t.remarks}

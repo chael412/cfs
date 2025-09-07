@@ -32,10 +32,19 @@ class SoaController extends Controller
             ], 404);
         }
 
+        // ✅ Compute outstanding balance for each transaction
+        foreach ($customer->customerPlans as $plan) {
+            foreach ($plan->transactions as $transaction) {
+                $transaction->outstanding_balance =
+                    ($transaction->plan_price ?? 0) - ($transaction->bill_amount ?? 0);
+            }
+        }
+
         return response()->json([
             'customer' => $customer,
         ]);
     }
+
 
 
 

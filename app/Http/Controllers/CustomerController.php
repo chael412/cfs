@@ -223,7 +223,7 @@ class CustomerController extends Controller
             $data = $request->validated();
             Customer::create($data);
 
-            return to_route('customers.index');
+            // return to_route('customers.index');
         } catch (\Exception $e) {
             return response()->json(['message' => 'Error: ' . $e->getMessage()], 500);
         }

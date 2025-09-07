@@ -14,6 +14,7 @@ use App\Http\Controllers\Main\DashboardController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurokController;
+use App\Http\Controllers\SoaController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\WalkinBillingController;
 use Illuminate\Foundation\Application;
@@ -60,6 +61,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/transactions/print/{id}', [TransactionController::class, 'print'])->name('transactions.print');
 
 
+    Route::get('/soa', [SoaController::class, 'index'])->name('soa.index');
 
 
 

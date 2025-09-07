@@ -43,7 +43,8 @@ const Edit = ({ customer }) => {
       await patch(route("customers.update", customer.id), {
          onSuccess: () => {
             alert("Customer was updated successfully!");
-            reset();
+            window.location.reload();
+            // reset();
          },
          onError: (errors) => {
             console.log(errors);

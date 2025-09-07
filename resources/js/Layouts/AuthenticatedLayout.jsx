@@ -149,6 +149,17 @@ export default function AuthenticatedLayout({ children }) {
                         </span>
                      )}
                   </NavLink>
+                  <NavLink
+                     href={route("soa.index")}
+                     active={["soa.index"].includes(route().current())}
+                  >
+                     <RiBillLine />
+                     {!isCollapsed && (
+                        <span className="mx-2 text-sm font-medium">
+                           Customer SOA
+                        </span>
+                     )}
+                  </NavLink>
                   <hr />
 
                   {!isCollapsed && (

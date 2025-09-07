@@ -32,6 +32,8 @@ class StoreCustomerRequest extends FormRequest
             'occupation' => ['nullable', 'string', 'max:255'],
             'contact_no' => ['required', 'string', 'max:255'],
             'purok_id' => ['required', 'integer'],
+            'status' => ['nullable', 'in:active,inactive,banned'],
+
         ];
     }
 }

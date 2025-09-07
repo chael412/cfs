@@ -41,6 +41,7 @@ const Create = ({ collectors }) => {
          onSuccess: () => {
             alert("Customer was added successfully!");
             reset();
+            window.location.href = "/customers";
          },
          onError: (errors) => {
             console.log(errors);

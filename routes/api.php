@@ -11,6 +11,7 @@ use App\Http\Controllers\CustomerPlanController;
 use App\Http\Controllers\DisconnectionController;
 use App\Http\Controllers\MunicipalityController;
 use App\Http\Controllers\PurokController;
+use App\Http\Controllers\SoaController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\WalkinBillingController;
 use Illuminate\Http\Request;
@@ -61,6 +62,11 @@ Route::get('/raw_collections', [CollectorController::class, 'totalCollectedRaw']
 
 // routes/api.php
 Route::get('/transactions/generate-bill-no', [TransactionController::class, 'generateBillNo']);
+
+Route::get('/customers/{id}/soa', [SoaController::class, 'getSoa']);
+Route::get('/customer_soa', [SoaController::class, 'searchSoa']);
+
+
 
 
 

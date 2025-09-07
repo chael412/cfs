@@ -14,8 +14,14 @@ import {
    CardFooter,
 } from "@material-tailwind/react";
 import Select from "react-select";
+import UseAppUrl from "@/hooks/UseAppUrl";
+import { useEffect, useState } from "react";
 
 const Create = ({ collectors }) => {
+   const API_URL = UseAppUrl();
+   const [barangays, setBarangays] = useState([]);
+   const [selectedPurokId, setSelectedPurokId] = useState("");
+
    const { data, setData, post, errors, reset, processing } = useForm({
       firstname: "",
       middlename: "",
@@ -23,9 +29,10 @@ const Create = ({ collectors }) => {
       sex: "",
       marital_status: "",
       birthdate: "",
-      address: "",
+      purok_id: selectedPurokId,
       occupation: "",
       contact_no: "",
+      status: "inactive",
    });
 
    const onSubmit = async (e) => {
@@ -33,8 +40,10 @@ const Create = ({ collectors }) => {
 
       await post(route("customers.store"), {
          onSuccess: () => {
-            alert("Customer was added successfully!");
+            alert("Discconection was added successfully!");
             reset();
+
+            window.location.href = "/disconnections";
          },
          onError: (errors) => {
             console.log(errors);
@@ -55,11 +64,29 @@ const Create = ({ collectors }) => {
       { value: "separated", label: "Separated" },
    ];
 
-   console.log(collectors);
+   console.log("test" + selectedPurokId);
+   const fetchBarangays = async () => {
+      try {
+         const response = await axios.get(`${API_URL}/api/purok_options`);
+         setBarangays(response.data);
+      } catch (error) {
+         console.error("Error fetching barangays:", error);
+         alert("Failed to fetch barangays.");
+      }
+   };
+
+   useEffect(() => {
+      fetchBarangays();
+   }, []);
+
+   const barangayOptions = barangays.map((barangay) => ({
+      value: barangay.id.toString(),
+      label: barangay.purok_name + " - " + barangay.barangay.barangay_name,
+   }));
 
    return (
       <AuthenticatedLayout>
-         <Head title="Add Customer" />
+         <Head title="Add Disconnection" />
          <div className="bg-white overflow-y-auto max-h-[590px] grid place-justify-center ">
             <div className="mt-2 px-4">
                <div className="mb-6 flex justify-between ">
@@ -70,7 +97,7 @@ const Create = ({ collectors }) => {
                      <div className="flex justify-end mb-2">
                         <Tooltip content="Back">
                            <Link
-                              href="/customers"
+                              href="/disconnections"
                               className="hover:bg-gray-200 px-2 py-1 rounded"
                            >
                               <BsArrowReturnLeft className="text-xl cursor-pointer" />
@@ -82,7 +109,7 @@ const Create = ({ collectors }) => {
                         color="blue-gray"
                         className="text-center"
                      >
-                        Add Customer
+                        Add Disconnection
                      </Typography>
 
                      <form onSubmit={onSubmit} className="mt-8 mb-2">
@@ -218,21 +245,31 @@ const Create = ({ collectors }) => {
                               size="md"
                            />
                         </div>
-                        <div className="mb-3">
-                           <Typography
-                              variant="paragraph"
-                              color="blue-gray"
-                              className="mb-1 "
-                           >
-                              Address
-                           </Typography>
-                           <Textarea
-                              value={data.address}
-                              onChange={(e) =>
-                                 setData("address", e.target.value)
-                              }
-                              error={Boolean(errors.address)}
-                           />
+                        <div className=" mb-3">
+                           <div>
+                              <Typography
+                                 variant="paragraph"
+                                 color="blue-gray"
+                                 className="mb-1 "
+                              >
+                                 Address
+                              </Typography>
+
+                              <Select
+                                 value={barangayOptions.find(
+                                    (option) => option.value === selectedPurokId
+                                 )}
+                                 options={barangayOptions}
+                                 onChange={(selectedOption) => {
+                                    const value = selectedOption?.value || "";
+                                    setSelectedPurokId(value);
+                                    setData(
+                                       "purok_id",
+                                       value ? parseInt(value, 10) : null
+                                    );
+                                 }}
+                              />
+                           </div>
                         </div>
                         <div className="mb-3">
                            <Typography

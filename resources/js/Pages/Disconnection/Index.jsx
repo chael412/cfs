@@ -152,16 +152,18 @@ const Index = () => {
                         Manage Disconnection
                      </Typography>
                   </div>
-                  {/* <div>
-                            <Button
-                                className="flex gap-2 items-center"
-                                color="blue"
-                                size="md"
-                            >
-                                <AiOutlinePlus className="text-lg" />
-                                Add Customer
-                            </Button>
-                        </div> */}
+                  <div>
+                     <Link href="/disconnections/create">
+                        <Button
+                           className="flex gap-2 items-center"
+                           color="blue"
+                           size="md"
+                        >
+                           <AiOutlinePlus className="text-lg" />
+                           Add Disconnection
+                        </Button>
+                     </Link>
+                  </div>
                </div>
 
                <div className="w-full  flex items-center justify-between flex-col-reverse gap-2 lg:flex-row">

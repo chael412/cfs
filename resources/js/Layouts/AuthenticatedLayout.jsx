@@ -133,6 +133,17 @@ export default function AuthenticatedLayout({ children }) {
                      )}
                   </NavLink>
                   <NavLink
+                     href={route("batch.bill")}
+                     active={["batch.bill"].includes(route().current())}
+                  >
+                     <RiBankCard2Fill />
+                     {!isCollapsed && (
+                        <span className="mx-2 text-sm font-medium">
+                           Batch Billing Generation
+                        </span>
+                     )}
+                  </NavLink>
+                  <NavLink
                      href={route("customer_plans.index")}
                      active={[
                         "customer_plans.index",

@@ -4,6 +4,7 @@ use App\Http\Controllers\AdvanceBillingController;
 use App\Http\Controllers\BannedController;
 use App\Http\Controllers\BarangayController;
 use App\Http\Controllers\BatchBillingController;
+use App\Http\Controllers\BatchxBillingController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\CollectorController;
 use App\Http\Controllers\CustomerController;
@@ -68,8 +69,9 @@ Route::get('/customer_soa', [SoaController::class, 'searchSoa']);
 
 
 
+Route::post('/batch-billing/generate/{batchNo}', [BatchxBillingController::class, 'generateBatch'])->name('batch.generate');
 
-
+Route::get('/batch-unpaid/{batchNo}', [BatchxBillingController::class, 'getUnpaidByBatchMonthYear']);
 
 
 Route::get('/customers/{customerId}/latest-plan', [BillController::class, 'getLatestPlanForCustomer']);

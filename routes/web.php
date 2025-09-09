@@ -4,6 +4,7 @@ use App\Http\Controllers\AdvanceBillingController;
 use App\Http\Controllers\BannedController;
 use App\Http\Controllers\BarangayController;
 use App\Http\Controllers\BatchBillingController;
+use App\Http\Controllers\BatchxBillingController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\CollectorController;
@@ -62,6 +63,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
     Route::get('/soa', [SoaController::class, 'index'])->name('soa.index');
+
+    Route::get('/generate-batch-bill', [BatchxBillingController::class, 'index'])->name('batch.bill');
+
 
 
 

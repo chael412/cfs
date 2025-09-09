@@ -10,8 +10,11 @@ import {
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import { useReactToPrint } from "react-to-print";
+import UseAppUrl from "@/hooks/UseAppUrl";
 
 const Page = () => {
+   const API_URL = UseAppUrl();
+
    // For filtering
    const [filterBatch, setFilterBatch] = useState("");
    const [month, setMonth] = useState(new Date().getMonth() + 1);
@@ -32,7 +35,7 @@ const Page = () => {
       try {
          setLoading(true);
          const res = await axios.get(
-            `http://localhost:8000/api/batch-unpaid/${filterBatch}?month=${month}&year=${year}`
+            `${API_URL}/api/batch-unpaid/${filterBatch}?month=${month}&year=${year}`
          );
          setTransactions(res.data.transactions || []);
       } catch (error) {
@@ -54,7 +57,7 @@ const Page = () => {
          setPostResult(null);
 
          const res = await axios.post(
-            `http://localhost:8000/api/batch-billing/generate/${postBatch}`
+            `${API_URL}/api/batch-billing/generate/${postBatch}`
          );
 
          // simulate delay

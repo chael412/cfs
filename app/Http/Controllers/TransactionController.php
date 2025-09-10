@@ -16,6 +16,64 @@ use Carbon\Carbon;
 
 class TransactionController extends Controller
 {
+    ///======== remarks=advance
+    public function indexApiAdvance()
+    {
+        try {
+            $search = request('search');
+            $sortColumn = request('sortColumn', 'bill_no');
+            $sortDirection = request('sortDirection', 'desc');
+            $month = request('month');
+            $year = request('year');
+
+            $validSortColumns = ['created_at', 'bill_no', 'bill_amount'];
+
+            if (!in_array($sortColumn, $validSortColumns)) {
+                $sortColumn = 'bill_no';
+            }
+
+            $query = Transaction::with([
+                'customerPlan.customer',
+                'customerPlan.plan',
+            ])
+                // Only transactions where remarks = "advance"
+                ->where('remarks', 'advance')
+                // Month filter
+                ->when($month, fn($q) => $q->whereMonth('date_billing', $month))
+                // Year filter
+                ->when($year, fn($q) => $q->whereYear('date_billing', $year))
+                // Search filter (lastname or full name)
+                ->when($search, function ($q) use ($search) {
+                    $q->whereHas('customerPlan.customer', function ($qq) use ($search) {
+                        $qq->where('lastname', 'like', $search . '%')
+                            ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ["%{$search}%"]);
+                    });
+                });
+
+            // Sorting
+            if ($sortColumn === 'bill_no') {
+                $query->orderByRaw("CAST(SUBSTRING_INDEX(bill_no, '-', -1) AS UNSIGNED) {$sortDirection}");
+            } else {
+                $query->orderBy($sortColumn, $sortDirection);
+            }
+
+            $data = $query->paginate(100);
+
+            // Add computed fields
+            $data->getCollection()->transform(function ($transaction) {
+                $transaction->balance = $transaction->bill_amount - $transaction->partial;
+                $transaction->balance_month = Carbon::parse($transaction->created_at)->format('F');
+                return $transaction;
+            });
+
+            return response()->json($data, 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error: ' . $e->getMessage()], 500);
+        }
+    }
+
+
+
 
     public function print($id)
     {
@@ -75,6 +133,84 @@ class TransactionController extends Controller
         ]);
     }
 
+    // public function indexApi()
+    // {
+    //     try {
+    //         $search = request('search');
+    //         $sortColumn = request('sortColumn', 'bill_no');
+    //         $sortDirection = request('sortDirection', 'desc');
+    //         $batch = request('batch');
+    //         $month = request('month');
+    //         $year = request('year');
+
+    //         $validSortColumns = ['created_at', 'bill_no', 'bill_amount'];
+    //         if (!in_array($sortColumn, $validSortColumns)) {
+    //             $sortColumn = 'bill_no';
+    //         }
+
+    //         // ✅ Query for batch-based transactions
+    //         $batchQuery = Transaction::with(['customerPlan.customer', 'customerPlan.plan'])
+    //             ->when($batch, function ($query) use ($batch) {
+    //                 $query->whereHas('customerPlan', function ($q) use ($batch) {
+    //                     $q->where('date_billing', $batch);
+    //                 });
+    //             })
+    //             ->when($month, fn($query) => $query->whereMonth('date_billing', $month))
+    //             ->when($year, fn($query) => $query->whereYear('date_billing', $year))
+    //             ->when($search, function ($query) use ($search) {
+    //                 $query->where(function ($q) use ($search) {
+    //                     $q->whereHas('customerPlan.customer', function ($qq) use ($search) {
+    //                         $qq->where('lastname', 'like', $search . '%')
+    //                             ->orWhere('id', $search)
+    //                             ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ["%{$search}%"]);
+    //                     })
+    //                         ->orWhere('bill_no', 'like', "%{$search}%");
+    //                 });
+    //             });
+
+    //         // ✅ Query for advance remarks
+    //         $advanceQuery = Transaction::with(['customerPlan.customer', 'customerPlan.plan'])
+    //             ->where('remarks', 'advance')
+    //             ->when($month, fn($query) => $query->whereMonth('date_billing', $month))
+    //             ->when($year, fn($query) => $query->whereYear('date_billing', $year));
+
+    //         // ✅ Apply sorting
+    //         if ($sortColumn === 'bill_no') {
+    //             $batchQuery->orderByRaw("CAST(SUBSTRING_INDEX(bill_no, '-', -1) AS UNSIGNED) {$sortDirection}");
+    //             $advanceQuery->orderByRaw("CAST(SUBSTRING_INDEX(bill_no, '-', -1) AS UNSIGNED) {$sortDirection}");
+    //         } else {
+    //             $batchQuery->orderBy($sortColumn, $sortDirection);
+    //             $advanceQuery->orderBy($sortColumn, $sortDirection);
+    //         }
+
+    //         // ✅ Separate pagination
+    //         $batchData = $batchQuery->paginate(100, ['*'], 'batch_page');
+    //         $advanceData = $advanceQuery->paginate(100, ['*'], 'advance_page');
+
+    //         // ✅ Add computed fields
+    //         $batchData->getCollection()->transform(function ($transaction) {
+    //             $transaction->balance = $transaction->bill_amount - $transaction->partial;
+    //             $transaction->balance_month = Carbon::parse($transaction->created_at)->format('F');
+    //             return $transaction;
+    //         });
+
+    //         $advanceData->getCollection()->transform(function ($transaction) {
+    //             $transaction->balance = $transaction->bill_amount - $transaction->partial;
+    //             $transaction->balance_month = Carbon::parse($transaction->created_at)->format('F');
+    //             return $transaction;
+    //         });
+
+    //         return response()->json([
+    //             'batch' => $batchData,
+    //             'advance' => $advanceData,
+    //         ], 200);
+    //     } catch (\Exception $e) {
+    //         return response()->json(['message' => 'Error: ' . $e->getMessage()], 500);
+    //     }
+    // }
+
+
+    // ==Orignal
 
     public function indexApi()
     {
@@ -82,6 +218,9 @@ class TransactionController extends Controller
             $search = request('search');
             $sortColumn = request('sortColumn', 'bill_no');
             $sortDirection = request('sortDirection', 'desc');
+            $batch = request('batch');
+            $month = request('month');
+            $year = request('year');
 
             $validSortColumns = ['created_at', 'bill_no', 'bill_amount'];
 
@@ -93,16 +232,35 @@ class TransactionController extends Controller
                 'customerPlan.customer',
                 'customerPlan.plan',
             ])
+                // ✅ Only transactions where remarks contain "batch"
+                ->where('remarks', 'like', '%batch%')
+                // ✅ Batch filter
+                ->when($batch, function ($query) use ($batch) {
+                    $query->whereHas('customerPlan', function ($q) use ($batch) {
+                        $q->where('date_billing', $batch);
+                    });
+                })
+                // ✅ Month filter
+                ->when($month, function ($query) use ($month) {
+                    $query->whereMonth('date_billing', $month);
+                })
+                // ✅ Year filter
+                ->when($year, function ($query) use ($year) {
+                    $query->whereYear('date_billing', $year);
+                })
+                // ✅ Search filter (grouped properly)
                 ->when($search, function ($query) use ($search) {
-                    $query->whereHas('customerPlan.customer', function ($q) use ($search) {
-                        $q->where('lastname', 'like', $search . '%')
-                            ->orWhere('id', $search)
-                            ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ["%{$search}%"]);
-                    })
-                        ->orWhere('bill_no', 'like', "%{$search}%");
+                    $query->where(function ($q) use ($search) {
+                        $q->whereHas('customerPlan.customer', function ($qq) use ($search) {
+                            $qq->where('lastname', 'like', $search . '%')
+                                ->orWhere('id', $search)
+                                ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ["%{$search}%"]);
+                        })
+                            ->orWhere('bill_no', 'like', "%{$search}%");
+                    });
                 });
 
-            // Force bill_no to be sorted by numeric part after the dash
+            // ✅ Sorting
             if ($sortColumn === 'bill_no') {
                 $query->orderByRaw("CAST(SUBSTRING_INDEX(bill_no, '-', -1) AS UNSIGNED) {$sortDirection}");
             } else {
@@ -111,10 +269,10 @@ class TransactionController extends Controller
 
             $data = $query->paginate(100);
 
-            // Append balance + month of transaction
+            // ✅ Add computed fields
             $data->getCollection()->transform(function ($transaction) {
                 $transaction->balance = $transaction->bill_amount - $transaction->partial;
-                $transaction->balance_month = \Carbon\Carbon::parse($transaction->created_at)->format('F');
+                $transaction->balance_month = Carbon::parse($transaction->created_at)->format('F');
                 return $transaction;
             });
 

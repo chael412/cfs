@@ -30,7 +30,7 @@ const Show = ({ collector }) => {
                </Typography>
                <Tooltip content="Back">
                   <Link
-                     href="/collectors"
+                     href="/admin/collectors"
                      className="hover:bg-gray-200 px-2 py-1 rounded mr-4"
                   >
                      <BsArrowReturnLeft className="text-xl cursor-pointer" />

@@ -30,7 +30,7 @@ const Show = ({ customer }) => {
                </Typography>
                <Tooltip content="Back">
                   <Link
-                     href="/banned"
+                     href="/admin/banned"
                      className="hover:bg-gray-200 px-2 py-1 rounded mr-4"
                   >
                      <BsArrowReturnLeft className="text-xl cursor-pointer" />

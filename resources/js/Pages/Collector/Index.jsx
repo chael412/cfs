@@ -119,7 +119,9 @@ const Index = () => {
       );
       if (confirmDelete) {
          try {
-            const response = await axios.delete(`/collectors/${collectorId}`);
+            const response = await axios.delete(
+               `/admin/collectors/${collectorId}`
+            );
             alert(response.data.message);
             refetch();
          } catch (error) {
@@ -181,7 +183,7 @@ const Index = () => {
                             </Select>
                         </div> */}
                   <div>
-                     <Link href="/collectors/create">
+                     <Link href="/admin/collectors/create">
                         <Button
                            className="flex gap-2 items-center"
                            color="blue"

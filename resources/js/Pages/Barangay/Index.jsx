@@ -107,7 +107,9 @@ const Index = () => {
       );
       if (confirmDelete) {
          try {
-            const response = await axios.delete(`/barangays/${barangayId}`);
+            const response = await axios.delete(
+               `/admin/barangays/${barangayId}`
+            );
             alert(response.data.message);
             refetch();
          } catch (error) {
@@ -169,7 +171,7 @@ const Index = () => {
                             </Select>
                         </div> */}
                   <div>
-                     <Link href="/barangays/create">
+                     <Link href="/admin/barangays/create">
                         <Button
                            className="flex gap-2 items-center"
                            color="blue"

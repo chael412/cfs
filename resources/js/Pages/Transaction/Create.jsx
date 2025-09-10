@@ -35,9 +35,10 @@ const Create = ({ collectors }) => {
    const API_URL = UseAppUrl();
    const [selectedCustomerId, setSelectedCustomerId] = useState(null);
    const [selectedCustomerPlan, setSelectedCustomerPlan] = useState({});
-   const [billingType, setBillingType] = useState("");
+   const [billingType, setBillingType] = useState("batch");
    const [transactionResponse, setTransactionResponse] = useState(null);
    const [selectedCollectorId, setSelectedCollectorId] = useState("");
+   const [searchCustomer, setSearchCustomer] = useState("");
 
    const [billNo, setBillNo] = useState("");
 
@@ -108,7 +109,7 @@ const Create = ({ collectors }) => {
       queryKey: [
          "customers",
          currentPage,
-         searchQuery,
+         searchCustomer, // 👈 now using searchCustomer
          sortConfig.column,
          sortConfig.direction,
       ],
@@ -160,7 +161,7 @@ const Create = ({ collectors }) => {
       rebate: "",
       partial: "",
       bill_amount: "",
-      remarks: "",
+      remarks: "batch",
       status: "",
       date_billing: "",
    });
@@ -189,7 +190,7 @@ const Create = ({ collectors }) => {
 
          // ✅ Open the print page in a new tab
          const transactionId = response.data.transaction.id;
-         window.open(`/transactions/print/${transactionId}`, "_blank");
+         window.open(`/admin/transactions/print/${transactionId}`, "_blank");
 
          window.location.reload();
       } catch (error) {
@@ -368,13 +369,13 @@ const Create = ({ collectors }) => {
          <div className="bg-white overflow-y-auto max-h-[590px] grid place-justify-center ">
             <div className="flex justify-between mt-5 mb-2 px-4">
                <div className="flex gap-10">
-                  <Radio
+                  {/* <Radio
                      name="type"
                      label="Advance Billing"
                      value="advance"
                      checked={billingType === "advance"}
                      onChange={handleBillingChange}
-                  />
+                  /> */}
                   <Radio
                      name="type"
                      label="Batch Billing"
@@ -386,7 +387,7 @@ const Create = ({ collectors }) => {
 
                <Tooltip content="Back">
                   <Link
-                     href="/transactions"
+                     href="/admin/transactions"
                      className="hover:bg-gray-200 px-2 py-1 rounded"
                   >
                      <BsArrowReturnLeft className="text-xl cursor-pointer" />
@@ -644,6 +645,10 @@ const Create = ({ collectors }) => {
                               <input
                                  className="w-96 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md pl-3 pr-10 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
                                  placeholder="Search lastname..."
+                                 value={searchCustomer}
+                                 onChange={(e) =>
+                                    setSearchCustomer(e.target.value)
+                                 } // 👈 bind state
                               />
                            </div>
                            <table className="w-full min-w-max table-auto text-left">

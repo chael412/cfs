@@ -74,6 +74,10 @@ Route::post('/batch-billing/generate/{batchNo}', [BatchxBillingController::class
 Route::get('/batch-unpaid/{batchNo}', [BatchxBillingController::class, 'getUnpaidByBatchMonthYear']);
 
 
+//===remarks = adavance section
+Route::get('/transactions-advance', [TransactionController::class, 'indexApiAdvance']);
+
+
 Route::get('/customers/{customerId}/latest-plan', [BillController::class, 'getLatestPlanForCustomer']);
 Route::get('/hello', function () {
     return response()->json(['message' => 'Hello World']);

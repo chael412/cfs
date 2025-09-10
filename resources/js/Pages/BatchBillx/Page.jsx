@@ -178,33 +178,78 @@ const Page = () => {
          {/* Table */}
          <div className="px-4 mt-5 h-[420px] overflow-auto">
             <div ref={contentRef} className="print:px-2">
-               <h3 className="text-lg">
-                  Batch{filterBatch ?? ""}({month ?? ""}/{year ?? ""} )
-               </h3>
+               <div className="flex flex-col items-center mb-4">
+                  <h2 className="text-lg font-bold">
+                     CFS INTERNET NETWORK SOLUTION
+                  </h2>
+                  <h3 className="text-lg">
+                     Batch{filterBatch ?? ""}({month ?? ""}/{year ?? ""} )
+                  </h3>
+               </div>
                <table className=" w-full  text-left border border-gray-300 text-sm">
                   <thead>
                      <tr>
-                        {[
-                           "Bill No.",
-                           "Customer No.",
-                           "Customer Name",
-                           "Address",
-                           "Batch",
-                           "Plan Price",
-                        ].map((header, i) => (
-                           <th
-                              key={i}
-                              className="px-6 py-3 text-sm font-semibold bg-gray-300 text-gray-700 uppercase border border-gray-400"
+                        <th className="px-6 py-3 text-sm font-semibold bg-gray-300 text-gray-700 uppercase border border-gray-400">
+                           <Typography
+                              variant="small"
+                              color="blue-gray"
+                              className="text-[12px] font-normal leading-none opacity-70"
                            >
-                              <Typography
-                                 variant="small"
-                                 color="blue-gray"
-                                 className="text-[12px] font-normal leading-none opacity-70"
-                              >
-                                 {header}
-                              </Typography>
-                           </th>
-                        ))}
+                              Bill No
+                           </Typography>
+                        </th>
+                        <th className="px-6 py-3 text-sm font-semibold bg-gray-300 text-gray-700 uppercase border border-gray-400">
+                           <Typography
+                              variant="small"
+                              color="blue-gray"
+                              className=" text-[12px] font-normal leading-none opacity-70"
+                           >
+                              Customer No.
+                           </Typography>
+                        </th>
+                        <th className="px-6 py-3 text-sm font-semibold bg-gray-300 text-gray-700 uppercase border border-gray-400">
+                           <Typography
+                              variant="small"
+                              color="blue-gray"
+                              className="text-[12px] font-normal leading-none opacity-70"
+                           >
+                              Customer Name
+                           </Typography>
+                        </th>
+                        <th className="px-6 py-3 text-sm font-semibold bg-gray-300 text-gray-700 uppercase border border-gray-400">
+                           <Typography
+                              variant="small"
+                              color="blue-gray"
+                              className="text-[12px] font-normal leading-none opacity-70"
+                           >
+                              Address
+                           </Typography>
+                        </th>
+                        <th className="px-6 py-3 text-sm font-semibold bg-gray-300 text-gray-700 uppercase border border-gray-400">
+                           <Typography
+                              variant="small"
+                              color="blue-gray"
+                              className="text-[12px] font-normal leading-none opacity-70"
+                           >
+                              Mbps
+                           </Typography>
+                        </th>
+                        <th className="px-6 py-3 text-sm font-semibold bg-gray-300 text-gray-700 uppercase border border-gray-400">
+                           <Typography
+                              variant="small"
+                              color="blue-gray"
+                              className="text-[12px] font-normal leading-none opacity-70"
+                           >
+                              Plan price
+                           </Typography>
+                        </th>
+                        <th className=" w-[10%] px-6 py-3 text-sm font-semibold bg-gray-300 text-gray-700 uppercase border border-gray-400">
+                           <Typography
+                              variant="small"
+                              color="blue-gray"
+                              className="text-[12px] font-normal leading-none opacity-70"
+                           ></Typography>
+                        </th>
                      </tr>
                   </thead>
                   <tbody>
@@ -232,11 +277,12 @@ const Page = () => {
                                  }
                               </td>
                               <td className="border border-blue-gray-100 px-4">
-                                 Batch {filterBatch}
+                                 {txn.customer_plan.plan?.mbps} mbps
                               </td>
                               <td className="border border-blue-gray-100 px-4">
                                  ₱{txn.customer_plan.plan?.plan_price}
                               </td>
+                              <td className="border border-blue-gray-100 px-4"></td>
                            </tr>
                         ))
                      ) : (

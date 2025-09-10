@@ -41,7 +41,7 @@ const Create = ({ collectors }) => {
          onSuccess: () => {
             alert("Customer was added successfully!");
             reset();
-            window.location.href = "/customers";
+            window.location.href = "/admin/customers";
          },
          onError: (errors) => {
             console.log(errors);
@@ -95,7 +95,7 @@ const Create = ({ collectors }) => {
                      <div className="flex justify-end mb-2">
                         <Tooltip content="Back">
                            <Link
-                              href="/customers"
+                              href="/admin/customers"
                               className="hover:bg-gray-200 px-2 py-1 rounded"
                            >
                               <BsArrowReturnLeft className="text-xl cursor-pointer" />

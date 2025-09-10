@@ -8,6 +8,7 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import React, { useState } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { format } from "date-fns";
+import { AiOutlineRight } from "react-icons/ai";
 
 import { Head, usePage, Deferred, Link } from "@inertiajs/react";
 import {
@@ -25,6 +26,7 @@ import {
    MenuList,
    MenuItem,
    Spinner,
+   Input,
 } from "@material-tailwind/react";
 import { useQuery } from "@tanstack/react-query";
 import { Pagination } from "@/Components/Pagination";
@@ -37,25 +39,51 @@ const TABLE_HEAD = [
    "Mbps Plan",
    "Payment",
    "Total Amount Paid",
-   "Remarks",
-   "Status",
+   "Batch",
    "Date Billing",
+   "Payment Date",
+   "Status",
    "Actions",
 ];
 const Index = () => {
    const API_URL = UseAppUrl();
+   const [batch, setBatch] = useState("");
+   // const [month, setMonth] = useState();
+   // const [year, setYear] = useState();
+
+   const today = new Date();
+   const [month, setMonth] = useState(today.getMonth() + 1); // ✅ months are 0-based
+   const [year, setYear] = useState(today.getFullYear()); // ✅ full year
+
+   const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+   ];
 
    const fetchBatchBills = async ({ queryKey }) => {
-      const [_key, page, query, sortColumn, sortDirection] = queryKey;
+      const [_key, page, query, sortColumn, sortDirection, batch, month, year] =
+         queryKey;
       const response = await axios.get(`${API_URL}/api/get_transactions`, {
          params: {
             page,
-            bill_no: query,
+            search: query,
             sortColumn,
             sortDirection,
+            batch,
+            month,
+            year,
          },
       });
-      //console.log(response.data);
       return response.data;
    };
 
@@ -77,6 +105,9 @@ const Index = () => {
          searchQuery,
          sortConfig.column,
          sortConfig.direction,
+         batch,
+         month,
+         year,
       ],
       queryFn: fetchBatchBills,
       keepPreviousData: true,
@@ -92,10 +123,11 @@ const Index = () => {
          mbps: bill.customer_plan.plan.mbps,
          plan_price: bill.customer_plan.plan.plan_price,
          amount: bill.bill_amount,
-         date_billing: bill.created_at,
+         date_billing: bill.date_billing,
          date_registration: bill.customer_plan.date_registration,
          partial: bill.partial,
          remarks: bill.remarks,
+         batch: bill.customer_plan.date_billing,
          status: bill.status,
          payment_date: bill.created_at,
       })) || [];
@@ -119,7 +151,7 @@ const Index = () => {
       if (confirmDelete) {
          try {
             const response = await axios.delete(
-               `/transactions/${transactionID}`
+               `/admin/transactions/${transactionID}`
             );
             alert(response.data.message);
             refetch();
@@ -139,24 +171,93 @@ const Index = () => {
             <div className="mt-5  px-4">
                <div className="mb-6 flex justify-between items-center">
                   <div>
-                     <Typography
-                        variant="lead"
-                        size="small"
-                        className="mb-0 text-lg font-bold"
-                     >
-                        Billing Transactions
-                     </Typography>
-                     <Typography
-                        className="text-sm"
-                        variant="paragraph"
-                        size="small"
-                     >
-                        Manage bills transactions
-                     </Typography>
+                     <div>
+                        <Typography
+                           variant="lead"
+                           size="small"
+                           className="mb-0 text-lg font-bold"
+                        >
+                           Billing Transactions
+                        </Typography>
+                        <Typography
+                           className="text-sm"
+                           variant="paragraph"
+                           size="small"
+                        >
+                           Manage bills transactions
+                        </Typography>
+                     </div>
+                     <nav className="flex items-center space-x-1 text-gray-600 text-sm mt-3">
+                        <a
+                           href="/admin/transactions"
+                           className="font-bold text-blue-800"
+                        >
+                           Batch
+                        </a>
+                        <AiOutlineRight className="w-4 h-4" />
+                        <a
+                           href="/admin/transactions-advance"
+                           className="hover:text-black"
+                        >
+                           Advance
+                        </a>
+                        <AiOutlineRight className="w-4 h-4" />
+                     </nav>
+                  </div>
+
+                  <div>
+                     <p>Month: {monthNames[month - 1]}</p> {/* display name */}
+                     <p>Year: {year}</p>
                   </div>
                </div>
+               <div className="flex gap-4 mt-4 mb-3">
+                  <div className="min-w-[160px]">
+                     <Select
+                        label="Select Batch"
+                        onChange={(val) => setBatch(val)}
+                     >
+                        <Option value="batch1">Batch 1</Option>
+                        <Option value="batch2">Batch 2</Option>
+                        <Option value="batch3">Batch 3</Option>
+                        <Option value="batch4">Batch 4</Option>
+                        <Option value="batch5">Batch 5</Option>
+                        <Option value="batch6">Batch 6 (All Cheque)</Option>
+                     </Select>
+                  </div>
 
-               <div className="w-full  flex items-center justify-between flex-col-reverse gap-2 lg:flex-row">
+                  <div className="min-w-[100px]">
+                     <Input
+                        type="number"
+                        label="Month"
+                        min={1}
+                        max={12}
+                        value={month}
+                        onChange={(e) => setMonth(e.target.value)}
+                     />
+                  </div>
+
+                  <div className="min-w-[120px]">
+                     <Input
+                        type="number"
+                        label="Year"
+                        min={2000}
+                        max={2100}
+                        value={year}
+                        onChange={(e) => setYear(e.target.value)}
+                     />
+                  </div>
+
+                  <Button
+                     className="px-6"
+                     onClick={() => window.location.reload()}
+                  >
+                     Reset
+                  </Button>
+               </div>
+
+               <hr className="border border-gray-300" />
+
+               <div className="mt-5 w-full  flex items-center justify-between flex-col-reverse gap-2 lg:flex-row">
                   <div className="relative w-96">
                      <input
                         className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md pl-3 pr-10 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
@@ -168,7 +269,7 @@ const Index = () => {
                   </div>
 
                   <div>
-                     <Link href="/transactions/create">
+                     <Link href="/admin/transactions/create">
                         <Button
                            className="flex gap-2 items-center"
                            color="blue"
@@ -239,6 +340,7 @@ const Index = () => {
                               remarks,
                               status,
                               date_billing,
+                              batch,
                               date_registration,
                               payment_date,
                            }) => (
@@ -298,20 +400,25 @@ const Index = () => {
                                        )}
                                     </Typography>
                                  </td>
+
                                  <td className="border border-blue-gray-100 px-4">
                                     <Typography
                                        variant="small"
                                        className="font-normal text-gray-800"
                                     >
-                                       {remarks}
+                                       {remarks === "batch" ? batch : ""}
                                     </Typography>
                                  </td>
+
                                  <td className="border border-blue-gray-100 px-4">
                                     <Typography
                                        variant="small"
                                        className="font-normal text-gray-800"
                                     >
-                                       {status}
+                                       {format(
+                                          new Date(date_billing),
+                                          "MM/dd/yyyy"
+                                       )}
                                     </Typography>
                                  </td>
                                  <td className="border border-blue-gray-100 px-4">
@@ -323,6 +430,14 @@ const Index = () => {
                                           new Date(payment_date),
                                           "MM/dd/yyyy"
                                        )}
+                                    </Typography>
+                                 </td>
+                                 <td className="border border-blue-gray-100 px-4">
+                                    <Typography
+                                       variant="small"
+                                       className="font-normal text-gray-800"
+                                    >
+                                       {status}
                                     </Typography>
                                  </td>
 

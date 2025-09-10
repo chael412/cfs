@@ -173,7 +173,7 @@ const Index = () => {
                   </div>
 
                   <div>
-                     <Link href="/customer_plans/create">
+                     <Link href="/admin/customer_plans/create">
                         <Button
                            className="flex gap-2 items-center"
                            color="blue"

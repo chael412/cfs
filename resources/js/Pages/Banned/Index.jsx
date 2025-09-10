@@ -115,7 +115,9 @@ const Index = () => {
       );
       if (confirmDelete) {
          try {
-            const response = await axios.delete(`/customers/${customerId}`);
+            const response = await axios.delete(
+               `/admin/customers/${customerId}`
+            );
             alert(response.data.message);
             refetch();
          } catch (error) {

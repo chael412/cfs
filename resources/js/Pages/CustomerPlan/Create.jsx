@@ -76,7 +76,7 @@ const Create = ({ customers, collectors, plans }) => {
                      <div className="flex justify-end mb-2">
                         <Tooltip content="Back">
                            <Link
-                              href="/customer_plans"
+                              href="/admin/customer_plans"
                               className="hover:bg-gray-200 px-2 py-1 rounded"
                            >
                               <BsArrowReturnLeft className="text-xl cursor-pointer" />

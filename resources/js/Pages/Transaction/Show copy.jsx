@@ -39,7 +39,7 @@ const Show = ({ transaction, collectors, latest }) => {
                </Typography>
                <Tooltip content="Back">
                   <Link
-                     href="/transactions"
+                     href="/admin/transactions"
                      className="hover:bg-gray-200 px-2 py-1 rounded mr-4"
                   >
                      <BsArrowReturnLeft className="text-xl cursor-pointer" />
@@ -163,7 +163,7 @@ const Show = ({ transaction, collectors, latest }) => {
                </div>
             </div>
             <div className="flex justify-end mt-3 mb-5">
-               <Link href="/transactions" className="mr-2">
+               <Link href="/admin/transactions" className="mr-2">
                   <Button variant="text" color="red">
                      Cancel
                   </Button>

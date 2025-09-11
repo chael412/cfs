@@ -48,117 +48,112 @@ const Show = ({ transaction, collectors, latest }) => {
             </div>
 
             <div className="h-[480px] overflow-auto">
-               <div ref={contentRef} className="relative  p-6 rounded shadow">
-                  <div
-                     className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rotate-[-30deg]
-                text-green-800 font-bold text-6xl border-2 border-green-800
-  px-8 py-4 opacity-40 select-none pointer-events-none
-                whitespace-nowrap inline-block"
-                  >
-                     CFS NOTICE PAID
+               <div
+                  ref={contentRef}
+                  className="mt-2 max-w-sm mx-auto bg-white border border-gray-300 shadow-md p-4 font-mono text-sm leading-relaxed"
+               >
+                  {/* Header */}
+                  <div className="text-center">
+                     <h2 className="font-bold">
+                        CFS INTERNET NETWORK SOLUTIONS
+                     </h2>
+                     <p>#4 F.B BUILDING CAYABA ST.</p>
+                     <p>DISTRICT II, TUMAUINI, ISABELA</p>
+                     <p>TIN: 295-973-965-001</p>
+                     <p>CP#: 09453367030</p>
                   </div>
 
-                  {/* Bill Content */}
-                  <div className="flex justify-between items-start mb-4">
-                     <div>
-                        <img
-                           src="/img/internet.png"
-                           alt="CFS Logo"
-                           className="w-16 h-16"
-                        />
-                        <div className="text-sm mt-1">
-                           #2, Manguelod Bldg. National High Way
-                           <br />
-                           District II, Tumauini, Isabela
-                           <br />
-                           TIN: 295-973-965-001
-                           <br />
-                           CP#: 09453367030
-                        </div>
-                     </div>
-                     <div className="text-right">
-                        <p className="font-bold">
-                           {transaction.customer_plan.customer.firstname}{" "}
-                           {transaction.customer_plan.customer.middlename ?? ""}
-                           {transaction.customer_plan.customer.lastname}{" "}
-                        </p>
-                        <p>
-                           {transaction.created_at
-                              ? format(
-                                   new Date(transaction.date_billing),
-                                   "MMMM dd, yyyy"
-                                )
-                              : ""}
-                        </p>
-                     </div>
-                  </div>
+                  <hr className="my-2 border-dashed" />
 
-                  <div className="flex justify-between mb-2">
-                     <span>Acct. No:</span>
-                     <span>{transaction.customer_plan.customer.id}</span>
-                  </div>
-                  <div className="flex justify-between mb-4">
-                     <span>Bill No.</span>
-                     <span>{transaction.bill_no}</span>
-                  </div>
-
-                  <div className="space-y-1 mb-4">
-                     <div className="flex justify-between">
-                        <span>Bill for the month of August</span>
-                        <span>₱{transaction.bill_amount}</span>
-                     </div>
-                     <div className="flex justify-between">
-                        <span>Rebate</span>
-                        <span>₱{transaction.rebate ?? 0.0}</span>
-                     </div>
-                     <div className="flex justify-between">
-                        <span>Payment</span>
-                        <span>₱{transaction.partial}</span>
-                     </div>
-                     <div className="flex justify-between">
-                        <span>Outstanding Balance Previous Month</span>
-                        <span>₱{latest.balance ?? 0.0}</span>
-                     </div>
-                     <div className="flex justify-between font-bold border-t border-gray-400 pt-2">
-                        <span>Total Amount Due:</span>
-                        <span>₱{transaction.bill_amount}</span>
-                     </div>
-                  </div>
-
-                  <div className="flex justify-between text-sm mb-4">
-                     <span>Prepared by: John</span>
-                     <span>
-                        Collector:{" "}
-                        {transaction.customer_plan.collector.firstname}{" "}
-                        {transaction.customer_plan.collector.middlename ?? ""}
-                        {transaction.customer_plan.collector.lastname}{" "}
-                     </span>
+                  {/* Customer Info */}
+                  <div className="space-y-1">
                      <p>
-                        {transaction.created_at
-                           ? format(
-                                new Date(transaction.created_at),
-                                "MMMM dd, yyyy"
-                             )
-                           : ""}
+                        <span className="font-bold">
+                           {transaction.customer_plan.customer.firstname}
+                           {", "}
+                           {transaction.customer_plan.customer.lastname}{" "}
+                        </span>
+                     </p>
+                     <p>
+                        Acct. No:{" "}
+                        <span className="ml-2">
+                           {transaction.customer_plan.customer.id}
+                        </span>
+                     </p>
+                     <p>
+                        Bill No:{" "}
+                        <span className="ml-2">{transaction.bill_no}</span>
+                     </p>
+                     <p>
+                        Bill of September{" "}
+                        <span className="ml-2">
+                           ₱{transaction.customer_plan.plan.plan_price}
+                        </span>
                      </p>
                   </div>
 
-                  <div className="border border-red-500 p-3 rounded text-sm bg-red-50 flex items-start gap-2">
-                     <div className="text-red-600 font-bold">⚠</div>
-                     <div>
-                        <p>
-                           7 Days Notice: To avoid temporary disconnection
-                           kindly settle your bill within 7 days of the due
-                           date. For assistance or to make a payment please
-                           call:
-                        </p>
-                        <p className="font-bold">
-                           CUSTOMER SERVICE NO: 09453367030
-                        </p>
-                        <p className="font-bold">
-                           BILLING DEPT. CP NO: 09162832206
-                        </p>
-                     </div>
+                  <hr className="my-2 border-dashed" />
+
+                  {/* Billing Info */}
+                  <div className="space-y-1">
+                     <p>
+                        Previous Balance:{" "}
+                        <span className="float-right">
+                           ₱{latest.balance ?? 0.0}
+                        </span>
+                     </p>
+                     <p>
+                        Amount Due:{" "}
+                        <span className="float-right">
+                           ₱{latest.amount_due ?? 0.0}
+                        </span>
+                     </p>
+                     <p>
+                        Payment:{" "}
+                        <span className="float-right">
+                           ₱{transaction.partial}
+                        </span>
+                     </p>
+                     <p className="font-bold">
+                        Outstanding Balance:{" "}
+                        <span className="float-right">
+                           {" "}
+                           ₱{latest.outstanding_balance ?? 0.0}
+                        </span>
+                     </p>
+                  </div>
+
+                  <hr className="my-2 border-dashed" />
+
+                  {/* Collector */}
+                  <p>
+                     Collector:{" "}
+                     <span className="ml-2">
+                        {transaction.customer_plan.collector.firstname}{" "}
+                     </span>
+                  </p>
+
+                  <hr className="my-2 border-dashed" />
+
+                  {/* Notice */}
+                  <div className="text-justify text-xs">
+                     <p className="font-bold">NOTICE:</p>
+                     <p>
+                        To avoid temporary disconnection kindly settle your bill
+                        within 7 days of the due date. For assistance or to make
+                        a payment
+                     </p>
+                  </div>
+
+                  <hr className="my-2 border-dashed" />
+
+                  {/* Contact */}
+                  <div className="text-xs space-y-1">
+                     <p className="font-bold">Please Call:</p>
+                     <p>CUSTOMER SERVICE NO: 09453367030</p>
+                     <p>BILLING DEPT. CP NO: 09162832206</p>
+                     <p>GCASH NO: 09774066099</p>
+                     <p>NAME: PATRICK NIEL REYES</p>
                   </div>
                </div>
             </div>

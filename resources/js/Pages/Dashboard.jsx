@@ -4,17 +4,41 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { BiDotsVertical } from "react-icons/bi";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { GiHamburgerMenu } from "react-icons/gi";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
 import { Head, usePage, Deferred, Link } from "@inertiajs/react";
+import SkeletonCard from "@/Components/SkeletonCard";
 
 export default function Dashboard({
    activeCustomers,
    inactiveCustomers,
    collectors,
 }) {
-   console.log(activeCustomers);
+   const currentYear = new Date().getFullYear();
+   const [summary, setSummary] = useState(null);
+   const [month, setMonth] = useState(""); // default: no month selected
+   const [year, setYear] = useState(currentYear);
+   const [loading, setLoading] = useState(false);
+
+   const fetchSummary = async () => {
+      try {
+         setLoading(true);
+         const response = await axios.get("/api/transaction-summary", {
+            params: { month: month || undefined, year }, // send only year if month empty
+         });
+         setSummary(response.data);
+      } catch (error) {
+         console.error("Error fetching summary:", error);
+      } finally {
+         setLoading(false);
+      }
+   };
+
+   useEffect(() => {
+      fetchSummary();
+   }, [month, year]);
+
    return (
       <AuthenticatedLayout
          header={
@@ -74,6 +98,86 @@ export default function Dashboard({
                      </div>
                   </div>
                </div>
+            </div>
+
+            <div className="p-6 bg-white shadow-md rounded-xl">
+               <h2 className="text-xl font-bold mb-4">
+                  Transaction Summary{" "}
+                  {month ? `(Month: ${month}/${year})` : `(Year: ${year})`}
+               </h2>
+
+               {/* Filters */}
+               <div className="flex gap-4 mb-4">
+                  <select
+                     value={month}
+                     onChange={(e) => setMonth(e.target.value)}
+                     className="border rounded px-2 py-1"
+                  >
+                     <option value="">-- Whole Year --</option>
+                     {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
+                        <option key={m} value={m}>
+                           {m}
+                        </option>
+                     ))}
+                  </select>
+
+                  <input
+                     type="number"
+                     value={year}
+                     onChange={(e) => setYear(e.target.value)}
+                     className="border rounded px-2 py-1"
+                  />
+               </div>
+
+               {/* Skeleton Loading */}
+               {loading && (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                     <SkeletonCard />
+                     <SkeletonCard />
+                     <SkeletonCard />
+                  </div>
+               )}
+
+               {/* Data Loaded */}
+               {!loading && summary && (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                     {/* Overall */}
+                     <div className="p-4 border rounded-lg shadow bg-gray-50">
+                        <h3 className="font-semibold mb-2">Overall</h3>
+                        <p>Total Partial: ₱{summary.overall.total_partial}</p>
+                        <p>Total Rebate: ₱{summary.overall.total_rebate}</p>
+                        <p className="font-bold text-green-600">
+                           Net Pay: ₱{summary.overall.net_pay}
+                        </p>
+                     </div>
+
+                     {/* Advance */}
+                     <div className="p-4 border rounded-lg shadow bg-green-50">
+                        <h3 className="font-semibold mb-2">
+                           Advance Billing Collection
+                        </h3>
+                        <p>Total Partial: ₱{summary.advance.total_partial}</p>
+                        <p>Total Rebate: ₱{summary.advance.total_rebate}</p>
+
+                        <p className="font-bold text-green-600">
+                           Net Pay: ₱{summary.advance.net_pay}
+                        </p>
+                     </div>
+
+                     {/* Batch */}
+                     <div className="p-4 border rounded-lg shadow bg-blue-50">
+                        <h3 className="font-semibold mb-2">
+                           Batch Billing Collection
+                        </h3>
+                        <p>Total Partial: ₱{summary.batch.total_partial}</p>
+                        <p>Total Rebate: ₱{summary.batch.total_rebate}</p>
+
+                        <p className="font-bold text-green-600">
+                           Net Pay: ₱{summary.batch.net_pay}
+                        </p>
+                     </div>
+                  </div>
+               )}
             </div>
          </div>
       </AuthenticatedLayout>

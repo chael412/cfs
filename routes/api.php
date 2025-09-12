@@ -10,6 +10,7 @@ use App\Http\Controllers\CollectorController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerPlanController;
 use App\Http\Controllers\DisconnectionController;
+use App\Http\Controllers\Main\DashboardController;
 use App\Http\Controllers\MunicipalityController;
 use App\Http\Controllers\PurokController;
 use App\Http\Controllers\SoaController;
@@ -82,3 +83,8 @@ Route::get('/customers/{customerId}/latest-plan', [BillController::class, 'getLa
 Route::get('/hello', function () {
     return response()->json(['message' => 'Hello World']);
 });
+
+
+//dashboard collection
+Route::get('/total-collection', [DashboardController::class, 'getTotalCollection']);
+Route::get('/transaction-summary', [DashboardController::class, 'transactionSummary']);

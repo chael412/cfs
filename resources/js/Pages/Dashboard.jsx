@@ -143,8 +143,10 @@ export default function Dashboard({
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                      {/* Overall */}
                      <div className="p-4 border rounded-lg shadow bg-gray-50">
-                        <h3 className="font-semibold mb-2">Overall</h3>
-                        <p>Total Partial: ₱{summary.overall.total_partial}</p>
+                        <h3 className="font-semibold mb-2">
+                           Overall Collection
+                        </h3>
+                        <p>Total Payment: ₱{summary.overall.total_partial}</p>
                         <p>Total Rebate: ₱{summary.overall.total_rebate}</p>
                         <p className="font-bold text-green-600">
                            Net Pay: ₱{summary.overall.net_pay}
@@ -156,7 +158,7 @@ export default function Dashboard({
                         <h3 className="font-semibold mb-2">
                            Advance Billing Collection
                         </h3>
-                        <p>Total Partial: ₱{summary.advance.total_partial}</p>
+                        <p>Total Payment: ₱{summary.advance.total_partial}</p>
                         <p>Total Rebate: ₱{summary.advance.total_rebate}</p>
 
                         <p className="font-bold text-green-600">
@@ -169,7 +171,7 @@ export default function Dashboard({
                         <h3 className="font-semibold mb-2">
                            Batch Billing Collection
                         </h3>
-                        <p>Total Partial: ₱{summary.batch.total_partial}</p>
+                        <p>Total Payment: ₱{summary.batch.total_partial}</p>
                         <p>Total Rebate: ₱{summary.batch.total_rebate}</p>
 
                         <p className="font-bold text-green-600">

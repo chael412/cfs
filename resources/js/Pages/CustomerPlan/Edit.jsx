@@ -25,12 +25,15 @@ const Edit = ({ customers, collectors, plans, customer_plan }) => {
    });
 
    const onSubmit = async (e) => {
-      e.preventDefault(); 
+      e.preventDefault();
 
       try {
-         const response = await axios.patch(route("customer_plans.update", customer_plan.id), {
-            ...data,  // Make sure formData contains the data you want to send
-         });
+         const response = await axios.patch(
+            route("customer_plans.update", customer_plan.id),
+            {
+               ...data, // Make sure formData contains the data you want to send
+            }
+         );
 
          if (response.status === 200) {
             alert("Customer plan was updated successfully!");
@@ -43,8 +46,6 @@ const Edit = ({ customers, collectors, plans, customer_plan }) => {
          alert("An error occurred while updating the customer plan.");
       }
    };
-
-
 
    const customerOptions = customers.map((customer) => ({
       value: customer.id,
@@ -69,6 +70,7 @@ const Edit = ({ customers, collectors, plans, customer_plan }) => {
       { value: "batch3", label: "Batch3" },
       { value: "batch4", label: "Batch4" },
       { value: "batch5", label: "Batch5" },
+      { value: "all_cheque", label: "Batch6(All Cheque)" },
    ];
 
    return (

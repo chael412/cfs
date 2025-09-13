@@ -8,6 +8,34 @@ use App\Http\Requests\UpdateMunicipalityRequest;
 
 class MunicipalityController extends Controller
 {
+
+    public function barangaysByMunicipality($municipalityId)
+    {
+        try {
+            $municipality = Municipality::with('barangays')->findOrFail($municipalityId);
+
+            return response()->json($municipality->barangays, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error fetching barangays: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function municipalitiesWithBarangays()
+    {
+        try {
+            $municipalities = Municipality::with('barangays')->get();
+
+            return response()->json($municipalities, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error fetching municipalities: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+
     public function municipalityOptions()
     {
         $municipalities = Municipality::all();

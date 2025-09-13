@@ -181,13 +181,13 @@ class CustomerPlanController extends Controller
 
             $customerPlan->update($data);
 
-             return response()->json([
+            return response()->json([
                 'message' => 'Customer plan updated successfully.'
-                ], 200); // Make sure to return a 200 OK status
+            ], 200); // Make sure to return a 200 OK status
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error updating customer plan: ' . $e->getMessage()
-                ], 500); // Internal Server Error if something goes wrong
+            ], 500); // Internal Server Error if something goes wrong
         }
     }
 
@@ -197,11 +197,19 @@ class CustomerPlanController extends Controller
     public function destroy($id)
     {
         try {
-            $customer_plan = CustomerPlan::findOrFail($id);
+            $customer_plan = CustomerPlan::withCount('transactions')->findOrFail($id);
+
+            // ✅ Prevent deletion if it has existing transactions
+            if ($customer_plan->transactions_count > 0) {
+                return response()->json([
+                    'message' => 'Cannot delete: This customer plan already has transactions.'
+                ], 400);
+            }
 
             $customer_plan->delete();
+
             return response()->json([
-                'message' => 'Customer deleted successfully.'
+                'message' => 'Customer plan deleted successfully.'
             ]);
         } catch (\Exception $e) {
             return response()->json([

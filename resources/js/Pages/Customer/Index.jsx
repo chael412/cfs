@@ -5,7 +5,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { BiDotsVertical } from "react-icons/bi";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { GiHamburgerMenu } from "react-icons/gi";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
 import { Head, usePage, Deferred, Link } from "@inertiajs/react";
@@ -42,9 +42,45 @@ const TABLE_HEAD = [
 ];
 const Index = () => {
    const API_URL = UseAppUrl();
+   const [municipalities, setMunicipalities] = useState([]);
+   const [barangays, setBarangays] = useState([]);
+   const [selectedMunicipality, setSelectedMunicipality] = useState("");
+   const [selectedBarangay, setSelectedBarangay] = useState("");
+
+   // Load municipalities on mount
+   useEffect(() => {
+      axios
+         .get(`${API_URL}/api/municipalities`)
+         .then((res) => setMunicipalities(res.data))
+         .catch((err) => console.error("Error fetching municipalities:", err));
+   }, []);
+
+   // Load barangays when municipality changes
+   useEffect(() => {
+      if (selectedMunicipality) {
+         axios
+            .get(
+               `${API_URL}/api/municipalities/${selectedMunicipality}/barangays`
+            )
+            .then((res) => setBarangays(res.data))
+            .catch((err) => console.error("Error fetching barangays:", err));
+      } else {
+         setBarangays([]);
+         setSelectedBarangay("");
+      }
+   }, [selectedMunicipality]);
 
    const fetchCustomers = async ({ queryKey }) => {
-      const [_key, page, query, sortColumn, sortDirection] = queryKey;
+      const [
+         _key,
+         page,
+         query,
+         sortColumn,
+         sortDirection,
+         municipalityId,
+         barangayId,
+      ] = queryKey;
+
       const response = await axios.get(
          `${API_URL}/api/get_customerx_paginate`,
          {
@@ -53,10 +89,11 @@ const Index = () => {
                lastname: query,
                sortColumn,
                sortDirection,
+               municipality_id: municipalityId || "", // 👈 add filter
+               barangay_id: barangayId || "", // 👈 add filter
             },
          }
       );
-      //console.log(response.data);
       return response.data;
    };
 
@@ -70,11 +107,13 @@ const Index = () => {
 
    const { data, error, isLoading, refetch } = useQuery({
       queryKey: [
-         "students",
+         "customers",
          currentPage,
          searchQuery,
          sortConfig.column,
          sortConfig.direction,
+         selectedMunicipality, // 👈 include in key
+         selectedBarangay, // 👈 include in key
       ],
       queryFn: fetchCustomers,
       keepPreviousData: true,
@@ -178,6 +217,53 @@ const Index = () => {
                                 Add Customer
                             </Button>
                         </div> */}
+               </div>
+
+               <div className="flex gap-4 mb-5">
+                  {/* Municipality Dropdown */}
+                  <div>
+                     <label className="block text-sm font-medium mb-1">
+                        Municipality
+                     </label>
+                     <select
+                        value={selectedMunicipality}
+                        onChange={(e) => {
+                           setSelectedMunicipality(e.target.value);
+                           setCurrentPage(1); // reset to page 1
+                        }}
+                        className="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-blue-300"
+                     >
+                        <option value="">-- Select Municipality --</option>
+                        {municipalities.map((mun) => (
+                           <option key={mun.id} value={mun.id}>
+                              {mun.municipality_name}
+                           </option>
+                        ))}
+                     </select>
+                  </div>
+
+                  {/* Barangay Dropdown */}
+                  <div>
+                     <label className="block text-sm font-medium mb-1">
+                        Barangay
+                     </label>
+                     <select
+                        value={selectedBarangay}
+                        onChange={(e) => {
+                           setSelectedBarangay(e.target.value);
+                           setCurrentPage(1); // reset to page 1
+                        }}
+                        className="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-green-300"
+                        disabled={!selectedMunicipality}
+                     >
+                        <option value="">-- Select Barangay --</option>
+                        {barangays.map((brgy) => (
+                           <option key={brgy.id} value={brgy.id}>
+                              {brgy.barangay_name}
+                           </option>
+                        ))}
+                     </select>
+                  </div>
                </div>
 
                <div className="w-full  flex items-center justify-between flex-col-reverse gap-2 lg:flex-row">

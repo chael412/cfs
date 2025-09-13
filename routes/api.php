@@ -88,3 +88,8 @@ Route::get('/hello', function () {
 //dashboard collection
 Route::get('/total-collection', [DashboardController::class, 'getTotalCollection']);
 Route::get('/transaction-summary', [DashboardController::class, 'transactionSummary']);
+
+
+
+Route::get('/municipalities', [MunicipalityController::class, 'municipalitiesWithBarangays']);
+Route::get('/municipalities/{id}/barangays', [MunicipalityController::class, 'barangaysByMunicipality']);

@@ -169,32 +169,47 @@ class CustomerController extends Controller
     public function indexApi()
     {
         try {
-            $search = request('lastname');
-            $sortColumn = request('sortColumn', 'lastname');
-            $sortDirection = request('sortDirection', 'asc');
+            // 🔎 Query params
+            $search         = request('lastname');
+            $municipalityId = request('municipality_id');
+            $barangayId     = request('barangay_id');
+            $sortColumn     = request('sortColumn', 'lastname');
+            $sortDirection  = request('sortDirection', 'asc');
 
-            $validSortColumns = [
-                'lastname',
-            ];
+            $validSortColumns = ['lastname'];
 
             if (!in_array($sortColumn, $validSortColumns)) {
                 $sortColumn = 'lastname';
             }
 
+            // 🔗 Query builder
             $query = Customer::with('purok.barangay.municipality')
                 ->where('status', 'active')
                 ->when($search, function ($query) use ($search) {
-                    return $query->where('lastname', 'like', $search . '%');
+                    $query->where('lastname', 'like', $search . '%');
+                })
+                ->when($municipalityId, function ($query) use ($municipalityId) {
+                    $query->whereHas('purok.barangay.municipality', function ($q) use ($municipalityId) {
+                        $q->where('id', $municipalityId);
+                    });
+                })
+                ->when($barangayId, function ($query) use ($barangayId) {
+                    $query->whereHas('purok.barangay', function ($q) use ($barangayId) {
+                        $q->where('id', $barangayId);
+                    });
                 });
 
-            $data = $query->orderBy($sortColumn, $sortDirection)
-                ->paginate(50);
+            // 📦 Paginated results
+            $data = $query->orderBy($sortColumn, $sortDirection)->paginate(50);
 
             return response()->json($data, 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Error: ' . $e->getMessage()], 404);
+            return response()->json([
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
         }
     }
+
 
     /**
      * Display a listing of the resource.

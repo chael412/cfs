@@ -61,6 +61,7 @@ const Create = ({ customers, collectors, plans }) => {
       { value: "batch3", label: "Batch3" },
       { value: "batch4", label: "Batch4" },
       { value: "batch5", label: "Batch5" },
+      { value: "all_cheque", label: "Batch6(All Cheque)" },
    ];
 
    return (

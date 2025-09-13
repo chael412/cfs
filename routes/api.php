@@ -93,3 +93,4 @@ Route::get('/transaction-summary', [DashboardController::class, 'transactionSumm
 
 Route::get('/municipalities', [MunicipalityController::class, 'municipalitiesWithBarangays']);
 Route::get('/municipalities/{id}/barangays', [MunicipalityController::class, 'barangaysByMunicipality']);
+Route::get('/customers/count-by-municipality', [MunicipalityController::class, 'countByMunicipality']);

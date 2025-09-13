@@ -2,12 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\Municipality;
 use App\Http\Requests\StoreMunicipalityRequest;
 use App\Http\Requests\UpdateMunicipalityRequest;
+use Illuminate\Support\Facades\DB;
 
 class MunicipalityController extends Controller
 {
+
+    public function countByMunicipality()
+    {
+        $counts = DB::table('customers')
+            ->join('puroks', 'customers.purok_id', '=', 'puroks.id')
+            ->join('barangays', 'puroks.barangay_id', '=', 'barangays.id')
+            ->join('municipalities', 'barangays.municipality_id', '=', 'municipalities.id')
+            ->select(
+                'municipalities.id as municipality_id',
+                'municipalities.municipality_name',
+                DB::raw('COUNT(customers.id) as total_customers')
+            )
+            ->groupBy('municipalities.id', 'municipalities.municipality_name')
+            ->get();
+
+        return response()->json($counts);
+    }
+
+
 
     public function barangaysByMunicipality($municipalityId)
     {

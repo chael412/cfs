@@ -9,24 +9,57 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
 import { Head, usePage, Deferred, Link } from "@inertiajs/react";
 import SkeletonCard from "@/Components/SkeletonCard";
+import ReactApexChart from "react-apexcharts";
+import axios from "axios";
+import UseAppUrl from "@/hooks/UseAppUrl";
 
 export default function Dashboard({
    activeCustomers,
    inactiveCustomers,
    collectors,
 }) {
+   const API_URL = UseAppUrl();
+
    const currentYear = new Date().getFullYear();
    const [summary, setSummary] = useState(null);
    const [month, setMonth] = useState(""); // default: no month selected
    const [year, setYear] = useState(currentYear);
    const [loading, setLoading] = useState(false);
+   const [chartLoading, setChartLoading] = useState(true);
+
+   const [chartData, setChartData] = useState({
+      series: [],
+      options: {
+         chart: {
+            type: "pie",
+            width: 380,
+         },
+         labels: [],
+         responsive: [
+            {
+               breakpoint: 480,
+               options: {
+                  chart: {
+                     width: 200,
+                  },
+                  legend: {
+                     position: "bottom",
+                  },
+               },
+            },
+         ],
+      },
+   });
 
    const fetchSummary = async () => {
       try {
          setLoading(true);
-         const response = await axios.get("/api/transaction-summary", {
-            params: { month: month || undefined, year }, // send only year if month empty
-         });
+         const response = await axios.get(
+            `${API_URL}/api/transaction-summary`,
+            {
+               params: { month: month || undefined, year }, // send only year if month empty
+            }
+         );
          setSummary(response.data);
       } catch (error) {
          console.error("Error fetching summary:", error);
@@ -34,6 +67,23 @@ export default function Dashboard({
          setLoading(false);
       }
    };
+
+   useEffect(() => {
+      setChartLoading(true);
+      axios
+         .get(`${API_URL}/api/customers/count-by-municipality`)
+         .then((res) => {
+            const data = res.data;
+            setChartData({
+               series: data.map((item) => item.total_customers),
+               options: {
+                  chart: { type: "pie", width: 380 },
+                  labels: data.map((item) => item.municipality_name),
+               },
+            });
+         })
+         .finally(() => setChartLoading(false));
+   }, []);
 
    useEffect(() => {
       fetchSummary();
@@ -180,6 +230,22 @@ export default function Dashboard({
                      </div>
                   </div>
                )}
+            </div>
+
+            <div>
+               <div className="p-6 mt-5">
+                  <h1>Customer Chart Per Municipality</h1>
+                  {chartLoading ? (
+                     <SkeletonCard />
+                  ) : (
+                     <ReactApexChart
+                        options={chartData.options}
+                        series={chartData.series}
+                        type="pie"
+                        width={420}
+                     />
+                  )}
+               </div>
             </div>
          </div>
       </AuthenticatedLayout>

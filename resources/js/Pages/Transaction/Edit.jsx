@@ -309,6 +309,15 @@ const Edit = ({ transaction, collectors, latest }) => {
                   >
                      Update
                   </Button>
+
+                  <a
+                     href={`/admin/transactions/print/${transaction.id}`}
+                     target="_blank"
+                     rel="noopener noreferrer"
+                     className="mt-4 inline-block w-full rounded-lg bg-gradient-to-r from-green-600 to-green-400 px-4 py-2 text-center font-semibold text-white shadow-md hover:from-green-700 hover:to-green-500 focus:outline-none focus:ring-2 focus:ring-green-300"
+                  >
+                     Print
+                  </a>
                </form>
             </div>
          </div>

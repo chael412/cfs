@@ -10,19 +10,21 @@ const Index = () => {
    const API_URL = UseAppUrl();
 
    const [soa, setSoa] = useState(null);
-   const [customerId, setCustomerId] = useState("");
+   const [search, setSearch] = useState(""); // firstname/lastname/fullname
+   const [month, setMonth] = useState(""); // optional
+   const [year, setYear] = useState(new Date().getFullYear()); // default current year
    const [loading, setLoading] = useState(false);
 
    const contentRef = useRef();
    const reactToPrintFn = useReactToPrint({ contentRef });
 
    const fetchSoa = async () => {
-      if (!customerId) return;
+      if (!search) return;
       setLoading(true);
       try {
-         const res = await axios.get(
-            `${API_URL}/api/customer_soa?search=${customerId}`
-         );
+         const res = await axios.get(`${API_URL}/api/customer_soa`, {
+            params: { search, month, year },
+         });
          console.log(res.data);
          setSoa(res.data.customer);
       } catch (err) {
@@ -40,30 +42,72 @@ const Index = () => {
       }
    };
 
+   const months = [
+      { value: "", label: "All Months" },
+      { value: 1, label: "January" },
+      { value: 2, label: "February" },
+      { value: 3, label: "March" },
+      { value: 4, label: "April" },
+      { value: 5, label: "May" },
+      { value: 6, label: "June" },
+      { value: 7, label: "July" },
+      { value: 8, label: "August" },
+      { value: 9, label: "September" },
+      { value: 10, label: "October" },
+      { value: 11, label: "November" },
+      { value: 12, label: "December" },
+   ];
+
+   const years = Array.from(
+      { length: 5 },
+      (_, i) => new Date().getFullYear() - i
+   );
+
    return (
       <AuthenticatedLayout>
          <Head title="Customer Soa" />
 
-         {/* Search Bar */}
-         <div className="max-w-4xl mx-auto mt-6 mb-4 flex items-center gap-2">
-            <div className="flex justify-between">
-               <div className="flex">
-                  <input
-                     type="number"
-                     placeholder="Enter Customer No..."
-                     value={customerId}
-                     onChange={(e) => setCustomerId(e.target.value)}
-                     onKeyDown={handleKeyDown}
-                     className="border border-gray-400 rounded-md px-3 py-2 w-[380px]"
-                  />
-               </div>
-               <button
-                  onClick={fetchSoa}
-                  className="bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-md bg-blue-600"
-               >
-                  Search
-               </button>
-            </div>
+         {/* Search Bar + Filters */}
+         <div className="max-w-4xl mx-auto mt-6 mb-4 flex flex-wrap gap-2 items-center">
+            <input
+               type="text"
+               placeholder="Enter Firstname / Lastname..."
+               value={search}
+               onChange={(e) => setSearch(e.target.value)}
+               onKeyDown={handleKeyDown}
+               className="border border-gray-400 rounded-md px-3 py-2 w-[280px]"
+            />
+
+            <select
+               value={month}
+               onChange={(e) => setMonth(e.target.value)}
+               className="border border-gray-400 rounded-md px-3 py-2"
+            >
+               {months.map((m) => (
+                  <option key={m.value} value={m.value}>
+                     {m.label}
+                  </option>
+               ))}
+            </select>
+
+            <select
+               value={year}
+               onChange={(e) => setYear(e.target.value)}
+               className="border border-gray-400 rounded-md px-3 py-2"
+            >
+               {years.map((y) => (
+                  <option key={y} value={y}>
+                     {y}
+                  </option>
+               ))}
+            </select>
+
+            <button
+               onClick={fetchSoa}
+               className="bg-blue-600 hover:bg-sky-700 text-white px-4 py-2 rounded-md"
+            >
+               Search
+            </button>
 
             <Button
                variant="gradient"
@@ -81,12 +125,13 @@ const Index = () => {
          )}
 
          {/* No SOA */}
-         {!loading && soa === null && customerId && (
+         {!loading && soa === null && search && (
             <div className="p-8 text-center text-red-500">
-               No data found for customer ID: {customerId}
+               No data found for: {search}
             </div>
          )}
 
+         {/* SOA Display */}
          {/* SOA Display */}
          {soa && (
             <div className="overflow-y-auto max-h-[590px]  bg-white text-black max-w-4xl mx-auto border border-gray-400 shadow-md">

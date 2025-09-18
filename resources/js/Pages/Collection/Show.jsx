@@ -82,6 +82,9 @@ const Show = ({ transactions, grand_totals, filters }) => {
                      <th className="border px-3 py-2 text-right text-sm">
                         Rebate
                      </th>
+                     <th className="border px-3 py-2 text-right text-sm">
+                        Status
+                     </th>
                      <th className="border px-3 py-2 text-sm">
                         Assigned Collector
                      </th>
@@ -132,6 +135,9 @@ const Show = ({ transactions, grand_totals, filters }) => {
                                  minimumFractionDigits: 2,
                                  maximumFractionDigits: 2,
                               })}
+                           </td>
+                           <td className="border px-3 py-2 text-sm">
+                              {transaction.status}
                            </td>
                            <td className="border px-3 py-2">
                               {transaction.customer_plan?.collector?.lastname},{" "}

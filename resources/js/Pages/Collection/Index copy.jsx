@@ -1,3 +1,4 @@
+import { GiCoins } from "react-icons/gi";
 import { CgDanger } from "react-icons/cg";
 import { AiOutlinePlus } from "react-icons/ai";
 import { MdAccountCircle } from "react-icons/md";
@@ -42,13 +43,29 @@ const TABLE_HEAD = [
 const Index = () => {
    const API_URL = UseAppUrl();
    const [filter, setFilter] = useState("month");
+   // ✅ new states for date range
+   const [startDate, setStartDate] = useState("");
+   const [endDate, setEndDate] = useState("");
 
    const handleFilterChange = (e) => {
       setFilter(e.target.value);
    };
 
    const fetchCollections = async ({ queryKey }) => {
-      const [_key, page, query, sortColumn, sortDirection] = queryKey;
+      const [
+         _key,
+         page,
+         query,
+         sortColumn,
+         sortDirection,
+         filter,
+         startDate,
+         endDate,
+      ] = queryKey;
+
+      // ✅ If no startDate or endDate, use today's date
+      const today = new Date().toISOString().split("T")[0]; // "YYYY-MM-DD"
+
       const response = await axios.get(`${API_URL}/api/raw_collections`, {
          params: {
             page,
@@ -56,9 +73,11 @@ const Index = () => {
             sortColumn,
             sortDirection,
             filter,
+            start_date: startDate || today,
+            end_date: endDate || today,
          },
       });
-      //console.log(response.data);
+
       return response.data;
    };
 
@@ -78,6 +97,8 @@ const Index = () => {
          sortConfig.column,
          sortConfig.direction,
          filter,
+         startDate,
+         endDate,
       ],
       queryFn: fetchCollections,
       keepPreviousData: true,
@@ -183,7 +204,7 @@ const Index = () => {
                         </div> */}
                </div>
 
-               <div className="w-full  flex items-center justify-end flex-col-reverse gap-6 lg:flex-row">
+               <div className="w-full  flex items-center justify-center flex-col-reverse gap-6 lg:flex-row">
                   <div className="flex gap-4">
                      {/* <div className="relative w-96">
                         <div>
@@ -196,7 +217,7 @@ const Index = () => {
                            <AiOutlineSearch className="absolute top-1/2 right-3 -translate-y-1/2 text-slate-400" />
                         </div>
                      </div> */}
-                     <div>
+                     {/* <div>
                         <div className="flex gap-4 items-center">
                            <label className="mr-2 font-medium">Filter:</label>
                            <select
@@ -219,11 +240,48 @@ const Index = () => {
                               <option value="month">Month</option>
                            </select>
                         </div>
+                     </div> */}
+                  </div>
+
+                  <div className="flex gap-4 items-center">
+                     <div className="flex flex-col">
+                        <label className="text-sm text-gray-600">
+                           Start Date
+                        </label>
+                        <input
+                           type="date"
+                           value={startDate}
+                           onChange={(e) => setStartDate(e.target.value)}
+                           className="px-3 py-1 border border-gray-300 rounded-lg"
+                        />
                      </div>
+                     <div className="flex flex-col">
+                        <label className="text-sm text-gray-600">
+                           End Date
+                        </label>
+                        <input
+                           type="date"
+                           value={endDate}
+                           onChange={(e) => setEndDate(e.target.value)}
+                           className="px-3 py-1 border border-gray-300 rounded-lg"
+                        />
+                     </div>
+                     {/* <Button color="green" size="sm" onClick={() => refetch()}>
+                        Apply
+                     </Button> */}
                   </div>
 
                   <div>
-                     <Link href="/collection-show">
+                     <a
+                        href={route("collections.show", {
+                           start_date:
+                              startDate ||
+                              new Date().toISOString().split("T")[0],
+                           end_date:
+                              endDate || new Date().toISOString().split("T")[0],
+                        })}
+                        target="_blank"
+                     >
                         <Button
                            className="flex gap-2 items-center"
                            color="blue"
@@ -232,162 +290,12 @@ const Index = () => {
                            <AiOutlinePlus className="text-lg" />
                            Preview
                         </Button>
-                     </Link>
+                     </a>
                   </div>
                </div>
-            </div>
-
-            <div className="flex-1  p-4  w-full">
-               <table className="w-full text-left  border border-gray-300 overflow-x-auto">
-                  <thead>
-                     <tr className="bg-gray-100">
-                        {TABLE_HEAD.map((head) => (
-                           <th
-                              key={head}
-                              className="px-6 py-3 text-sm font-semibold bg-gray-300 text-gray-700 uppercase border border-gray-400"
-                           >
-                              <Typography
-                                 variant="small"
-                                 color="blue-gray"
-                                 className="text-[12px] font-normal leading-none opacity-70"
-                              >
-                                 {head}
-                              </Typography>
-                           </th>
-                        ))}
-                     </tr>
-                  </thead>
-                  <tbody>
-                     {isLoading ? (
-                        <tr>
-                           <td
-                              colSpan={TABLE_HEAD.length}
-                              className="border border-blue-gray-100 p-4"
-                           >
-                              <div className="flex justify-center items-center h-full">
-                                 <Spinner className="h-10 w-10" color="green" />
-                              </div>
-                           </td>
-                        </tr>
-                     ) : TABLE_ROWS.length === 0 ? (
-                        <tr>
-                           <td
-                              colSpan={TABLE_HEAD.length}
-                              className="border border-blue-gray-100 p-4 text-center text-red-500"
-                           >
-                              <div className="flex justify-center items-center gap-2">
-                                 No customer records found
-                                 <CgDanger className="text-xl" />
-                              </div>
-                           </td>
-                        </tr>
-                     ) : (
-                        TABLE_ROWS.map(
-                           ({
-                              id,
-                              customer_name,
-                              collector_name,
-                              bill_no,
-                              date_billing,
-                              address,
-                              outstanding_balance,
-                              bill_amount,
-                           }) => (
-                              <tr key={id} className="hover:bg-blue-gray-50 ">
-                                 <td className="border border-blue-gray-100 px-4">
-                                    <Typography
-                                       variant="small"
-                                       className="font-normal text-gray-800"
-                                    >
-                                       {bill_no}
-                                    </Typography>
-                                 </td>
-                                 <td className="border border-blue-gray-100 px-4">
-                                    <Typography
-                                       variant="small"
-                                       className="font-normal text-gray-800"
-                                    >
-                                       {date_billing}
-                                    </Typography>
-                                 </td>
-                                 <td className="border border-blue-gray-100 px-4">
-                                    <Typography
-                                       variant="small"
-                                       className="font-normal text-gray-800"
-                                    >
-                                       {customer_name}
-                                    </Typography>
-                                 </td>
-
-                                 <td className="border border-blue-gray-100 px-4">
-                                    <Typography
-                                       variant="small"
-                                       className="font-normal text-gray-800"
-                                    >
-                                       {address ?? ""}
-                                    </Typography>
-                                 </td>
-                                 <td className="border border-blue-gray-100 px-4">
-                                    <Typography
-                                       variant="small"
-                                       className="font-normal text-gray-800"
-                                    >
-                                       {outstanding_balance ?? ""}
-                                    </Typography>
-                                 </td>
-
-                                 <td className="border border-blue-gray-100 px-4">
-                                    <Typography
-                                       variant="small"
-                                       className="font-normal text-gray-800"
-                                    >
-                                       {bill_amount ?? ""}
-                                    </Typography>
-                                 </td>
-
-                                 <td className="border border-blue-gray-100 px-4">
-                                    <Typography
-                                       variant="small"
-                                       className="font-normal text-gray-800"
-                                    >
-                                       {collector_name}
-                                    </Typography>
-                                 </td>
-                              </tr>
-                           )
-                        )
-                     )}
-                  </tbody>
-               </table>
-
-               <div className="grid grid-cols-4 items-center border-t border-blue-gray-50 p-4">
-                  {/* Left side: span-1 */}
-                  <div className="col-span-1">
-                     <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                     >
-                        Page {data?.current_page} of {data?.last_page}
-                     </Typography>
-                  </div>
-
-                  {/* Center content: span-2 */}
-                  <div className="col-span-2 flex flex-col items-center">
-                     {/* Pagination numbers */}
-                     <Pagination
-                        currentPage={data?.current_page || 1}
-                        lastPage={data?.last_page || 1}
-                        onPageChange={handlePagination}
-                     />
-
-                     {/* Entry count text */}
-                     <div className="mt-3 text-gray-700">
-                        Showing {(currentPage - 1) * 10 + 1} to{" "}
-                        {Math.min(currentPage * 10, data?.total)} of{" "}
-                        {data?.total} entries
-                     </div>
-                  </div>
+               <div className="flex justify-center flex-col items-center mt-12">
+                  <GiCoins className="text-9xl" />
+                  Filter to show collection
                </div>
             </div>
          </div>

@@ -23,7 +23,7 @@ const Show = ({ transactions, grand_totals, filters }) => {
                Print
             </Button>
          </div>
-         <div ref={contentRef} className="max-w-3xl mx-auto bg-white p-8 ">
+         <div ref={contentRef} className="w-full px-4 mx-auto bg-white py-8 ">
             {/* Header */}
             <div className="flex items-start justify-between border-b pb-4">
                {/* Logo + Info */}
@@ -34,20 +34,24 @@ const Show = ({ transactions, grand_totals, filters }) => {
                      className="w-20 h-20 object-contain"
                   />
                   <div className="text-sm text-gray-800">
-                     <h1 className="font-bold text-lg">
+                     <h1 className="font-bold text-[16px]">
                         CFS INTERNET NETWORK SOLUTION
                      </h1>
-                     <p>#2, Managuelod Bldg, National High Way</p>
-                     <p>District II, Tumauini, Isabela.</p>
-                     <p>TIN: 295-973-965-001</p>
-                     <p>CP#: 09453367030</p>
+                     <p className="text-[14px]">
+                        #2, Managuelod Bldg, National High Way
+                     </p>
+                     <p className="text-[14px]">
+                        District II, Tumauini, Isabela.
+                     </p>
+                     <p className="text-[14px]">TIN: 295-973-965-001</p>
+                     <p className="text-[14px]">CP#: 09453367030</p>
                   </div>
                </div>
             </div>
 
             {/* Title */}
             <div className="flex justify-between items-center my-4 border-b pb-2">
-               <h2 className="font-semibold text-gray-700">
+               <h2 className="font-semibold text-gray-700 text-[14px]">
                   Collection of{" "}
                   <span>
                      {new Date(filters.start_date).toLocaleDateString("en-PH", {
@@ -68,24 +72,30 @@ const Show = ({ transactions, grand_totals, filters }) => {
             </div>
 
             {/* Table */}
-            <table className="w-full border-collapse text-sm">
+            <table className="w-full border-collapse">
                <thead>
-                  <tr className="bg-gray-100 text-left">
-                     <th className="border px-3 py-2 text-sm">#</th>
-                     <th className="border px-3 py-2 text-sm">Bill No.</th>
-                     <th className="border px-3 py-2">Billing Day</th>
-                     <th className="border px-3 py-2">Cusstomer Name</th>
-                     <th className="border px-3 py-2 text-sm">Address</th>
-                     <th className="border px-3 py-2 text-right text-sm">
+                  <tr className="bg-gray-100 text-left text-[12px]">
+                     <th className="border px-3 py-2 text-text-[12px]">#</th>
+                     <th className="border px-3 py-2 text-text-[12px] text-nowrap">
+                        Bill No.
+                     </th>
+                     <th className="border px-3 py-2 text-[12px] text-nowrap">
+                        Billing Day
+                     </th>
+                     <th className="border px-3 py-2 text-[12px] text-nowrap">
+                        Cusstomer Name
+                     </th>
+                     <th className="border px-3 py-2 text-[12px]">Address</th>
+                     <th className="border px-3 py-2 text-right text-[12px] text-nowrap">
                         Payment Amount
                      </th>
-                     <th className="border px-3 py-2 text-right text-sm">
+                     <th className="border px-3 py-2 text-right text-[12px]">
                         Rebate
                      </th>
-                     <th className="border px-3 py-2 text-right text-sm">
+                     <th className="border px-3 py-2 text-right text-[12px]">
                         Status
                      </th>
-                     <th className="border px-3 py-2 text-sm">
+                     <th className="border px-3 py-2 text-[12px] text-nowrap">
                         Assigned Collector
                      </th>
                   </tr>
@@ -94,11 +104,13 @@ const Show = ({ transactions, grand_totals, filters }) => {
                   {transactions.length > 0 ? (
                      transactions.map((transaction, index) => (
                         <tr key={transaction.id}>
-                           <td className="border px-3 py-2">{index + 1}</td>
-                           <td className="border px-3 py-2 text-sm">
+                           <td className="border px-3 py-2 text-[12px]">
+                              {index + 1}
+                           </td>
+                           <td className="border px-3 py-2 text-[12px]">
                               {transaction.bill_no}
                            </td>
-                           <td className="border px-3 py-2">
+                           <td className="border px-3 py-2 text-[12px]">
                               {new Date(
                                  transaction.date_billing
                               ).toLocaleDateString("en-US", {
@@ -107,11 +119,11 @@ const Show = ({ transactions, grand_totals, filters }) => {
                                  day: "numeric",
                               })}
                            </td>
-                           <td className="border px-3 py-2">
+                           <td className="border px-3 py-2 text-[12px]">
                               {transaction.customer_plan?.customer?.lastname},{" "}
                               {transaction.customer_plan?.customer?.firstname}
                            </td>
-                           <td className="border px-3 py-2">
+                           <td className="border px-3 py-2 text-[12px]">
                               {
                                  transaction.customer_plan?.customer?.purok
                                     ?.purok_name
@@ -122,24 +134,24 @@ const Show = ({ transactions, grand_totals, filters }) => {
                                     ?.barangay?.barangay_name
                               }
                            </td>
-                           <td className="border px-3 py-2 text-right">
+                           <td className="border px-3 py-2 text-right text-[12px]">
                               ₱
                               {transaction.partial.toLocaleString("en-PH", {
                                  minimumFractionDigits: 2,
                                  maximumFractionDigits: 2,
                               })}
                            </td>
-                           <td className="border px-3 py-2 text-right">
+                           <td className="border px-3 py-2 text-right text-[12px]">
                               ₱
                               {transaction.rebate.toLocaleString("en-PH", {
                                  minimumFractionDigits: 2,
                                  maximumFractionDigits: 2,
                               })}
                            </td>
-                           <td className="border px-3 py-2 text-sm">
+                           <td className="border px-3 py-2 text-[12px]">
                               {transaction.status}
                            </td>
-                           <td className="border px-3 py-2">
+                           <td className="border px-3 py-2 text-[12px]">
                               {transaction.customer_plan?.collector?.lastname},{" "}
                               {transaction.customer_plan?.collector?.firstname}
                            </td>

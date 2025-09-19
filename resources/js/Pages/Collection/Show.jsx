@@ -172,7 +172,7 @@ const Show = ({ transactions, grand_totals, filters }) => {
 
             {/* Totals */}
             <div className="flex justify-end border-t mt-4 pt-2">
-               <p className="font-semibold text-gray-700">
+               <p className="font-semibold text-gray-700 text-[14px]">
                   Grand Total:{" "}
                   <span className="ml-2">
                      ₱
@@ -195,16 +195,16 @@ const Show = ({ transactions, grand_totals, filters }) => {
             {/* Signatures */}
             <div className="grid grid-cols-3 text-center mt-12 text-sm text-gray-700">
                <div>
-                  <p className="font-medium">Encoded By:</p>
-                  <p>Joy</p>
+                  <p className="text-[14px]">Encoded By:</p>
+                  <p className="text-[14px]">Joy</p>
                </div>
                <div>
-                  <p className="font-medium">Checked By:</p>
-                  <p>Lanie</p>
+                  <p className=" text-[14px]">Checked By:</p>
+                  <p className=" text-[14px]">Lanie</p>
                </div>
                <div>
-                  <p className="font-medium">Approved By:</p>
-                  <p>Patrick Neil Reyes</p>
+                  <p className=" text-[14px]">Approved By:</p>
+                  <p className=" text-[14px]">Patrick Neil Reyes</p>
                </div>
             </div>
          </div>

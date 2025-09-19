@@ -9,7 +9,7 @@ const Show = ({ transactions, grand_totals, filters }) => {
    const contentRef = useRef();
    const reactToPrintFn = useReactToPrint({ contentRef });
 
-   console.log("high", JSON.stringify(grand_totals, null, 2));
+   console.log("high", JSON.stringify(transactions, null, 2));
 
    return (
       <AuthenticatedLayout>
@@ -70,36 +70,24 @@ const Show = ({ transactions, grand_totals, filters }) => {
                   </span>
                </h2>
             </div>
-
-            {/* Table */}
             <table className="w-full border-collapse">
                <thead>
                   <tr className="bg-gray-100 text-left text-[12px]">
-                     <th className="border px-3 py-2 text-text-[12px]">#</th>
-                     <th className="border px-3 py-2 text-text-[12px] text-nowrap">
-                        Bill No.
-                     </th>
-                     <th className="border px-3 py-2 text-[12px] text-nowrap">
-                        Billing Day
-                     </th>
-                     <th className="border px-3 py-2 text-[12px] text-nowrap">
-                        Cusstomer Name
-                     </th>
-                     <th className="border px-3 py-2 text-[12px]">Address</th>
-                     <th className="border px-3 py-2 text-right text-[12px] text-nowrap">
+                     <th className="border px-3 py-2">#</th>
+                     <th className="border px-3 py-2">Bill No.</th>
+                     <th className="border px-3 py-2">Billing Day</th>
+                     <th className="border px-3 py-2">Customer Name</th>
+                     <th className="border px-3 py-2">Address</th>
+                     <th className="border px-3 py-2 text-right">
                         Payment Amount
                      </th>
-                     <th className="border px-3 py-2 text-right text-[12px]">
-                        Rebate
-                     </th>
-                     <th className="border px-3 py-2 text-right text-[12px]">
-                        Status
-                     </th>
-                     <th className="border px-3 py-2 text-[12px] text-nowrap">
-                        Assigned Collector
-                     </th>
+                     <th className="border px-3 py-2 text-right">Rebate</th>
+                     <th className="border px-3 py-2 text-right">Balance</th>
+                     <th className="border px-3 py-2">Status</th>
+                     <th className="border px-3 py-2">Assigned Collector</th>
                   </tr>
                </thead>
+
                <tbody>
                   {transactions.length > 0 ? (
                      transactions.map((transaction, index) => (
@@ -138,15 +126,20 @@ const Show = ({ transactions, grand_totals, filters }) => {
                               ₱
                               {transaction.partial.toLocaleString("en-PH", {
                                  minimumFractionDigits: 2,
-                                 maximumFractionDigits: 2,
                               })}
                            </td>
                            <td className="border px-3 py-2 text-right text-[12px]">
                               ₱
                               {transaction.rebate.toLocaleString("en-PH", {
                                  minimumFractionDigits: 2,
-                                 maximumFractionDigits: 2,
                               })}
+                           </td>
+                           <td className="border px-3 py-2 text-right text-[12px]">
+                              ₱
+                              {transaction.outstanding_balance.toLocaleString(
+                                 "en-PH",
+                                 { minimumFractionDigits: 2 }
+                              )}
                            </td>
                            <td className="border px-3 py-2 text-[12px]">
                               {transaction.status}
@@ -160,7 +153,7 @@ const Show = ({ transactions, grand_totals, filters }) => {
                   ) : (
                      <tr>
                         <td
-                           colSpan="7"
+                           colSpan="10"
                            className="text-center py-4 text-gray-500"
                         >
                            No collection records found
@@ -168,29 +161,35 @@ const Show = ({ transactions, grand_totals, filters }) => {
                      </tr>
                   )}
                </tbody>
-            </table>
 
-            {/* Totals */}
-            <div className="flex justify-end border-t mt-4 pt-2">
-               <p className="font-semibold text-gray-700 text-[14px]">
-                  Grand Total:{" "}
-                  <span className="ml-2">
-                     ₱
-                     {grand_totals.partial.toLocaleString("en-PH", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                     })}
-                  </span>
-                  &nbsp; | &nbsp; Rebate -{" "}
-                  <span>
-                     ₱
-                     {grand_totals.rebate.toLocaleString("en-PH", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                     })}
-                  </span>
-               </p>
-            </div>
+               {/* ✅ Totals Row */}
+               <tfoot>
+                  <tr className="bg-gray-100 font-semibold text-[12px]">
+                     <td colSpan="5" className="border px-3 py-2 text-right">
+                        Grand Totals:
+                     </td>
+                     <td className="border px-3 py-2 text-right">
+                        ₱
+                        {grand_totals.partial.toLocaleString("en-PH", {
+                           minimumFractionDigits: 2,
+                        })}
+                     </td>
+                     <td className="border px-3 py-2 text-right">
+                        ₱
+                        {grand_totals.rebate.toLocaleString("en-PH", {
+                           minimumFractionDigits: 2,
+                        })}
+                     </td>
+                     <td className="border px-3 py-2 text-right">
+                        ₱
+                        {grand_totals.balance.toLocaleString("en-PH", {
+                           minimumFractionDigits: 2,
+                        })}
+                     </td>
+                     <td colSpan="2" className="border px-3 py-2"></td>
+                  </tr>
+               </tfoot>
+            </table>
 
             {/* Signatures */}
             <div className="grid grid-cols-3 text-center mt-12 text-sm text-gray-700">

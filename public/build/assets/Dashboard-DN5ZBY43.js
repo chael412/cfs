@@ -1,1 +1,0 @@
-import{j as t,M as a}from"./app-C2YoZluY.js";import{A as e}from"./AuthenticatedLayoutCollector-BW7HtV6O.js";import"./NavLink-BndqAk1_.js";const d=()=>t.jsxs(e,{header:t.jsx("h2",{className:"text-xl font-semibold leading-tight text-gray-800",children:"Dashboard"}),children:[t.jsx(a,{title:"Dashboard"}),t.jsx("div",{children:"Collector Dashboard"})]});export{d as default};

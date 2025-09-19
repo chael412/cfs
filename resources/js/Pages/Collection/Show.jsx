@@ -35,7 +35,7 @@ const Show = ({ transactions, grand_totals, filters }) => {
                   />
                   <div className="text-sm text-gray-800">
                      <h1 className="font-bold text-[16px]">
-                        CFS INTERNET NETWORK SOLUTION
+                        CFS INTERNET NETWORK SOLUTIONs
                      </h1>
                      <p className="text-[14px]">
                         #2, Managuelod Bldg, National High Way

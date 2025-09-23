@@ -15,9 +15,9 @@ class PlanController extends Controller
      */
     public function index()
     {
-        $plans = Plan::all();
+        $plans = Plan::orderBy('plan_price', 'asc')->get();
 
-        return Inertia::render('Plan/Index', ['plans' => Inertia::defer(fn () => $plans)]);
+        return Inertia::render('Plan/Index', ['plans' => Inertia::defer(fn() => $plans)]);
     }
 
     /**
@@ -27,7 +27,6 @@ class PlanController extends Controller
     {
 
         return Inertia::render('Plan/Create');
-
     }
 
     /**
@@ -40,8 +39,7 @@ class PlanController extends Controller
             Plan::create($data);
 
             return to_route('plans.index');
-
-        }  catch (\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json(['message' => 'Error: ' . $e->getMessage()], 500);
         }
     }

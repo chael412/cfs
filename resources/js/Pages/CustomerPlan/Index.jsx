@@ -134,6 +134,18 @@ const Index = () => {
          }
       }
    };
+
+   const formatBillingDate = (batch) => {
+      const map = {
+         batch1: "Due1",
+         batch2: "Due5",
+         batch3: "Due15",
+         batch4: "Due25",
+         batch5: "Due28-AllCheque",
+      };
+      return map[batch] || batch; // fallback if unknown
+   };
+
    return (
       <AuthenticatedLayout>
          <Head title="Customer Plans" />
@@ -290,7 +302,7 @@ const Index = () => {
                                        variant="small"
                                        className="font-normal text-gray-800"
                                     >
-                                       {date_billing}
+                                       {formatBillingDate(date_billing)}
                                     </Typography>
                                  </td>
                                  <td className="border border-blue-gray-100 px-4">

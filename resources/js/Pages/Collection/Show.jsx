@@ -145,7 +145,6 @@ const Show = ({ transactions, grand_totals, filters }) => {
                               {transaction.status}
                            </td>
                            <td className="border px-3 py-2 text-[12px]">
-                              {transaction.customer_plan?.collector?.lastname},{" "}
                               {transaction.customer_plan?.collector?.firstname}
                            </td>
                         </tr>

@@ -56,12 +56,11 @@ const Create = ({ customers, collectors, plans }) => {
    }));
 
    const dateBillingOptions = [
-      { value: "batch1", label: "Batch1" },
-      { value: "batch2", label: "Batch2" },
-      { value: "batch3", label: "Batch3" },
-      { value: "batch4", label: "Batch4" },
-      { value: "batch5", label: "Batch5" },
-      { value: "all_cheque", label: "Batch6(All Cheque)" },
+      { value: "batch1", label: "Due1" },
+      { value: "batch2", label: "Due5" },
+      { value: "batch3", label: "Due15" },
+      { value: "batch4", label: "Due25" },
+      { value: "batch5", label: "Due28-AllCheque" },
    ];
 
    return (

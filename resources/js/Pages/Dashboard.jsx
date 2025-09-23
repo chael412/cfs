@@ -12,6 +12,7 @@ import SkeletonCard from "@/Components/SkeletonCard";
 import ReactApexChart from "react-apexcharts";
 import axios from "axios";
 import UseAppUrl from "@/hooks/UseAppUrl";
+import useCurrency from "@/hooks/useCurrency";
 
 export default function Dashboard({
    activeCustomers,
@@ -19,6 +20,7 @@ export default function Dashboard({
    collectors,
 }) {
    const API_URL = UseAppUrl();
+   const { formatCurrency } = useCurrency();
 
    const currentYear = new Date().getFullYear();
    const [summary, setSummary] = useState(null);
@@ -196,10 +198,16 @@ export default function Dashboard({
                         <h3 className="font-semibold mb-2">
                            Overall Collection
                         </h3>
-                        <p>Total Payment: ₱{summary.overall.total_partial}</p>
-                        <p>Total Rebate: ₱{summary.overall.total_rebate}</p>
+                        <p>
+                           Total Payment:{" "}
+                           {formatCurrency(summary.overall.total_partial)}
+                        </p>
+                        <p>
+                           Total Rebate:{" "}
+                           {formatCurrency(summary.overall.total_rebate)}
+                        </p>
                         <p className="font-bold text-green-600">
-                           Net Pay: ₱{summary.overall.net_pay}
+                           Net Pay: {formatCurrency(summary.overall.net_pay)}
                         </p>
                      </div>
 
@@ -208,11 +216,17 @@ export default function Dashboard({
                         <h3 className="font-semibold mb-2">
                            Advance Billing Collection
                         </h3>
-                        <p>Total Payment: ₱{summary.advance.total_partial}</p>
-                        <p>Total Rebate: ₱{summary.advance.total_rebate}</p>
+                        <p>
+                           Total Payment:{" "}
+                           {formatCurrency(summary.advance.total_partial)}
+                        </p>
+                        <p>
+                           Total Rebate:{" "}
+                           {formatCurrency(summary.advance.total_rebate)}
+                        </p>
 
                         <p className="font-bold text-green-600">
-                           Net Pay: ₱{summary.advance.net_pay}
+                           Net Pay: {formatCurrency(summary.advance.net_pay)}
                         </p>
                      </div>
 
@@ -221,11 +235,16 @@ export default function Dashboard({
                         <h3 className="font-semibold mb-2">
                            Batch Billing Collection
                         </h3>
-                        <p>Total Payment: ₱{summary.batch.total_partial}</p>
-                        <p>Total Rebate: ₱{summary.batch.total_rebate}</p>
-
+                        <p>
+                           Total Payment:{" "}
+                           {formatCurrency(summary.batch.total_partial)}
+                        </p>
+                        <p>
+                           Total Rebate:{" "}
+                           {formatCurrency(summary.batch.total_rebate)}
+                        </p>
                         <p className="font-bold text-green-600">
-                           Net Pay: ₱{summary.batch.net_pay}
+                           Net Pay: {formatCurrency(summary.batch.net_pay)}
                         </p>
                      </div>
                   </div>

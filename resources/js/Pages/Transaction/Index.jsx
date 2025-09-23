@@ -39,7 +39,6 @@ const TABLE_HEAD = [
    "Mbps Plan",
    "Payment",
    "Total Amount Paid",
-   "Batch",
    "Date Billing",
    "Payment Date",
    "Status",
@@ -161,6 +160,18 @@ const Index = () => {
          }
       }
    };
+
+   const formatBillingDate = (batch) => {
+      const map = {
+         batch1: "Due1",
+         batch2: "Due5",
+         batch3: "Due15",
+         batch4: "Due25",
+         batch5: "Due28-AllCheque",
+      };
+      return map[batch] || batch; // fallback if unknown
+   };
+
    return (
       <AuthenticatedLayout>
          <Head title="Billing Transactions" />
@@ -216,12 +227,11 @@ const Index = () => {
                         label="Select Batch"
                         onChange={(val) => setBatch(val)}
                      >
-                        <Option value="batch1">Batch 1</Option>
-                        <Option value="batch2">Batch 2</Option>
-                        <Option value="batch3">Batch 3</Option>
-                        <Option value="batch4">Batch 4</Option>
-                        <Option value="batch5">Batch 5</Option>
-                        <Option value="batch6">Batch 6 (All Cheque)</Option>
+                        <Option value="batch1">Due1</Option>
+                        <Option value="batch2">Due5</Option>
+                        <Option value="batch3">Due15</Option>
+                        <Option value="batch4">Due25</Option>
+                        <Option value="batch5">Due28-AllCheque</Option>
                      </Select>
                   </div>
 
@@ -406,11 +416,13 @@ const Index = () => {
                                        variant="small"
                                        className="font-normal text-gray-800"
                                     >
-                                       {remarks === "batch" ? batch : ""}
+                                       {remarks === "batch"
+                                          ? formatBillingDate(batch)
+                                          : ""}
                                     </Typography>
                                  </td>
 
-                                 <td className="border border-blue-gray-100 px-4">
+                                 {/* <td className="border border-blue-gray-100 px-4">
                                     <Typography
                                        variant="small"
                                        className="font-normal text-gray-800"
@@ -420,7 +432,7 @@ const Index = () => {
                                           "MM/dd/yyyy"
                                        )}
                                     </Typography>
-                                 </td>
+                                 </td> */}
                                  <td className="border border-blue-gray-100 px-4">
                                     <Typography
                                        variant="small"

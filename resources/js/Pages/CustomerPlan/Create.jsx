@@ -58,9 +58,10 @@ const Create = ({ customers, collectors, plans }) => {
    const dateBillingOptions = [
       { value: "batch1", label: "Due1" },
       { value: "batch2", label: "Due5" },
-      { value: "batch3", label: "Due15" },
-      { value: "batch4", label: "Due25" },
-      { value: "batch5", label: "Due28-AllCheque" },
+      { value: "batch3", label: "Due10" },
+      { value: "batch4", label: "Due15" },
+      { value: "batch5", label: "Due25" },
+      { value: "all_cheque", label: "Due28-AllCheque" },
    ];
 
    return (

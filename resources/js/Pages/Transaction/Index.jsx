@@ -224,14 +224,15 @@ const Index = () => {
                <div className="flex gap-4 mt-4 mb-3">
                   <div className="min-w-[160px]">
                      <Select
-                        label="Select Batch"
+                        label="Select Due"
                         onChange={(val) => setBatch(val)}
                      >
                         <Option value="batch1">Due1</Option>
                         <Option value="batch2">Due5</Option>
-                        <Option value="batch3">Due15</Option>
-                        <Option value="batch4">Due25</Option>
-                        <Option value="batch5">Due28-AllCheque</Option>
+                        <Option value="batch3">Due10</Option>
+                        <Option value="batch4">Due15</Option>
+                        <Option value="batch5">Due25</Option>
+                        <Option value="all_cheque">Due28-AllCheque</Option>
                      </Select>
                   </div>
 

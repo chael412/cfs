@@ -139,9 +139,10 @@ const Index = () => {
       const map = {
          batch1: "Due1",
          batch2: "Due5",
-         batch3: "Due15",
-         batch4: "Due25",
-         batch5: "Due28-AllCheque",
+         batch3: "Due10",
+         batch4: "Due15",
+         batch5: "Due25",
+         all_cheque: "Due28-AllCheque",
       };
       return map[batch] || batch; // fallback if unknown
    };

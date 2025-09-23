@@ -110,15 +110,15 @@ const Page = () => {
 
                <div className="flex gap-4 mt-4">
                   <Select
-                     label="Select Batch"
+                     label="Select Due"
                      onChange={(val) => setPostBatch(val)}
                   >
-                     <Option value="1">Batch 1</Option>
-                     <Option value="2">Batch 2</Option>
-                     <Option value="3">Batch 3</Option>
-                     <Option value="4">Batch 4</Option>
-                     <Option value="5">Batch 5</Option>
-                     <Option value="6">Batch 6 (All Cheque)</Option>
+                     <Option value="1">Due1</Option>
+                     <Option value="2">Due5</Option>
+                     <Option value="3">Due10</Option>
+                     <Option value="4">Due15</Option>
+                     <Option value="5">Due25</Option>
+                     <Option value="6">Due28-AllCheque</Option>
                   </Select>
 
                   <Button onClick={generateBatch} disabled={isPostLoading}>
@@ -139,15 +139,15 @@ const Page = () => {
                {/* Filters */}
                <div className="flex gap-4 mt-4">
                   <Select
-                     label="Select Batch"
+                     label="Select Due"
                      onChange={(val) => setFilterBatch(val)}
                   >
-                     <Option value="1">Batch 1</Option>
-                     <Option value="2">Batch 2</Option>
-                     <Option value="3">Batch 3</Option>
-                     <Option value="4">Batch 4</Option>
-                     <Option value="5">Batch 5</Option>
-                     <Option value="6">Batch 6 (All Cheque)</Option>
+                     <Option value="1">Due1</Option>
+                     <Option value="2">Due5</Option>
+                     <Option value="3">Due10</Option>
+                     <Option value="4">Due15</Option>
+                     <Option value="5">Due25</Option>
+                     <Option value="6">Due28-AllCheque</Option>
                   </Select>
 
                   <Input

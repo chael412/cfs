@@ -67,11 +67,11 @@ const Edit = ({ customers, collectors, plans, customer_plan }) => {
    const dateBillingOptions = [
       { value: "batch1", label: "Due1" },
       { value: "batch2", label: "Due5" },
-      { value: "batch3", label: "Due15" },
-      { value: "batch4", label: "Due25" },
-      { value: "batch5", label: "Due28-AllCheque" },
+      { value: "batch3", label: "Due10" },
+      { value: "batch4", label: "Due15" },
+      { value: "batch5", label: "Due25" },
+      { value: "all_cheque", label: "Due28-AllCheque" },
    ];
-
    return (
       <AuthenticatedLayout>
          <Head title="Edit Customer Plan" />
@@ -85,7 +85,7 @@ const Edit = ({ customers, collectors, plans, customer_plan }) => {
                      <div className="flex justify-end mb-2">
                         <Tooltip content="Back">
                            <Link
-                              href="/customer_plans"
+                              href="/admin/customer_plans"
                               className="hover:bg-gray-200 px-2 py-1 rounded"
                            >
                               <BsArrowReturnLeft className="text-xl cursor-pointer" />

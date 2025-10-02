@@ -6,7 +6,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { BiDotsVertical } from "react-icons/bi";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { GiHamburgerMenu } from "react-icons/gi";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
 import { Head, usePage, Deferred, Link } from "@inertiajs/react";
@@ -46,6 +46,8 @@ const Index = () => {
    const [startDate, setStartDate] = useState("");
    const [endDate, setEndDate] = useState("");
    const [status, setStatus] = useState(""); // ✅ new state
+   const [collectorId, setCollectorId] = useState("");
+   const [collectors, setCollectors] = useState([]);
 
    const handleFilterChange = (e) => {
       setFilter(e.target.value);
@@ -62,6 +64,7 @@ const Index = () => {
          startDate,
          endDate,
          status, // ✅ include status
+         collectorId,
       ] = queryKey;
 
       const today = new Date().toISOString().split("T")[0];
@@ -76,6 +79,7 @@ const Index = () => {
             start_date: startDate || today,
             end_date: endDate || today,
             status, // ✅ backend filter
+            collector_id: collectorId || "",
          },
       });
 
@@ -101,6 +105,7 @@ const Index = () => {
          startDate,
          endDate,
          status, // ✅ add status to queryKey
+         collectorId,
       ],
       queryFn: fetchCollections,
       keepPreviousData: true,
@@ -117,6 +122,12 @@ const Index = () => {
    const handlePagination = (page) => {
       setCurrentPage(page);
    };
+
+   useEffect(() => {
+      axios.get(`${API_URL}/api/collectors`).then((res) => {
+         setCollectors(res.data);
+      });
+   }, []);
 
    return (
       <AuthenticatedLayout>
@@ -170,6 +181,20 @@ const Index = () => {
                         />
                      </div>
                   </div>
+                  <div className="flex flex-col">
+                     <label className="text-sm text-gray-600">Collector</label>
+                     <select
+                        value={collectorId}
+                        onChange={(e) => setCollectorId(e.target.value)}
+                     >
+                        <option value="">All Collectors</option>
+                        {collectors.map((collector) => (
+                           <option key={collector.id} value={collector.id}>
+                              {collector.firstname} {collector.lastname}
+                           </option>
+                        ))}
+                     </select>
+                  </div>
 
                   {/* ✅ Status filter */}
                   <div className="flex flex-col">
@@ -194,7 +219,8 @@ const Index = () => {
                               new Date().toISOString().split("T")[0],
                            end_date:
                               endDate || new Date().toISOString().split("T")[0],
-                           status, // ✅ also pass to preview
+                           collector_id: collectorId || "", // ✅ use collectorId state
+                           status,
                         })}
                         target="_blank"
                      >

@@ -53,11 +53,16 @@ class CollectorController extends Controller
             $query->whereDate('date_billing', '<=', $request->end_date);
         }
 
-        // ✅ Search by collector lastname
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->whereHas('customerPlan.collector', function ($q) use ($search) {
-                $q->where('lastname', 'like', "%{$search}%");
+        // ✅ Filter by collector (firstname + lastname or by ID)
+        if ($request->filled('collector_id')) {
+            $query->whereHas('customerPlan.collector', function ($q) use ($request) {
+                $q->where('id', $request->collector_id);
+            });
+        } elseif ($request->filled('collector')) {
+            $collector = $request->collector;
+            $query->whereHas('customerPlan.collector', function ($q) use ($collector) {
+                $q->where('firstname', 'like', "%{$collector}%")
+                    ->orWhere('lastname', 'like', "%{$collector}%");
             });
         }
 
@@ -72,6 +77,7 @@ class CollectorController extends Controller
 
         return response()->json($transactions);
     }
+
 
 
     // public function totalCollectedRaw(Request $request)

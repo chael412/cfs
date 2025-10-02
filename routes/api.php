@@ -16,6 +16,7 @@ use App\Http\Controllers\PurokController;
 use App\Http\Controllers\SoaController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\WalkinBillingController;
+use App\Models\Collector;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -94,3 +95,8 @@ Route::get('/transaction-summary', [DashboardController::class, 'transactionSumm
 Route::get('/municipalities', [MunicipalityController::class, 'municipalitiesWithBarangays']);
 Route::get('/municipalities/{id}/barangays', [MunicipalityController::class, 'barangaysByMunicipality']);
 Route::get('/customers/count-by-municipality', [MunicipalityController::class, 'countByMunicipality']);
+
+
+Route::get('/collectors', function () {
+    return Collector::select('id', 'firstname')->get();
+});
